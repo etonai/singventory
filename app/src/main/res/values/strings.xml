@@ -26,6 +26,20 @@
     <string name="add_song">Add Song</string>
     <string name="add_venue">Add Venue</string>
     <string name="start_visit">Start Visit</string>
+    <string name="add_venue_to_song">Add venue to this song</string>
+    <string name="save_song">Save Song</string>
+    
+    <!-- Form Labels -->
+    <string name="song_information">Song Information</string>
+    <string name="song_name">Song Name</string>
+    <string name="artist">Artist</string>
+    <string name="artist_optional">Artist (Optional)</string>
+    <string name="key_information">Key Information</string>
+    <string name="key_information_subtitle">Optional - you can set these later</string>
+    <string name="reference_key">Reference Key</string>
+    <string name="preferred_key">Your Preferred Key</string>
+    <string name="lyrics_optional">Lyrics (Optional)</string>
+    <string name="song_lyrics">Song lyrics</string>
     
     <!-- Settings Screen -->
     <string name="data_overview">Data Overview</string>

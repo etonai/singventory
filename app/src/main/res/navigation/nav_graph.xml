@@ -7,12 +7,30 @@
     <fragment
         android:id="@+id/navigation_songs"
         android:name="com.pseddev.singventory.ui.songs.SongsFragment"
-        android:label="@string/title_songs" />
+        android:label="@string/title_songs" >
+        <action
+            android:id="@+id/action_songs_to_addSong"
+            app:destination="@id/addSongFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addSongFragment"
+        android:name="com.pseddev.singventory.ui.songs.AddSongFragment"
+        android:label="Add Song" />
 
     <fragment
         android:id="@+id/navigation_venues"
         android:name="com.pseddev.singventory.ui.venues.VenuesFragment"
-        android:label="@string/title_venues" />
+        android:label="@string/title_venues" >
+        <action
+            android:id="@+id/action_venues_to_addVenue"
+            app:destination="@id/addVenueFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addVenueFragment"
+        android:name="com.pseddev.singventory.ui.venues.AddVenueFragment"
+        android:label="Add Venue" />
 
     <fragment
         android:id="@+id/navigation_visits"

@@ -102,6 +102,21 @@ app/src/
 
 All development work should follow the DevCycle methodology outlined in that document.
 
+## Deferred Features Tracking
+
+**CRITICAL**: Always review `docs/Deferred_Features.md` when starting new development cycles or planning future work.
+
+This dedicated document tracks all features that have been deferred from their original development cycles, ensuring important functionality is never forgotten as the project progresses.
+
+**Current Deferred Features** (see `docs/Deferred_Features.md` for full details):
+- Song-Venue Association Screens (from DevCycle 3 Phase 2) - Medium-High Priority
+
+**Process**:
+1. Review `docs/Deferred_Features.md` at the start of each new DevCycle
+2. Update feature priorities based on current project needs
+3. Add newly deferred features to the document with full context
+4. Move completed deferred features to the "Completed" section
+
 ## ⚠️ CRITICAL COMPLETION RULES ⚠️
 
 **ABSOLUTE REQUIREMENT**: You are FORBIDDEN from marking phases or DevCycles as "Completed" without explicit user verification and permission.

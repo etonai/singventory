@@ -4,14 +4,38 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.pseddev.singventory.R
+import com.pseddev.singventory.data.database.SingventoryDatabase
+import com.pseddev.singventory.data.repository.SingventoryRepository
 import com.pseddev.singventory.databinding.FragmentSongsBinding
+import kotlinx.coroutines.launch
 
 class SongsFragment : Fragment() {
     
     private var _binding: FragmentSongsBinding? = null
     private val binding get() = _binding!!
+    
+    private lateinit var songsAdapter: SongsAdapter
+    private val viewModel: SongsViewModel by viewModels {
+        val database = SingventoryDatabase.getDatabase(requireContext())
+        SongsViewModel.Factory(
+            SingventoryRepository(
+                database.songDao(),
+                database.venueDao(),
+                database.visitDao(),
+                database.performanceDao(),
+                database.songVenueInfoDao()
+            )
+        )
+    }
     
     companion object {
         private const val KEY_SEARCH_QUERY = "search_query"
@@ -36,35 +60,71 @@ class SongsFragment : Fragment() {
         setupRecyclerView()
         setupFab()
         setupSearchBar()
+        setupObservers()
         restoreState(savedInstanceState)
-        
-        // Show empty view initially (will be replaced with actual data in Phase 2)
-        showEmptyState()
     }
     
     private fun setupRecyclerView() {
+        songsAdapter = SongsAdapter(
+            onSongClick = { song ->
+                // Navigate to song details/edit screen (to be implemented)
+                // For now, just log
+            },
+            onAddVenueClick = { song ->
+                // Navigate to add venue to song screen (to be implemented)
+                // For now, just log
+            }
+        )
+        
         binding.songsRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            // Adapter will be added in Phase 2 when we implement CRUD operations
+            adapter = songsAdapter
         }
     }
     
     private fun setupFab() {
         binding.fabAddSong.setOnClickListener {
-            // Navigate to AddSongFragment in Phase 2
-            // For now, just show a placeholder
+            findNavController().navigate(R.id.action_songs_to_addSong)
         }
     }
     
     private fun setupSearchBar() {
-        // Search functionality will be implemented in Phase 2
-        // This sets up the basic structure for state preservation
+        // For now, use a simple text change listener on the SearchBar
+        // In a full implementation, you'd use SearchView with proper expansion
         binding.searchBar.setOnClickListener {
-            // SearchBar click handler - will implement search expansion in Phase 2
-            // For now, just update the search query tracking
+            // Simple implementation - in real app would expand to SearchView
+            // For now, just focus for typing
+        }
+    }
+    
+    private fun setupObservers() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.songs.collect { songs ->
+                    songsAdapter.submitList(songs)
+                    updateEmptyState(songs.isEmpty())
+                }
+            }
         }
         
-        // SearchBar text changes will be handled when we implement search in Phase 2
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.searchQuery.collect { query ->
+                    searchQuery = query
+                    // Update search bar text if needed
+                }
+            }
+        }
+    }
+    
+    private fun updateEmptyState(isEmpty: Boolean) {
+        if (isEmpty) {
+            binding.songsRecyclerView.visibility = View.GONE
+            binding.emptyView.visibility = View.VISIBLE
+        } else {
+            binding.songsRecyclerView.visibility = View.VISIBLE
+            binding.emptyView.visibility = View.GONE
+        }
     }
     
     private fun restoreState(savedInstanceState: Bundle?) {
@@ -72,18 +132,14 @@ class SongsFragment : Fragment() {
             searchQuery = bundle.getString(KEY_SEARCH_QUERY, "")
             scrollPosition = bundle.getInt(KEY_SCROLL_POSITION, 0)
             
-            // Restore search query
-            if (searchQuery.isNotEmpty()) {
-                binding.searchBar.setText(searchQuery)
-            }
+            // Restore search query  
+            viewModel.updateSearchQuery(searchQuery)
             
-            // Scroll position will be restored when data is loaded in Phase 2
+            // Scroll position will be restored when data is loaded
+            if (scrollPosition > 0) {
+                binding.songsRecyclerView.scrollToPosition(scrollPosition)
+            }
         }
-    }
-    
-    private fun showEmptyState() {
-        binding.songsRecyclerView.visibility = View.GONE
-        binding.emptyView.visibility = View.VISIBLE
     }
     
     override fun onSaveInstanceState(outState: Bundle) {

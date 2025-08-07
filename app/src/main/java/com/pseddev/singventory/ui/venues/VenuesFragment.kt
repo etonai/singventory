@@ -5,13 +5,36 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.pseddev.singventory.R
+import com.pseddev.singventory.data.database.SingventoryDatabase
+import com.pseddev.singventory.data.repository.SingventoryRepository
 import com.pseddev.singventory.databinding.FragmentVenuesBinding
+import kotlinx.coroutines.launch
 
 class VenuesFragment : Fragment() {
     
     private var _binding: FragmentVenuesBinding? = null
     private val binding get() = _binding!!
+    
+    private lateinit var venuesAdapter: VenuesAdapter
+    private val viewModel: VenuesViewModel by viewModels {
+        val database = SingventoryDatabase.getDatabase(requireContext())
+        VenuesViewModel.Factory(
+            SingventoryRepository(
+                database.songDao(),
+                database.venueDao(),
+                database.visitDao(),
+                database.performanceDao(),
+                database.songVenueInfoDao()
+            )
+        )
+    }
     
     companion object {
         private const val KEY_SEARCH_QUERY = "search_query"
@@ -36,31 +59,70 @@ class VenuesFragment : Fragment() {
         setupRecyclerView()
         setupFab()
         setupSearchBar()
+        setupObservers()
         restoreState(savedInstanceState)
-        
-        // Show empty view initially (will be replaced with actual data in Phase 2)
-        showEmptyState()
     }
     
     private fun setupRecyclerView() {
+        venuesAdapter = VenuesAdapter(
+            onVenueClick = { venue ->
+                // Navigate to venue details/edit screen (to be implemented)
+                // For now, just log
+            },
+            onAddSongToVenueClick = { venue ->
+                // Navigate to add song to venue screen (to be implemented)
+                // For now, just log
+            }
+        )
+        
         binding.venuesRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            // Adapter will be added in Phase 2 when we implement CRUD operations
+            adapter = venuesAdapter
         }
     }
     
     private fun setupFab() {
         binding.fabAddVenue.setOnClickListener {
-            // Navigate to AddVenueFragment in Phase 2
-            // For now, just show a placeholder
+            findNavController().navigate(R.id.action_venues_to_addVenue)
         }
     }
     
     private fun setupSearchBar() {
-        // Search functionality will be implemented in Phase 2
-        // This sets up the basic structure for state preservation
+        // For now, use a simple text change listener on the SearchBar
+        // In a full implementation, you'd use SearchView with proper expansion
         binding.searchBar.setOnClickListener {
-            // SearchBar click handler - will implement search expansion in Phase 2
+            // Simple implementation - in real app would expand to SearchView
+            // For now, just focus for typing
+        }
+    }
+    
+    private fun setupObservers() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.venues.collect { venues ->
+                    venuesAdapter.submitList(venues)
+                    updateEmptyState(venues.isEmpty())
+                }
+            }
+        }
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.searchQuery.collect { query ->
+                    searchQuery = query
+                    // Update search bar text if needed
+                }
+            }
+        }
+    }
+    
+    private fun updateEmptyState(isEmpty: Boolean) {
+        if (isEmpty) {
+            binding.venuesRecyclerView.visibility = View.GONE
+            binding.emptyView.visibility = View.VISIBLE
+        } else {
+            binding.venuesRecyclerView.visibility = View.VISIBLE
+            binding.emptyView.visibility = View.GONE
         }
     }
     
@@ -69,18 +131,14 @@ class VenuesFragment : Fragment() {
             searchQuery = bundle.getString(KEY_SEARCH_QUERY, "")
             scrollPosition = bundle.getInt(KEY_SCROLL_POSITION, 0)
             
-            // Restore search query
-            if (searchQuery.isNotEmpty()) {
-                binding.searchBar.setText(searchQuery)
-            }
+            // Restore search query  
+            viewModel.updateSearchQuery(searchQuery)
             
-            // Scroll position will be restored when data is loaded in Phase 2
+            // Scroll position will be restored when data is loaded
+            if (scrollPosition > 0) {
+                binding.venuesRecyclerView.scrollToPosition(scrollPosition)
+            }
         }
-    }
-    
-    private fun showEmptyState() {
-        binding.venuesRecyclerView.visibility = View.GONE
-        binding.emptyView.visibility = View.VISIBLE
     }
     
     override fun onSaveInstanceState(outState: Bundle) {
