@@ -35,7 +35,32 @@
     <fragment
         android:id="@+id/navigation_visits"
         android:name="com.pseddev.singventory.ui.visits.VisitsFragment"
-        android:label="@string/title_visits" />
+        android:label="@string/title_visits" >
+        <action
+            android:id="@+id/action_visits_to_startVisit"
+            app:destination="@id/startVisitFragment" />
+        <action
+            android:id="@+id/action_visits_to_activeVisit"
+            app:destination="@id/activeVisitFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/startVisitFragment"
+        android:name="com.pseddev.singventory.ui.visits.StartVisitFragment"
+        android:label="Start Visit" >
+        <action
+            android:id="@+id/action_startVisit_to_activeVisit"
+            app:destination="@id/activeVisitFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/activeVisitFragment"
+        android:name="com.pseddev.singventory.ui.visits.ActiveVisitFragment"
+        android:label="Active Visit" >
+        <argument
+            android:name="visitId"
+            app:argType="long" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_settings"

@@ -19,25 +19,66 @@ class SongsViewModel(private val repository: SingventoryRepository) : ViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     
-    // Combine all songs with search query to create filtered list
+    private val _sortOption = MutableStateFlow(SongSortOption.PERFORMANCE_COUNT)
+    val sortOption: StateFlow<SongSortOption> = _sortOption.asStateFlow()
+    
+    private val _sortAscending = MutableStateFlow(false) // Default to descending for performance count
+    val sortAscending: StateFlow<Boolean> = _sortAscending.asStateFlow()
+    
+    // Combine all songs with search query and sorting to create filtered and sorted list
     val songs = combine(
         repository.getAllSongs(),
-        _searchQuery
-    ) { allSongs, query ->
-        if (query.isBlank()) {
-            // No search - sort by most performed (PlayStreak pattern)
-            allSongs.sortedByDescending { it.totalPerformances }
+        _searchQuery,
+        _sortOption,
+        _sortAscending
+    ) { allSongs, query, sortOption, sortAscending ->
+        val filteredSongs = if (query.isBlank()) {
+            allSongs
         } else {
-            // Search functionality prioritizing frequently performed songs
             allSongs.filter { song ->
                 song.name.contains(query, ignoreCase = true) ||
                 song.artist.contains(query, ignoreCase = true)
-            }.sortedByDescending { it.totalPerformances }
+            }
         }
+        
+        // Apply sorting
+        val sortedSongs = when (sortOption) {
+            SongSortOption.TITLE -> {
+                if (sortAscending) filteredSongs.sortedBy { it.name.lowercase() }
+                else filteredSongs.sortedByDescending { it.name.lowercase() }
+            }
+            SongSortOption.ARTIST -> {
+                if (sortAscending) filteredSongs.sortedBy { it.artist.lowercase() }
+                else filteredSongs.sortedByDescending { it.artist.lowercase() }
+            }
+            SongSortOption.PERFORMANCE_COUNT -> {
+                if (sortAscending) filteredSongs.sortedBy { it.totalPerformances }
+                else filteredSongs.sortedByDescending { it.totalPerformances }
+            }
+            SongSortOption.LAST_PERFORMANCE -> {
+                if (sortAscending) filteredSongs.sortedBy { it.lastPerformed ?: 0L }
+                else filteredSongs.sortedByDescending { it.lastPerformed ?: 0L }
+            }
+        }
+        
+        sortedSongs
     }
     
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
+    }
+    
+    fun updateSortOption(sortOption: SongSortOption) {
+        _sortOption.value = sortOption
+        // Auto-adjust default sort order based on option
+        _sortAscending.value = when (sortOption) {
+            SongSortOption.TITLE, SongSortOption.ARTIST -> true // A-Z by default
+            SongSortOption.PERFORMANCE_COUNT, SongSortOption.LAST_PERFORMANCE -> false // Most/Recent first by default
+        }
+    }
+    
+    fun toggleSortOrder() {
+        _sortAscending.value = !_sortAscending.value
     }
     
     suspend fun getSongById(songId: Long) = repository.getSongById(songId)

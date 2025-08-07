@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/sort_by_title"
+            android:title="Title"
+            android:checkable="true" />
+        <item
+            android:id="@+id/sort_by_artist"
+            android:title="Artist"
+            android:checkable="true" />
+        <item
+            android:id="@+id/sort_by_performance_count"
+            android:title="Performance Count"
+            android:checkable="true" />
+        <item
+            android:id="@+id/sort_by_last_performance"
+            android:title="Last Performance"
+            android:checkable="true" />
+    </group>
+</menu>

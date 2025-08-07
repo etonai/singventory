@@ -4,14 +4,39 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.pseddev.singventory.R
+import com.pseddev.singventory.data.database.SingventoryDatabase
+import com.pseddev.singventory.data.repository.SingventoryRepository
 import com.pseddev.singventory.databinding.FragmentVisitsBinding
+import kotlinx.coroutines.launch
 
 class VisitsFragment : Fragment() {
     
     private var _binding: FragmentVisitsBinding? = null
     private val binding get() = _binding!!
+    
+    private lateinit var visitsAdapter: VisitsAdapter
+    private val viewModel: VisitsViewModel by viewModels {
+        val database = SingventoryDatabase.getDatabase(requireContext())
+        VisitsViewModel.Factory(
+            SingventoryRepository(
+                database.songDao(),
+                database.venueDao(),
+                database.visitDao(),
+                database.performanceDao(),
+                database.songVenueInfoDao()
+            )
+        )
+    }
     
     companion object {
         private const val KEY_SCROLL_POSITION = "scroll_position"
@@ -35,24 +60,90 @@ class VisitsFragment : Fragment() {
         
         setupRecyclerView()
         setupFab()
+        setupObservers()
         restoreState(savedInstanceState)
-        
-        // Show empty view initially (will be replaced with actual data in Phase 3)
-        showEmptyState()
     }
     
     private fun setupRecyclerView() {
+        visitsAdapter = VisitsAdapter(
+            onVisitClick = { visitWithDetails ->
+                // Navigate to visit details/ActiveVisitFragment
+                if (visitWithDetails.visit.endTimestamp == null) {
+                    // Active visit - navigate to ActiveVisitFragment
+                    findNavController().navigate(
+                        R.id.action_visits_to_activeVisit,
+                        bundleOf("visitId" to visitWithDetails.visit.id)
+                    )
+                } else {
+                    // Completed visit - navigate to visit summary/details
+                    // Navigation to be implemented - would go to a CompletedVisitFragment
+                }
+            },
+            onResumeVisitClick = { visitWithDetails ->
+                // Navigate to ActiveVisitFragment for this visit
+                viewModel.setActiveVisit(visitWithDetails)
+                findNavController().navigate(
+                    R.id.action_visits_to_activeVisit,
+                    bundleOf("visitId" to visitWithDetails.visit.id)
+                )
+            },
+            onEndVisitClick = { visitWithDetails ->
+                // Show confirmation dialog and end visit
+                showEndVisitConfirmation(visitWithDetails)
+            }
+        )
+        
         binding.visitsRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            // Adapter will be added in Phase 3 when we implement visit management
+            adapter = visitsAdapter
         }
     }
     
     private fun setupFab() {
         binding.fabStartVisit.setOnClickListener {
-            // Navigate to StartVisitFragment in Phase 3
-            // For now, just show a placeholder
+            findNavController().navigate(R.id.action_visits_to_startVisit)
         }
+    }
+    
+    private fun setupObservers() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.visits.collect { visits ->
+                    visitsAdapter.submitList(visits)
+                    updateEmptyState(visits.isEmpty())
+                }
+            }
+        }
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.activeVisit.collect { activeVisit ->
+                    activeVisitId = activeVisit?.id
+                    // Update UI to highlight active visit if needed
+                }
+            }
+        }
+    }
+    
+    private fun updateEmptyState(isEmpty: Boolean) {
+        if (isEmpty) {
+            binding.visitsRecyclerView.visibility = View.GONE
+            binding.emptyView.visibility = View.VISIBLE
+        } else {
+            binding.visitsRecyclerView.visibility = View.VISIBLE
+            binding.emptyView.visibility = View.GONE
+        }
+    }
+    
+    private fun showEndVisitConfirmation(visitWithDetails: VisitWithDetails) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("End Visit")
+            .setMessage("Are you sure you want to end your visit to ${visitWithDetails.venueName}?")
+            .setPositiveButton("End Visit") { _, _ ->
+                viewModel.endVisit(visitWithDetails)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
     
     private fun restoreState(savedInstanceState: Bundle?) {
@@ -60,22 +151,22 @@ class VisitsFragment : Fragment() {
             scrollPosition = bundle.getInt(KEY_SCROLL_POSITION, 0)
             activeVisitId = bundle.getLong(KEY_ACTIVE_VISIT_ID, -1L).takeIf { it != -1L }
             
-            // Scroll position and active visit state will be restored when data is loaded in Phase 3
+            // Restore scroll position when data is loaded
+            if (scrollPosition > 0) {
+                binding.visitsRecyclerView.scrollToPosition(scrollPosition)
+            }
         }
-    }
-    
-    private fun showEmptyState() {
-        binding.visitsRecyclerView.visibility = View.GONE
-        binding.emptyView.visibility = View.VISIBLE
     }
     
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         
-        // Save RecyclerView scroll position
-        val layoutManager = binding.visitsRecyclerView.layoutManager as? LinearLayoutManager
-        val position = layoutManager?.findFirstVisibleItemPosition() ?: 0
-        outState.putInt(KEY_SCROLL_POSITION, position)
+        // Save RecyclerView scroll position only if binding is available
+        _binding?.let { binding ->
+            val layoutManager = binding.visitsRecyclerView.layoutManager as? LinearLayoutManager
+            val position = layoutManager?.findFirstVisibleItemPosition() ?: 0
+            outState.putInt(KEY_SCROLL_POSITION, position)
+        }
         
         // Save active visit ID if any
         activeVisitId?.let { visitId ->

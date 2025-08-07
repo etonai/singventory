@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -44,6 +46,7 @@ class SongsFragment : Fragment() {
     
     private var searchQuery: String = ""
     private var scrollPosition: Int = 0
+    private var shouldScrollToTop = false
     
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,6 +63,7 @@ class SongsFragment : Fragment() {
         setupRecyclerView()
         setupFab()
         setupSearchBar()
+        setupSortControls()
         setupObservers()
         restoreState(savedInstanceState)
     }
@@ -97,11 +101,73 @@ class SongsFragment : Fragment() {
         }
     }
     
+    private fun setupSortControls() {
+        binding.btnSort.setOnClickListener { view ->
+            showSortMenu(view)
+        }
+        
+        binding.btnSortDirection.setOnClickListener {
+            shouldScrollToTop = true
+            viewModel.toggleSortOrder()
+        }
+    }
+    
+    private fun showSortMenu(anchorView: View) {
+        PopupMenu(requireContext(), anchorView).apply {
+            menuInflater.inflate(R.menu.song_sort_menu, menu)
+            
+            // Set checked state for current sort option
+            when (viewModel.sortOption.value) {
+                SongSortOption.TITLE -> menu.findItem(R.id.sort_by_title)?.isChecked = true
+                SongSortOption.ARTIST -> menu.findItem(R.id.sort_by_artist)?.isChecked = true
+                SongSortOption.PERFORMANCE_COUNT -> menu.findItem(R.id.sort_by_performance_count)?.isChecked = true
+                SongSortOption.LAST_PERFORMANCE -> menu.findItem(R.id.sort_by_last_performance)?.isChecked = true
+            }
+            
+            setOnMenuItemClickListener { item ->
+                val handled = when (item.itemId) {
+                    R.id.sort_by_title -> {
+                        viewModel.updateSortOption(SongSortOption.TITLE)
+                        true
+                    }
+                    R.id.sort_by_artist -> {
+                        viewModel.updateSortOption(SongSortOption.ARTIST)
+                        true
+                    }
+                    R.id.sort_by_performance_count -> {
+                        viewModel.updateSortOption(SongSortOption.PERFORMANCE_COUNT)
+                        true
+                    }
+                    R.id.sort_by_last_performance -> {
+                        viewModel.updateSortOption(SongSortOption.LAST_PERFORMANCE)
+                        true
+                    }
+                    else -> false
+                }
+                
+                // Set flag to scroll to top when data updates
+                if (handled) {
+                    shouldScrollToTop = true
+                }
+                
+                handled
+            }
+            
+            show()
+        }
+    }
+    
     private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.songs.collect { songs ->
-                    songsAdapter.submitList(songs)
+                    songsAdapter.submitList(songs) { 
+                        // Scroll to top after the list has been updated if requested
+                        if (shouldScrollToTop) {
+                            binding.songsRecyclerView.scrollToPosition(0)
+                            shouldScrollToTop = false
+                        }
+                    }
                     updateEmptyState(songs.isEmpty())
                 }
             }
@@ -112,6 +178,20 @@ class SongsFragment : Fragment() {
                 viewModel.searchQuery.collect { query ->
                     searchQuery = query
                     // Update search bar text if needed
+                }
+            }
+        }
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.sortAscending.collect { ascending ->
+                    // Update sort direction icon
+                    val iconRes = if (ascending) {
+                        R.drawable.ic_sort_ascending
+                    } else {
+                        R.drawable.ic_sort_descending
+                    }
+                    binding.btnSortDirection.setIconResource(iconRes)
                 }
             }
         }
@@ -147,10 +227,12 @@ class SongsFragment : Fragment() {
         
         outState.putString(KEY_SEARCH_QUERY, searchQuery)
         
-        // Save RecyclerView scroll position
-        val layoutManager = binding.songsRecyclerView.layoutManager as? LinearLayoutManager
-        val position = layoutManager?.findFirstVisibleItemPosition() ?: 0
-        outState.putInt(KEY_SCROLL_POSITION, position)
+        // Save RecyclerView scroll position only if binding is available
+        _binding?.let { binding ->
+            val layoutManager = binding.songsRecyclerView.layoutManager as? LinearLayoutManager
+            val position = layoutManager?.findFirstVisibleItemPosition() ?: 0
+            outState.putInt(KEY_SCROLL_POSITION, position)
+        }
     }
     
     override fun onDestroyView() {

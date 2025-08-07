@@ -146,10 +146,12 @@ class VenuesFragment : Fragment() {
         
         outState.putString(KEY_SEARCH_QUERY, searchQuery)
         
-        // Save RecyclerView scroll position
-        val layoutManager = binding.venuesRecyclerView.layoutManager as? LinearLayoutManager
-        val position = layoutManager?.findFirstVisibleItemPosition() ?: 0
-        outState.putInt(KEY_SCROLL_POSITION, position)
+        // Save RecyclerView scroll position only if binding is available
+        _binding?.let { binding ->
+            val layoutManager = binding.venuesRecyclerView.layoutManager as? LinearLayoutManager
+            val position = layoutManager?.findFirstVisibleItemPosition() ?: 0
+            outState.putInt(KEY_SCROLL_POSITION, position)
+        }
     }
     
     override fun onDestroyView() {
