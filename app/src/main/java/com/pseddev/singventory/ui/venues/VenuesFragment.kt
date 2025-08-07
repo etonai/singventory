@@ -43,6 +43,7 @@ class VenuesFragment : Fragment() {
     
     private var searchQuery: String = ""
     private var scrollPosition: Int = 0
+    private var shouldScrollToTop = false
     
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,6 +60,7 @@ class VenuesFragment : Fragment() {
         setupRecyclerView()
         setupFab()
         setupSearchBar()
+        setupSortControls()
         setupObservers()
         restoreState(savedInstanceState)
     }
@@ -96,11 +98,24 @@ class VenuesFragment : Fragment() {
         }
     }
     
+    private fun setupSortControls() {
+        binding.btnSortToggle.setOnClickListener {
+            shouldScrollToTop = true
+            viewModel.toggleSortOrder()
+        }
+    }
+    
     private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.venues.collect { venues ->
-                    venuesAdapter.submitList(venues)
+                    venuesAdapter.submitList(venues) { 
+                        // Scroll to top after the list has been updated if requested
+                        if (shouldScrollToTop) {
+                            binding.venuesRecyclerView.scrollToPosition(0)
+                            shouldScrollToTop = false
+                        }
+                    }
                     updateEmptyState(venues.isEmpty())
                 }
             }
@@ -111,6 +126,20 @@ class VenuesFragment : Fragment() {
                 viewModel.searchQuery.collect { query ->
                     searchQuery = query
                     // Update search bar text if needed
+                }
+            }
+        }
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.sortAscending.collect { ascending ->
+                    // Update sort toggle icon
+                    val iconRes = if (ascending) {
+                        R.drawable.ic_sort_ascending
+                    } else {
+                        R.drawable.ic_sort_descending
+                    }
+                    binding.btnSortToggle.setIconResource(iconRes)
                 }
             }
         }

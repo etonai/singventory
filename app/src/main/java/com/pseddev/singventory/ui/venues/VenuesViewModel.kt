@@ -19,25 +19,38 @@ class VenuesViewModel(private val repository: SingventoryRepository) : ViewModel
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     
-    // Combine all venues with search query to create filtered list
+    private val _sortAscending = MutableStateFlow(true) // Default to A-Z for venue names
+    val sortAscending: StateFlow<Boolean> = _sortAscending.asStateFlow()
+    
+    // Combine all venues with search query and sorting to create filtered and sorted list
     val venues = combine(
         repository.getAllVenues(),
-        _searchQuery
-    ) { allVenues, query ->
-        if (query.isBlank()) {
-            // No search - sort by most visited (PlayStreak pattern)
-            allVenues.sortedByDescending { it.totalVisits }
+        _searchQuery,
+        _sortAscending
+    ) { allVenues, query, sortAscending ->
+        val filteredVenues = if (query.isBlank()) {
+            allVenues
         } else {
-            // Search functionality prioritizing frequently visited venues
             allVenues.filter { venue ->
                 venue.name.contains(query, ignoreCase = true) ||
                 venue.address?.contains(query, ignoreCase = true) == true
-            }.sortedByDescending { it.totalVisits }
+            }
+        }
+        
+        // Apply alphabetical sorting by venue name
+        if (sortAscending) {
+            filteredVenues.sortedBy { it.name.lowercase() }
+        } else {
+            filteredVenues.sortedByDescending { it.name.lowercase() }
         }
     }
     
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
+    }
+    
+    fun toggleSortOrder() {
+        _sortAscending.value = !_sortAscending.value
     }
     
     suspend fun getVenueById(venueId: Long) = repository.getVenueById(venueId)
