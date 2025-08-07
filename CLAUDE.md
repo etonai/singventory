@@ -102,16 +102,28 @@ app/src/
 
 All development work should follow the DevCycle methodology outlined in that document.
 
-## Phase and Development Cycle Completion Rules
+## ⚠️ CRITICAL COMPLETION RULES ⚠️
 
-**CRITICAL**: Phases and DevCycles cannot be marked as "Completed" without user verification.
+**ABSOLUTE REQUIREMENT**: You are FORBIDDEN from marking phases or DevCycles as "Completed" without explicit user verification and permission.
 
+### Status Definitions
 - **"In Progress"**: Phase/cycle is actively being worked on
-- **"In Verification"**: All tasks completed, awaiting user confirmation
-- **"Completed"**: Only after user explicitly verifies and approves completion
+- **"In Verification"**: All tasks completed, AWAITING USER CONFIRMATION
+- **"Completed"**: ONLY after user explicitly verifies and grants permission
 
-**Process**:
-1. Complete all phase tasks and mark as "In Verification"
-2. Request user verification of completion
-3. Only mark as "Completed" after user confirmation
-4. Never assume completion without explicit user approval
+### Mandatory Process
+1. Complete all phase/cycle tasks 
+2. **MUST** mark status as "In Verification" 
+3. **MUST** explicitly request user verification
+4. **WAIT** for user confirmation before proceeding
+5. **ONLY** mark as "Completed" after receiving explicit user permission
+6. **NEVER** assume or auto-complete without user approval
+
+### What This Means
+- ❌ **DO NOT** mark anything as "Completed" on your own
+- ❌ **DO NOT** assume the user approves completion 
+- ✅ **ALWAYS** use "In Verification" when work is done
+- ✅ **ALWAYS** ask for explicit verification
+- ✅ **WAIT** for user permission before marking "Completed"
+
+**VIOLATION OF THIS RULE IS NOT ACCEPTABLE**

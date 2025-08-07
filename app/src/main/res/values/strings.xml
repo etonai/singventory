@@ -1,3 +1,40 @@
 <resources>
     <string name="app_name">Singventory</string>
+    
+    <!-- Navigation -->
+    <string name="nav_songs">Songs</string>
+    <string name="nav_venues">Venues</string>
+    <string name="nav_visits">Visits</string>
+    <string name="nav_settings">Settings</string>
+    
+    <!-- Screen Titles -->
+    <string name="title_songs">Your Songs</string>
+    <string name="title_venues">Your Venues</string>
+    <string name="title_visits">Your Visits</string>
+    <string name="title_settings">Settings</string>
+    
+    <!-- Search Hints -->
+    <string name="search_songs_hint">Search songs by name or artist</string>
+    <string name="search_venues_hint">Search venues by name or location</string>
+    
+    <!-- Empty States -->
+    <string name="empty_songs">No songs yet. Add your first karaoke song!</string>
+    <string name="empty_venues">No venues yet. Add your first karaoke venue!</string>
+    <string name="empty_visits">No visits yet. Start tracking your karaoke sessions!</string>
+    
+    <!-- Actions -->
+    <string name="add_song">Add Song</string>
+    <string name="add_venue">Add Venue</string>
+    <string name="start_visit">Start Visit</string>
+    
+    <!-- Settings Screen -->
+    <string name="data_overview">Data Overview</string>
+    <string name="data_management">Data Management</string>
+    <string name="songs_count_placeholder">Songs: 0</string>
+    <string name="venues_count_placeholder">Venues: 0</string>
+    <string name="visits_count_placeholder">Visits: 0</string>
+    <string name="performances_count_placeholder">Performances: 0</string>
+    <string name="import_export">Import/Export</string>
+    <string name="purge_data">Purge Data</string>
+    <string name="configuration">Configuration</string>
 </resources>

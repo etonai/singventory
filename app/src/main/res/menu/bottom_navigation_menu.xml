@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_songs"
+        android:enabled="true"
+        android:icon="@drawable/ic_songs"
+        android:title="@string/nav_songs" />
+
+    <item
+        android:id="@+id/navigation_venues"
+        android:enabled="true"
+        android:icon="@drawable/ic_venues"
+        android:title="@string/nav_venues" />
+
+    <item
+        android:id="@+id/navigation_visits"
+        android:enabled="true"
+        android:icon="@drawable/ic_visits"
+        android:title="@string/nav_visits" />
+
+    <item
+        android:id="@+id/navigation_settings"
+        android:enabled="true"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/nav_settings" />
+
+</menu>

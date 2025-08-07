@@ -2,6 +2,19 @@
 
 This document explains the development cycle process used for organizing and tracking focused work periods in the Singventory project.
 
+## ⚠️ CRITICAL RULE: COMPLETION VERIFICATION ⚠️
+
+**ABSOLUTE PROHIBITION**: Claude Code is FORBIDDEN from marking any phase or DevCycle as "Completed" without explicit user verification and permission.
+
+### Required Process:
+1. Complete all work and mark as **"In Verification"** 
+2. **EXPLICITLY REQUEST** user verification
+3. **WAIT** for user confirmation  
+4. **ONLY** mark as "Completed" after user grants permission
+5. **NEVER** assume completion or mark as "Completed" autonomously
+
+**This rule is non-negotiable and must be followed without exception.**
+
 ## Purpose
 
 Development cycles provide a structured approach to:
@@ -124,10 +137,10 @@ Each development cycle document should include:
 ### 5. Cycle Completion
 - Verify all work items are complete or properly transitioned
 - **Ensure all code changes are committed to version control**
-- **CRITICAL**: Mark cycle/phase as "In Verification" when all tasks are complete
-- **Request user verification before marking as "Completed"**
-- **NEVER mark cycles or phases as "Completed" without explicit user confirmation**
-- Update final status to "Completed" ONLY after user verification
+- **⚠️ MANDATORY**: Mark cycle/phase as "In Verification" when all tasks are complete
+- **⚠️ MANDATORY**: Request user verification before marking as "Completed"
+- **⚠️ ABSOLUTELY FORBIDDEN**: NEVER mark cycles or phases as "Completed" without explicit user confirmation
+- **⚠️ MANDATORY**: Update final status to "Completed" ONLY after user verification and permission
 - Document cycle accomplishments summary
 - Record final build version (versionName and versionCode) for the cycle
 - Document lessons learned in cycle notes
@@ -198,10 +211,10 @@ Each development cycle document should include:
 ### Progress Tracking
 - Be honest about completion status
 - Mark items complete only when fully implemented
-- **Use "In Verification" status when tasks are complete but awaiting user confirmation**
-- Follow verification requirements before final completion
+- **⚠️ MANDATORY**: Use "In Verification" status when tasks are complete but awaiting user confirmation
+- **⚠️ MANDATORY**: Follow verification requirements before final completion
 - Update source documents consistently
-- **NEVER mark as "Completed" without explicit user verification and approval**
+- **⚠️ ABSOLUTELY FORBIDDEN**: NEVER mark as "Completed" without explicit user verification and approval
 
 ### Cycle Transitions
 - Complete current cycle documentation before starting new cycle

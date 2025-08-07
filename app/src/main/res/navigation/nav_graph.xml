@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_songs">
+
+    <fragment
+        android:id="@+id/navigation_songs"
+        android:name="com.pseddev.singventory.ui.songs.SongsFragment"
+        android:label="@string/title_songs" />
+
+    <fragment
+        android:id="@+id/navigation_venues"
+        android:name="com.pseddev.singventory.ui.venues.VenuesFragment"
+        android:label="@string/title_venues" />
+
+    <fragment
+        android:id="@+id/navigation_visits"
+        android:name="com.pseddev.singventory.ui.visits.VisitsFragment"
+        android:label="@string/title_visits" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.pseddev.singventory.ui.settings.SettingsFragment"
+        android:label="@string/title_settings" />
+
+</navigation>

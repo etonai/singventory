@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Legacy colors (keeping for compatibility) -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -7,4 +8,34 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- Singventory Music-Themed Color Palette -->
+    
+    <!-- Musical Purple - Primary Brand Colors -->
+    <color name="musical_purple_primary">#6B3BA0</color>
+    <color name="musical_purple_light">#9A6BCC</color>
+    <color name="musical_purple_dark">#4A2974</color>
+    
+    <!-- Musical Gold - Secondary Accent Colors -->
+    <color name="musical_gold">#D4AF37</color>
+    <color name="musical_gold_light">#FFDF6B</color>
+    <color name="musical_gold_dark">#9A7F00</color>
+    
+    <!-- Surface Colors - Light Theme -->
+    <color name="surface_light">#FFFFFFFF</color>
+    <color name="on_surface_light">#1C1B1F</color>
+    <color name="surface_variant_light">#F4F0F4</color>
+    <color name="on_surface_variant_light">#49454E</color>
+    
+    <!-- Surface Colors - Dark Theme -->
+    <color name="surface_dark">#121212</color>
+    <color name="on_surface_dark">#E6E1E5</color>
+    <color name="surface_variant_dark">#2D2A32</color>
+    <color name="on_surface_variant_dark">#C9C5CE</color>
+    
+    <!-- Music-Themed Accent Colors (for future use) -->
+    <color name="treble_clef_green">#4CAF50</color>
+    <color name="bass_clef_red">#FF5722</color>
+    <color name="note_silver">#B0B0B0</color>
+    <color name="stage_light_yellow">#FFC107</color>
 </resources>
