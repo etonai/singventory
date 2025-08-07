@@ -127,3 +127,22 @@ All development work should follow the DevCycle methodology outlined in that doc
 - ✅ **WAIT** for user permission before marking "Completed"
 
 **VIOLATION OF THIS RULE IS NOT ACCEPTABLE**
+
+## ⚠️ CRITICAL GIT COMMIT RULES ⚠️
+
+**ABSOLUTE REQUIREMENT**: You are FORBIDDEN from attempting to commit changes unless explicitly requested by the user.
+
+### Git Commit Policy
+- ❌ **DO NOT** run `git commit` commands on your own initiative
+- ❌ **DO NOT** assume the user wants changes committed
+- ❌ **DO NOT** automatically commit after completing tasks
+- ✅ **ONLY** commit when the user explicitly asks you to commit
+- ✅ **WAIT** for explicit user request before any git operations
+
+### What This Means
+- Complete all requested work without committing
+- Mark phases/tasks as completed when verified by user
+- **NEVER** automatically commit as part of completion process
+- User controls when and what gets committed to version control
+
+**VIOLATION OF THIS RULE IS NOT ACCEPTABLE**

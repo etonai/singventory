@@ -19,10 +19,10 @@
         <item name="colorSurfaceVariant">@color/surface_variant_light</item>
         <item name="colorOnSurfaceVariant">@color/on_surface_variant_light</item>
         
-        <!-- System UI colors for light theme -->
-        <item name="android:statusBarColor">@color/surface_light</item>
+        <!-- System UI colors for light theme (edge-to-edge compatible) -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">@color/surface_light</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightNavigationBar">true</item>
         
         <!-- Bottom navigation style -->

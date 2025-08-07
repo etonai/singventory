@@ -1,7 +1,10 @@
 package com.pseddev.singventory.ui
 
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -18,13 +21,43 @@ class MainActivity : AppCompatActivity() {
     }
     
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Enable edge-to-edge display (modern Android approach for SDK 35/36)
+        enableEdgeToEdge()
+        
         super.onCreate(savedInstanceState)
         
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
+        setupEdgeToEdgeHandling()
         setupNavigation()
         restoreBottomNavigationState(savedInstanceState)
+    }
+    
+    private fun setupEdgeToEdgeHandling() {
+        // Apply window insets to handle system bars properly
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            
+            // Apply top inset to nav host fragment to avoid drawing under system UI
+            binding.navHostFragment.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                0 // Don't apply bottom padding here - bottom nav handles it
+            )
+            
+            // Apply bottom inset to bottom navigation
+            binding.bottomNavigation.setPadding(
+                systemBars.left,
+                0,
+                systemBars.right,
+                systemBars.bottom
+            )
+            
+            // Return the insets unchanged for other views
+            insets
+        }
     }
     
     private fun setupNavigation() {
