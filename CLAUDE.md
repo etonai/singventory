@@ -90,3 +90,28 @@ app/src/
 - The app currently has no main activities or UI implementation
 - Uses Material Design theming with both light and dark mode support
 - Targets modern Android (API 36) exclusively
+
+## Development Process Documentation
+
+**IMPORTANT**: Review `docs/DevCycle_overview.md` - this document defines our structured development cycle process for organizing and tracking focused work periods. It establishes critical rules for:
+- Phase planning and implementation workflows
+- Progress tracking with TODO items and status management  
+- Verification requirements before marking work as complete
+- Documentation standards and archival processes
+- Integration with other project documentation
+
+All development work should follow the DevCycle methodology outlined in that document.
+
+## Phase and Development Cycle Completion Rules
+
+**CRITICAL**: Phases and DevCycles cannot be marked as "Completed" without user verification.
+
+- **"In Progress"**: Phase/cycle is actively being worked on
+- **"In Verification"**: All tasks completed, awaiting user confirmation
+- **"Completed"**: Only after user explicitly verifies and approves completion
+
+**Process**:
+1. Complete all phase tasks and mark as "In Verification"
+2. Request user verification of completion
+3. Only mark as "Completed" after user confirmation
+4. Never assume completion without explicit user approval
