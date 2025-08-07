@@ -11,6 +11,9 @@
         <action
             android:id="@+id/action_songs_to_addSong"
             app:destination="@id/addSongFragment" />
+        <action
+            android:id="@+id/action_songs_to_associateVenues"
+            app:destination="@id/associateVenuesWithSongFragment" />
     </fragment>
 
     <fragment
@@ -25,6 +28,9 @@
         <action
             android:id="@+id/action_venues_to_addVenue"
             app:destination="@id/addVenueFragment" />
+        <action
+            android:id="@+id/action_venues_to_associateSongs"
+            app:destination="@id/associateSongsWithVenueFragment" />
     </fragment>
 
     <fragment
@@ -66,5 +72,23 @@
         android:id="@+id/navigation_settings"
         android:name="com.pseddev.singventory.ui.settings.SettingsFragment"
         android:label="@string/title_settings" />
+
+    <fragment
+        android:id="@+id/associateSongsWithVenueFragment"
+        android:name="com.pseddev.singventory.ui.association.AssociateSongsWithVenueFragment"
+        android:label="Associate Songs with Venue">
+        <argument
+            android:name="venueId"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/associateVenuesWithSongFragment"
+        android:name="com.pseddev.singventory.ui.association.AssociateVenuesWithSongFragment"
+        android:label="Associate Venues with Song">
+        <argument
+            android:name="songId"
+            app:argType="long" />
+    </fragment>
 
 </navigation>

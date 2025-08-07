@@ -141,6 +141,8 @@ Each development cycle document should include:
 - **⚠️ MANDATORY**: Request user verification before marking as "Completed"
 - **⚠️ ABSOLUTELY FORBIDDEN**: NEVER mark cycles or phases as "Completed" without explicit user confirmation
 - **⚠️ MANDATORY**: Update final status to "Completed" ONLY after user verification and permission
+- **⚠️ CRITICAL**: Even if some individual TODO items are marked as deferred, the PHASE/CYCLE itself must still go through "In Verification" → User Approval → "Completed" process
+- **⚠️ CRITICAL**: Documentation of deferred items does NOT constitute completion - user must explicitly verify and approve phase completion despite deferrals
 - Document cycle accomplishments summary
 - Record final build version (versionName and versionCode) for the cycle
 - Document lessons learned in cycle notes
@@ -215,6 +217,8 @@ Each development cycle document should include:
 - **⚠️ MANDATORY**: Follow verification requirements before final completion
 - Update source documents consistently
 - **⚠️ ABSOLUTELY FORBIDDEN**: NEVER mark as "Completed" without explicit user verification and approval
+- **⚠️ CRITICAL REMINDER**: Individual TODO items can be deferred, but phases/cycles require explicit user approval to mark as "Completed" regardless of deferrals
+- **⚠️ PROCESS VIOLATION ALERT**: If you mark a phase as "Completed" without user permission, you have violated the core process - immediately mark as "In Verification" and request user approval
 
 ### Cycle Transitions
 - Complete current cycle documentation before starting new cycle

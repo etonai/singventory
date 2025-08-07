@@ -75,8 +75,11 @@ class SongsFragment : Fragment() {
                 // For now, just log
             },
             onAddVenueClick = { song ->
-                // Navigate to add venue to song screen (to be implemented)
-                // For now, just log
+                // Navigate to associate venues with song screen
+                val bundle = Bundle().apply {
+                    putLong("songId", song.id)
+                }
+                findNavController().navigate(R.id.action_songs_to_associateVenues, bundle)
             }
         )
         

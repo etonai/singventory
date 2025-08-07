@@ -51,4 +51,25 @@
     <string name="import_export">Import/Export</string>
     <string name="purge_data">Purge Data</string>
     <string name="configuration">Configuration</string>
+    
+    <!-- Song-Venue Association -->
+    <string name="associate_songs_title">Associate Songs with Venue</string>
+    <string name="associate_venues_title">Associate Venues with Song</string>
+    <string name="venue_song_id">Venue Song ID</string>
+    <string name="venue_song_id_optional">Venue Song ID (Optional)</string>
+    <string name="venue_key">Key at Venue</string>
+    <string name="venue_key_optional">Key at Venue (Optional)</string>
+    <string name="key_adjustment">Key Adjustment</string>
+    <string name="key_adjustment_subtitle">Steps up (+) or down (-) from venue key</string>
+    <string name="venue_specific_lyrics">Venue-Specific Lyrics</string>
+    <string name="venue_specific_lyrics_optional">Venue-Specific Lyrics (Optional)</string>
+    <string name="associate_selected">Associate Selected</string>
+    <string name="associate">Associate</string>
+    <string name="association_details">Association Details</string>
+    
+    <!-- Association Dialog -->
+    <string name="association_details_title">Add Association Details</string>
+    <string name="save_association">Save Association</string>
+    <string name="cancel">Cancel</string>
+    <string name="optional_association_info">Optional - you can add these details later</string>
 </resources>

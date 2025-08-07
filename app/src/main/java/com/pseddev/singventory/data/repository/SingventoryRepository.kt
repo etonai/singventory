@@ -135,6 +135,12 @@ class SingventoryRepository(
     suspend fun deleteSongVenueInfo(songVenueInfo: SongVenueInfo) =
         songVenueInfoDao.deleteSongVenueInfo(songVenueInfo)
     
+    suspend fun getVenueCountForSong(songId: Long): Int = 
+        songVenueInfoDao.getVenueCountForSong(songId)
+    
+    suspend fun getSongCountForVenue(venueId: Long): Int = 
+        songVenueInfoDao.getSongCountForVenue(venueId)
+    
     // ================== COMPLEX OPERATIONS & DATA CONSISTENCY ==================
     
     /**

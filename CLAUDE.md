@@ -137,9 +137,17 @@ This dedicated document tracks all features that have been deferred from their o
 ### What This Means
 - ❌ **DO NOT** mark anything as "Completed" on your own
 - ❌ **DO NOT** assume the user approves completion 
+- ❌ **DO NOT** mark as "Completed" just because you documented deferrals
+- ❌ **DO NOT** assume that deferring items means the phase is complete
 - ✅ **ALWAYS** use "In Verification" when work is done
 - ✅ **ALWAYS** ask for explicit verification
 - ✅ **WAIT** for user permission before marking "Completed"
+- ✅ **EVEN WITH DEFERRALS** - user must still explicitly approve phase completion
+
+### Deferral vs Completion
+- **Deferring individual items**: Acceptable and should be documented in Deferred_Features.md
+- **Completing a phase with deferrals**: Still requires user verification and approval
+- **Key principle**: Phase completion is about user satisfaction with delivered work, not completion of every originally planned item
 
 **VIOLATION OF THIS RULE IS NOT ACCEPTABLE**
 
