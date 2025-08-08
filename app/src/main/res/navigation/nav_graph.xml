@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_songs_to_associateVenues"
             app:destination="@id/associateVenuesWithSongFragment" />
+        <action
+            android:id="@+id/action_songs_to_editSong"
+            app:destination="@id/editSongFragment" />
     </fragment>
 
     <fragment
@@ -31,6 +34,9 @@
         <action
             android:id="@+id/action_venues_to_associateSongs"
             app:destination="@id/associateSongsWithVenueFragment" />
+        <action
+            android:id="@+id/action_venues_to_editVenue"
+            app:destination="@id/editVenueFragment" />
     </fragment>
 
     <fragment
@@ -88,6 +94,24 @@
         android:label="Associate Venues with Song">
         <argument
             android:name="songId"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editSongFragment"
+        android:name="com.pseddev.singventory.ui.songs.EditSongFragment"
+        android:label="Edit Song">
+        <argument
+            android:name="songId"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editVenueFragment"
+        android:name="com.pseddev.singventory.ui.venues.EditVenueFragment"
+        android:label="Edit Venue">
+        <argument
+            android:name="venueId"
             app:argType="long" />
     </fragment>
 

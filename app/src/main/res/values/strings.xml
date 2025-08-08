@@ -72,4 +72,28 @@
     <string name="save_association">Save Association</string>
     <string name="cancel">Cancel</string>
     <string name="optional_association_info">Optional - you can add these details later</string>
+    
+    <!-- Edit Operations -->
+    <string name="edit_song_title">Edit Song</string>
+    <string name="edit_venue_title">Edit Venue</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="delete_song">Delete Song</string>
+    <string name="delete_venue">Delete Venue</string>
+    <string name="performance_statistics">Performance Statistics</string>
+    <string name="total_performances">Total Performances</string>
+    <string name="last_performed">Last Performed</string>
+    <string name="never_performed">Never performed</string>
+    <string name="venues_associated">Venues Associated</string>
+    <string name="songs_associated">Songs Associated</string>
+    <string name="total_visits">Total Visits</string>
+    <string name="last_visited">Last Visited</string>
+    <string name="never_visited">Never visited</string>
+    
+    <!-- Delete Confirmation -->
+    <string name="confirm_delete_song_title">Delete Song?</string>
+    <string name="confirm_delete_song_message">This will permanently delete the song and all its performance history. This action cannot be undone.</string>
+    <string name="confirm_delete_venue_title">Delete Venue?</string>
+    <string name="confirm_delete_venue_message">This will permanently delete the venue and all its visit history. This action cannot be undone.</string>
+    <string name="delete">Delete</string>
+    <string name="keep">Keep</string>
 </resources>

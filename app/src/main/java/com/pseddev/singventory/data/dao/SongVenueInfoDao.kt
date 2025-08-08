@@ -47,6 +47,12 @@ interface SongVenueInfoDao {
     @Delete
     suspend fun deleteSongVenueInfo(songVenueInfo: SongVenueInfo)
     
+    @Query("DELETE FROM song_venue_info WHERE songId = :songId")
+    suspend fun deleteAllSongVenueInfoBySong(songId: Long)
+    
+    @Query("DELETE FROM song_venue_info WHERE venueId = :venueId")
+    suspend fun deleteAllSongVenueInfoByVenue(venueId: Long)
+    
     @Query("UPDATE song_venue_info SET performanceCount = performanceCount + 1, lastPerformed = :timestamp WHERE songId = :songId AND venueId = :venueId")
     suspend fun incrementVenuePerformanceCount(songId: Long, venueId: Long, timestamp: Long)
     

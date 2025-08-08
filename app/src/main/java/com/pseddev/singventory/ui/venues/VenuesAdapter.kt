@@ -10,12 +10,13 @@ import com.pseddev.singventory.databinding.ItemVenueBinding
 
 class VenuesAdapter(
     private val onVenueClick: (Venue) -> Unit,
-    private val onAddSongToVenueClick: (Venue) -> Unit
+    private val onAddSongToVenueClick: (Venue) -> Unit,
+    private val onEditVenueClick: (Venue) -> Unit
 ) : ListAdapter<Venue, VenuesAdapter.VenueViewHolder>(VenueDiffCallback()) {
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VenueViewHolder {
         val binding = ItemVenueBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return VenueViewHolder(binding, onVenueClick, onAddSongToVenueClick)
+        return VenueViewHolder(binding, onVenueClick, onAddSongToVenueClick, onEditVenueClick)
     }
     
     override fun onBindViewHolder(holder: VenueViewHolder, position: Int) {
@@ -25,7 +26,8 @@ class VenuesAdapter(
     class VenueViewHolder(
         private val binding: ItemVenueBinding,
         private val onVenueClick: (Venue) -> Unit,
-        private val onAddSongToVenueClick: (Venue) -> Unit
+        private val onAddSongToVenueClick: (Venue) -> Unit,
+        private val onEditVenueClick: (Venue) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         
         fun bind(venue: Venue) {
@@ -47,6 +49,10 @@ class VenuesAdapter(
             
             binding.btnAddSongToVenue.setOnClickListener {
                 onAddSongToVenueClick(venue)
+            }
+            
+            binding.btnEditVenue.setOnClickListener {
+                onEditVenueClick(venue)
             }
         }
     }

@@ -31,7 +31,12 @@ class SingventoryRepository(
     
     suspend fun updateSong(song: Song) = songDao.updateSong(song)
     
-    suspend fun deleteSong(song: Song) = songDao.deleteSong(song)
+    suspend fun deleteSong(song: Song) {
+        // First delete all associated song-venue info records
+        songVenueInfoDao.deleteAllSongVenueInfoBySong(song.id)
+        // Then delete the song
+        songDao.deleteSong(song)
+    }
     
     suspend fun getSongCount(): Int = songDao.getSongCount()
     
@@ -53,7 +58,12 @@ class SingventoryRepository(
     
     suspend fun updateVenue(venue: Venue) = venueDao.updateVenue(venue)
     
-    suspend fun deleteVenue(venue: Venue) = venueDao.deleteVenue(venue)
+    suspend fun deleteVenue(venue: Venue) {
+        // First delete all associated song-venue info records
+        songVenueInfoDao.deleteAllSongVenueInfoByVenue(venue.id)
+        // Then delete the venue
+        venueDao.deleteVenue(venue)
+    }
     
     suspend fun getVenueCount(): Int = venueDao.getVenueCount()
     

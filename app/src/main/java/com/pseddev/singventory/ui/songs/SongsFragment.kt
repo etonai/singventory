@@ -80,6 +80,13 @@ class SongsFragment : Fragment() {
                     putLong("songId", song.id)
                 }
                 findNavController().navigate(R.id.action_songs_to_associateVenues, bundle)
+            },
+            onEditSongClick = { song ->
+                // Navigate to edit song screen
+                val bundle = Bundle().apply {
+                    putLong("songId", song.id)
+                }
+                findNavController().navigate(R.id.action_songs_to_editSong, bundle)
             }
         )
         

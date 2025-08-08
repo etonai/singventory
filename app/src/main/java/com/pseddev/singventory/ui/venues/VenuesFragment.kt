@@ -77,6 +77,13 @@ class VenuesFragment : Fragment() {
                     putLong("venueId", venue.id)
                 }
                 findNavController().navigate(R.id.action_venues_to_associateSongs, bundle)
+            },
+            onEditVenueClick = { venue ->
+                // Navigate to edit venue screen
+                val bundle = Bundle().apply {
+                    putLong("venueId", venue.id)
+                }
+                findNavController().navigate(R.id.action_venues_to_editVenue, bundle)
             }
         )
         

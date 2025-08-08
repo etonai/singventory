@@ -52,6 +52,16 @@
             tools:text="5 visits" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_edit_venue"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="Edit Venue"
+            app:icon="@drawable/ic_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add_song_to_venue"
             style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
             android:layout_width="wrap_content"
@@ -59,7 +69,7 @@
             android:contentDescription="Add song to this venue"
             app:icon="@drawable/ic_add"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/btn_edit_venue" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

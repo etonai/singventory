@@ -251,6 +251,7 @@ class ActiveVisitFragment : Fragment() {
                         val success = viewModel.createSongAndLog(songName, artistName)
                         if (success) {
                             binding.songSearchInput.text?.clear()
+                            binding.songSearchInput.requestFocus()
                             Snackbar.make(binding.root, "Song created and logged!", Snackbar.LENGTH_SHORT).show()
                         } else {
                             Snackbar.make(binding.root, "Error creating song", Snackbar.LENGTH_SHORT).show()
@@ -269,6 +270,7 @@ class ActiveVisitFragment : Fragment() {
             .setPositiveButton("Just Sang It!") { _, _ ->
                 viewModel.logPerformance()
                 binding.songSearchInput.text?.clear()
+                binding.songSearchInput.requestFocus()
                 Snackbar.make(binding.root, "Performance logged!", Snackbar.LENGTH_SHORT).show()
             }
             .setNeutralButton("With Notes...") { _, _ ->
@@ -292,6 +294,7 @@ class ActiveVisitFragment : Fragment() {
                 // Get key adjustment and notes from dialog
                 viewModel.logPerformance(keyAdjustment = 0, notes = null) // Simplified for now
                 binding.songSearchInput.text?.clear()
+                binding.songSearchInput.requestFocus()
                 Snackbar.make(binding.root, "Performance logged with details!", Snackbar.LENGTH_SHORT).show()
             }
             .setNegativeButton("Cancel", null)
