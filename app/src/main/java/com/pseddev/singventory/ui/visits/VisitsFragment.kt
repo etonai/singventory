@@ -67,20 +67,14 @@ class VisitsFragment : Fragment() {
     private fun setupRecyclerView() {
         visitsAdapter = VisitsAdapter(
             onVisitClick = { visitWithDetails ->
-                // Navigate to visit details/ActiveVisitFragment
-                if (visitWithDetails.visit.endTimestamp == null) {
-                    // Active visit - navigate to ActiveVisitFragment
-                    findNavController().navigate(
-                        R.id.action_visits_to_activeVisit,
-                        bundleOf("visitId" to visitWithDetails.visit.id)
-                    )
-                } else {
-                    // Completed visit - navigate to visit summary/details
-                    // Navigation to be implemented - would go to a CompletedVisitFragment
-                }
+                // Navigate to visit details for viewing/editing
+                findNavController().navigate(
+                    R.id.action_visits_to_visitDetails,
+                    bundleOf("visitId" to visitWithDetails.visit.id)
+                )
             },
             onResumeVisitClick = { visitWithDetails ->
-                // Navigate to ActiveVisitFragment for this visit
+                // Resume active visit for quick performance logging
                 viewModel.setActiveVisit(visitWithDetails)
                 findNavController().navigate(
                     R.id.action_visits_to_activeVisit,

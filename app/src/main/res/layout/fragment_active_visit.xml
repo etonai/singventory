@@ -96,21 +96,47 @@
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:layout_marginBottom="16dp" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/song_search_layout"
+                    <!-- Song selection container that will be dynamically populated -->
+                    <FrameLayout
+                        android:id="@+id/song_selection_container"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Search songs"
-                        app:endIconMode="clear_text">
+                        android:layout_height="wrap_content">
 
-                        <AutoCompleteTextView
-                            android:id="@+id/song_search_input"
+                        <!-- Search mode layout -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/song_search_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:completionThreshold="1" />
+                            android:hint="Search songs"
+                            app:endIconMode="clear_text">
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                            <AutoCompleteTextView
+                                android:id="@+id/song_search_input"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="text"
+                                android:completionThreshold="1" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- Dropdown mode layout (initially hidden) -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/song_dropdown_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Select song"
+                            android:visibility="gone"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/song_dropdown_input"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="none" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </FrameLayout>
 
                 </LinearLayout>
 

@@ -25,6 +25,7 @@ class ConfigurationFragment : Fragment() {
         private const val PREF_BACKUP_REMINDERS = "backup_reminders"
         private const val PREF_PERFORMANCE_NOTIFICATIONS = "performance_notifications"
         private const val PREF_VISIT_REMINDERS = "visit_reminders"
+        private const val PREF_SONG_SELECTION_DROPDOWN = "song_selection_dropdown"
         
         // Default values
         private const val DEFAULT_SONG_DURATION = 3.5f // minutes
@@ -33,6 +34,7 @@ class ConfigurationFragment : Fragment() {
         private const val DEFAULT_BACKUP_REMINDERS = true
         private const val DEFAULT_PERFORMANCE_NOTIFICATIONS = false
         private const val DEFAULT_VISIT_REMINDERS = false
+        private const val DEFAULT_SONG_SELECTION_DROPDOWN = false
     }
     
     override fun onCreateView(
@@ -57,6 +59,8 @@ class ConfigurationFragment : Fragment() {
         val defaultDuration = preferences.getFloat(PREF_DEFAULT_SONG_DURATION, DEFAULT_SONG_DURATION)
         binding.defaultSongDurationText.text = "${defaultDuration} minutes"
         
+        binding.songSelectionDropdownSwitch.isChecked = preferences.getBoolean(PREF_SONG_SELECTION_DROPDOWN, DEFAULT_SONG_SELECTION_DROPDOWN)
+        
         binding.autoEndVisitsSwitch.isChecked = preferences.getBoolean(PREF_AUTO_END_VISITS, DEFAULT_AUTO_END_VISITS)
         binding.showKeyReferencesSwitch.isChecked = preferences.getBoolean(PREF_SHOW_KEY_REFERENCES, DEFAULT_SHOW_KEY_REFERENCES)
         binding.backupRemindersSwitch.isChecked = preferences.getBoolean(PREF_BACKUP_REMINDERS, DEFAULT_BACKUP_REMINDERS)
@@ -67,6 +71,10 @@ class ConfigurationFragment : Fragment() {
     private fun setupClickListeners() {
         binding.defaultSongDurationCard.setOnClickListener {
             showSongDurationDialog()
+        }
+        
+        binding.songSelectionDropdownSwitch.setOnCheckedChangeListener { _, isChecked ->
+            preferences.edit().putBoolean(PREF_SONG_SELECTION_DROPDOWN, isChecked).apply()
         }
         
         binding.autoEndVisitsSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -114,6 +122,7 @@ class ConfigurationFragment : Fragment() {
             .show()
     }
     
+    
     private fun showResetDefaultsDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Reset to Defaults")
@@ -160,6 +169,11 @@ class ConfigurationFragment : Fragment() {
         fun shouldShowVisitReminders(context: Context): Boolean {
             val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             return prefs.getBoolean(PREF_VISIT_REMINDERS, DEFAULT_VISIT_REMINDERS)
+        }
+        
+        fun shouldUseSongSelectionDropdown(context: Context): Boolean {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            return prefs.getBoolean(PREF_SONG_SELECTION_DROPDOWN, DEFAULT_SONG_SELECTION_DROPDOWN)
         }
     }
     

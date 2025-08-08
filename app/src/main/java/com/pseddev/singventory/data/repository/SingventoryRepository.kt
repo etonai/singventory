@@ -118,6 +118,11 @@ class SingventoryRepository(
     
     suspend fun getPerformanceCount(): Int = performanceDao.getPerformanceCount()
     
+    suspend fun getPerformanceCountForSong(songId: Long): Int = performanceDao.getPerformanceCountForSong(songId)
+    
+    suspend fun getPerformanceCountForSongAtVenue(songId: Long, venueId: Long): Int = 
+        performanceDao.getPerformanceCountForSongAtVenue(songId, venueId)
+    
     // ================== SONG-VENUE INFO OPERATIONS ==================
     
     fun getAllSongVenueInfo(): Flow<List<SongVenueInfo>> = songVenueInfoDao.getAllSongVenueInfo()

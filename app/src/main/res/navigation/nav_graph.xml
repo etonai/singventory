@@ -32,6 +32,9 @@
             android:id="@+id/action_venues_to_addVenue"
             app:destination="@id/addVenueFragment" />
         <action
+            android:id="@+id/action_venues_to_venueSongs"
+            app:destination="@id/venueSongsFragment" />
+        <action
             android:id="@+id/action_venues_to_associateSongs"
             app:destination="@id/associateSongsWithVenueFragment" />
         <action
@@ -54,6 +57,9 @@
         <action
             android:id="@+id/action_visits_to_activeVisit"
             app:destination="@id/activeVisitFragment" />
+        <action
+            android:id="@+id/action_visits_to_visitDetails"
+            app:destination="@id/visitDetailsFragment" />
     </fragment>
 
     <fragment
@@ -139,5 +145,53 @@
         android:id="@+id/configurationFragment"
         android:name="com.pseddev.singventory.ui.settings.ConfigurationFragment"
         android:label="Configuration" />
+
+    <fragment
+        android:id="@+id/visitDetailsFragment"
+        android:name="com.pseddev.singventory.ui.visits.VisitDetailsFragment"
+        android:label="Visit Details" >
+        <argument
+            android:name="visitId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_visitDetails_to_performanceEdit"
+            app:destination="@id/performanceEditFragment" />
+        <action
+            android:id="@+id/action_visitDetails_to_activeVisit"
+            app:destination="@id/activeVisitFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/performanceEditFragment"
+        android:name="com.pseddev.singventory.ui.visits.PerformanceEditFragment"
+        android:label="Edit Performance" >
+        <argument
+            android:name="performanceId"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/venueSongsFragment"
+        android:name="com.pseddev.singventory.ui.venues.VenueSongsFragment"
+        android:label="Venue Songs" >
+        <argument
+            android:name="venueId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_venueSongs_to_editSongVenueInfo"
+            app:destination="@id/editSongVenueInfoFragment" />
+        <action
+            android:id="@+id/action_venueSongs_to_associateSongs"
+            app:destination="@id/associateSongsWithVenueFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editSongVenueInfoFragment"
+        android:name="com.pseddev.singventory.ui.venues.EditSongVenueInfoFragment"
+        android:label="Edit Song Details" >
+        <argument
+            android:name="songVenueInfoId"
+            app:argType="long" />
+    </fragment>
 
 </navigation>

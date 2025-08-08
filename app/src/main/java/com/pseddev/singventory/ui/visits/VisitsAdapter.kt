@@ -63,15 +63,16 @@ class VisitsAdapter(
                 val duration = (visit.endTimestamp - visit.timestamp) / (1000 * 60) // minutes
                 binding.visitDuration.text = "${duration} min"
                 
-                // Hide action buttons for completed visits
+                // Hide action buttons for completed visits - click the visit itself to view/edit
                 binding.btnResumeVisit.visibility = android.view.View.GONE
                 binding.btnEndVisit.visibility = android.view.View.GONE
             } else {
                 binding.visitStatus.text = "Active"
                 binding.visitDuration.text = "Ongoing"
                 
-                // Show action buttons for active visits
+                // Show both action buttons for active visits
                 binding.btnResumeVisit.visibility = android.view.View.VISIBLE
+                binding.btnResumeVisit.text = "Resume"
                 binding.btnEndVisit.visibility = android.view.View.VISIBLE
             }
             

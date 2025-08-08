@@ -65,6 +65,7 @@ class VisitsViewModel(private val repository: SingventoryRepository) : ViewModel
         }
     }
     
+    
     fun deleteVisit(visitWithDetails: VisitWithDetails) {
         viewModelScope.launch {
             _isLoading.value = true

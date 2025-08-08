@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -22,6 +23,7 @@ import com.pseddev.singventory.data.database.SingventoryDatabase
 import com.pseddev.singventory.data.entity.Song
 import com.pseddev.singventory.data.repository.SingventoryRepository
 import com.pseddev.singventory.databinding.FragmentActiveVisitBinding
+import com.pseddev.singventory.ui.settings.ConfigurationFragment
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,8 +52,18 @@ class ActiveVisitFragment : Fragment() {
     
     private lateinit var performancesAdapter: PerformancesAdapter
     private lateinit var songAdapter: ArrayAdapter<String>
+    private lateinit var songDropdownAdapter: ArrayAdapter<String>
     private var songsList: List<Song> = emptyList()
     private val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+    private var isDropdownMode = false
+    
+    private fun formatSongDisplay(song: Song): String {
+        return if (song.artist.isNullOrBlank()) {
+            song.name
+        } else {
+            "${song.name} - ${song.artist}"
+        }
+    }
     
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,13 +77,27 @@ class ActiveVisitFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        setupSongAutoComplete()
+        setupSongSelection()
         setupPerformancesList()
         setupButtons()
         setupObservers()
     }
     
-    private fun setupSongAutoComplete() {
+    private fun setupSongSelection() {
+        // Determine which mode to use based on configuration
+        isDropdownMode = ConfigurationFragment.ConfigurationManager.shouldUseSongSelectionDropdown(requireContext())
+        
+        if (isDropdownMode) {
+            setupDropdownMode()
+        } else {
+            setupSearchMode()
+        }
+    }
+    
+    private fun setupSearchMode() {
+        binding.songSearchLayout.visibility = View.VISIBLE
+        binding.songDropdownLayout.visibility = View.GONE
+        
         songAdapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_dropdown_item_1line)
         binding.songSearchInput.setAdapter(songAdapter)
         binding.songSearchInput.threshold = 1
@@ -83,7 +109,26 @@ class ActiveVisitFragment : Fragment() {
         binding.songSearchInput.setOnItemClickListener { _, _, position, _ ->
             val selectedSongName = songAdapter.getItem(position)
             selectedSongName?.let { name ->
-                val song = songsList.find { "${it.name} - ${it.artist}".equals(name, ignoreCase = true) }
+                val song = songsList.find { formatSongDisplay(it).equals(name, ignoreCase = true) }
+                if (song != null) {
+                    viewModel.selectSong(song)
+                    showQuickLogDialog(song)
+                }
+            }
+        }
+    }
+    
+    private fun setupDropdownMode() {
+        binding.songSearchLayout.visibility = View.GONE
+        binding.songDropdownLayout.visibility = View.VISIBLE
+        
+        songDropdownAdapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_dropdown_item_1line)
+        binding.songDropdownInput.setAdapter(songDropdownAdapter)
+        
+        binding.songDropdownInput.setOnItemClickListener { _, _, position, _ ->
+            val selectedSongName = songDropdownAdapter.getItem(position)
+            selectedSongName?.let { name ->
+                val song = songsList.find { formatSongDisplay(it).equals(name, ignoreCase = true) }
                 if (song != null) {
                     viewModel.selectSong(song)
                     showQuickLogDialog(song)
@@ -111,12 +156,28 @@ class ActiveVisitFragment : Fragment() {
     
     private fun setupButtons() {
         binding.fabQuickLog.setOnClickListener {
-            val searchText = binding.songSearchInput.text?.toString()?.trim()
-            if (searchText.isNullOrEmpty()) {
-                showQuickSongDialog()
+            if (isDropdownMode) {
+                val selectedText = binding.songDropdownInput.text?.toString()?.trim()
+                if (selectedText.isNullOrEmpty()) {
+                    showQuickSongDialog()
+                } else {
+                    // Check if selection matches a song
+                    val song = songsList.find { formatSongDisplay(it).equals(selectedText, ignoreCase = true) }
+                    if (song != null) {
+                        viewModel.selectSong(song)
+                        showQuickLogDialog(song)
+                    } else {
+                        showQuickSongDialog()
+                    }
+                }
             } else {
-                // Try to find or create song based on search
-                handleQuickLog(searchText)
+                val searchText = binding.songSearchInput.text?.toString()?.trim()
+                if (searchText.isNullOrEmpty()) {
+                    showQuickSongDialog()
+                } else {
+                    // Try to find or create song based on search
+                    handleQuickLog(searchText)
+                }
             }
         }
         
@@ -155,10 +216,17 @@ class ActiveVisitFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.allSongs.collect { songs ->
                     songsList = songs
-                    val songDisplayNames = songs.map { "${it.name} - ${it.artist}" }
-                    songAdapter.clear()
-                    songAdapter.addAll(songDisplayNames)
-                    songAdapter.notifyDataSetChanged()
+                    val songDisplayNames = songs.map { formatSongDisplay(it) }.sorted()
+                    
+                    if (isDropdownMode) {
+                        songDropdownAdapter.clear()
+                        songDropdownAdapter.addAll(songDisplayNames)
+                        songDropdownAdapter.notifyDataSetChanged()
+                    } else {
+                        songAdapter.clear()
+                        songAdapter.addAll(songDisplayNames)
+                        songAdapter.notifyDataSetChanged()
+                    }
                 }
             }
         }
@@ -190,7 +258,7 @@ class ActiveVisitFragment : Fragment() {
             // Try to find existing song
             val existingSong = songsList.find { 
                 it.name.contains(searchText, ignoreCase = true) ||
-                "${it.name} ${it.artist}".contains(searchText, ignoreCase = true)
+                formatSongDisplay(it).contains(searchText, ignoreCase = true)
             }
             
             if (existingSong != null) {
@@ -250,8 +318,13 @@ class ActiveVisitFragment : Fragment() {
                     lifecycleScope.launch {
                         val success = viewModel.createSongAndLog(songName, artistName)
                         if (success) {
-                            binding.songSearchInput.text?.clear()
-                            binding.songSearchInput.requestFocus()
+                            if (isDropdownMode) {
+                                binding.songDropdownInput.text?.clear()
+                                binding.songDropdownInput.requestFocus()
+                            } else {
+                                binding.songSearchInput.text?.clear()
+                                binding.songSearchInput.requestFocus()
+                            }
                             Snackbar.make(binding.root, "Song created and logged!", Snackbar.LENGTH_SHORT).show()
                         } else {
                             Snackbar.make(binding.root, "Error creating song", Snackbar.LENGTH_SHORT).show()
@@ -266,11 +339,16 @@ class ActiveVisitFragment : Fragment() {
     private fun showQuickLogDialog(song: Song) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Log Performance")
-            .setMessage("${song.name} - ${song.artist}")
+            .setMessage(formatSongDisplay(song))
             .setPositiveButton("Just Sang It!") { _, _ ->
                 viewModel.logPerformance()
-                binding.songSearchInput.text?.clear()
-                binding.songSearchInput.requestFocus()
+                if (isDropdownMode) {
+                    binding.songDropdownInput.text?.clear()
+                    binding.songDropdownInput.requestFocus()
+                } else {
+                    binding.songSearchInput.text?.clear()
+                    binding.songSearchInput.requestFocus()
+                }
                 Snackbar.make(binding.root, "Performance logged!", Snackbar.LENGTH_SHORT).show()
             }
             .setNeutralButton("With Notes...") { _, _ ->
@@ -284,17 +362,51 @@ class ActiveVisitFragment : Fragment() {
     
     private fun showDetailedLogDialog(song: Song) {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_log_performance, null)
-        // This layout would include key adjustment and notes inputs
+        
+        // Setup key adjustment controls
+        val keyAdjustmentValue = dialogView.findViewById<TextView>(R.id.keyAdjustmentValue)
+        val btnKeyMinus = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnKeyMinus)
+        val btnKeyPlus = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnKeyPlus)
+        val notesInput = dialogView.findViewById<TextInputEditText>(R.id.performance_notes_input)
+        
+        var currentKeyAdjustment = 0
+        
+        fun updateKeyAdjustmentDisplay(keyAdjustment: Int) {
+            keyAdjustmentValue.text = when {
+                keyAdjustment > 0 -> "+$keyAdjustment"
+                keyAdjustment < 0 -> keyAdjustment.toString()
+                else -> "0"
+            }
+        }
+        
+        btnKeyMinus.setOnClickListener {
+            currentKeyAdjustment = (currentKeyAdjustment - 1).coerceIn(-12, 12)
+            updateKeyAdjustmentDisplay(currentKeyAdjustment)
+        }
+        
+        btnKeyPlus.setOnClickListener {
+            currentKeyAdjustment = (currentKeyAdjustment + 1).coerceIn(-12, 12)
+            updateKeyAdjustmentDisplay(currentKeyAdjustment)
+        }
+        
+        // Initialize display
+        updateKeyAdjustmentDisplay(currentKeyAdjustment)
         
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Log Performance Details")
-            .setMessage("${song.name} - ${song.artist}")
+            .setMessage(formatSongDisplay(song))
             .setView(dialogView)
             .setPositiveButton("Log Performance") { _, _ ->
                 // Get key adjustment and notes from dialog
-                viewModel.logPerformance(keyAdjustment = 0, notes = null) // Simplified for now
-                binding.songSearchInput.text?.clear()
-                binding.songSearchInput.requestFocus()
+                val notes = notesInput.text?.toString()?.trim()?.takeIf { it.isNotBlank() }
+                viewModel.logPerformance(keyAdjustment = currentKeyAdjustment, notes = notes)
+                if (isDropdownMode) {
+                    binding.songDropdownInput.text?.clear()
+                    binding.songDropdownInput.requestFocus()
+                } else {
+                    binding.songSearchInput.text?.clear()
+                    binding.songSearchInput.requestFocus()
+                }
                 Snackbar.make(binding.root, "Performance logged with details!", Snackbar.LENGTH_SHORT).show()
             }
             .setNegativeButton("Cancel", null)

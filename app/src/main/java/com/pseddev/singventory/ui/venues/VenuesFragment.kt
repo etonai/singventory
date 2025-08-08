@@ -71,6 +71,13 @@ class VenuesFragment : Fragment() {
                 // Navigate to venue details/edit screen (to be implemented)
                 // For now, just log
             },
+            onViewSongsClick = { venue ->
+                // Navigate to venue songs screen
+                val bundle = Bundle().apply {
+                    putLong("venueId", venue.id)
+                }
+                findNavController().navigate(R.id.action_venues_to_venueSongs, bundle)
+            },
             onAddSongToVenueClick = { venue ->
                 // Navigate to associate songs with venue screen
                 val bundle = Bundle().apply {
