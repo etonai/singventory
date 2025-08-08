@@ -33,7 +33,8 @@ class VenuesViewModel(private val repository: SingventoryRepository) : ViewModel
         } else {
             allVenues.filter { venue ->
                 venue.name.contains(query, ignoreCase = true) ||
-                venue.address?.contains(query, ignoreCase = true) == true
+                venue.address?.contains(query, ignoreCase = true) == true ||
+                venue.notes?.contains(query, ignoreCase = true) == true
             }
         }
         

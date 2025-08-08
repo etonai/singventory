@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="Filter Songs"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        android:textAlignment="center" />
+
+    <!-- Reference Key Filter -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Reference Key"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textStyle="bold" />
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/reference_key_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Performance Filter -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Performance History"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/performance_filter_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp">
+
+        <RadioButton
+            android:id="@+id/radio_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="All Songs" />
+
+        <RadioButton
+            android:id="@+id/radio_never_performed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Never Performed" />
+
+        <RadioButton
+            android:id="@+id/radio_rarely_performed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rarely Performed (1-4 times)" />
+
+        <RadioButton
+            android:id="@+id/radio_frequently_performed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Frequently Performed (5+ times)" />
+
+        <RadioButton
+            android:id="@+id/radio_recently_performed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recently Performed (Last 30 days)" />
+
+    </RadioGroup>
+
+    <!-- Lyrics Filter -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Lyrics"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/lyrics_filter_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp">
+
+        <RadioButton
+            android:id="@+id/radio_any_lyrics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Any (with or without lyrics)" />
+
+        <RadioButton
+            android:id="@+id/radio_has_lyrics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Has Lyrics" />
+
+        <RadioButton
+            android:id="@+id/radio_no_lyrics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No Lyrics" />
+
+    </RadioGroup>
+
+    <!-- Apply Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_apply_filters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Apply Filters"
+        app:icon="@drawable/ic_filter_list" />
+
+</LinearLayout>

@@ -100,11 +100,24 @@ class VenuesFragment : Fragment() {
     }
     
     private fun setupSearchBar() {
-        // For now, use a simple text change listener on the SearchBar
-        // In a full implementation, you'd use SearchView with proper expansion
+        // Implement basic search functionality with text input
         binding.searchBar.setOnClickListener {
-            // Simple implementation - in real app would expand to SearchView
-            // For now, just focus for typing
+            // Create a simple search input dialog
+            val editText = androidx.appcompat.widget.AppCompatEditText(requireContext())
+            editText.hint = "Search venues by name or location"
+            editText.setText(viewModel.searchQuery.value)
+            
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Search Venues")
+                .setView(editText)
+                .setPositiveButton("Search") { _, _ ->
+                    viewModel.updateSearchQuery(editText.text.toString())
+                }
+                .setNegativeButton("Clear") { _, _ ->
+                    viewModel.updateSearchQuery("")
+                }
+                .setNeutralButton("Cancel", null)
+                .show()
         }
     }
     

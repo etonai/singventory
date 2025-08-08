@@ -42,6 +42,46 @@ This document tracks features that have been deferred from their original develo
 
 **Deferral Reason**: Complex relationship management feature that goes beyond basic CRUD requirements of Phase 2. Core Songs and Venues CRUD functionality was prioritized to enable fundamental app usage.
 
+### Advanced Search UI Components
+**Originally Planned**: DevCycle 4 Phase 3  
+**Deferred Date**: 2025-08-08  
+**Priority**: Low  
+**Suggested Implementation**: DevCycle 6 or later (UI polish phase)
+
+**Description**: Advanced user interface components for enhanced search and filtering beyond basic text search functionality.
+
+**Technical Requirements**:
+- Performance-based filtering UI with filter chips and radio button groups
+- Search result prioritization based on user activity patterns
+- Saved search/filter presets with SharedPreferences persistence
+- Quick filter buttons for common search scenarios
+- Bottom sheet dialogs for complex filter selection
+- Filter chip visualization showing active filters
+- Advanced filter combinations and logic
+
+**User Scenarios**:
+- Power users wanting to filter songs by performance frequency (never performed, frequently performed, recently performed)
+- Users with large song collections needing sophisticated search capabilities  
+- Repeat workflows benefiting from saved search presets
+- Quick access to common filter scenarios through dedicated buttons
+
+**Implementation Notes**:
+- Backend filtering logic already implemented in SongsViewModel (PerformanceFilter enum) and VenuesViewModel (VenueFilter enum)
+- StateFlow architecture supports multiple filter criteria combination
+- Would require complex UI state management for filter combinations
+- Bottom sheet layouts with multiple controls (radio groups, spinners, checkboxes)
+- SharedPreferences integration for preset persistence
+- Material Design 3 chip-based filter visualization
+
+**Current State**:
+- Core text-based search fully functional in both Songs and Venues
+- Advanced filtering architecture implemented and tested in ViewModels
+- PerformanceFilter and VenueFilter enums ready for UI integration
+- Search dialog-based interface provides immediate user value
+- All backend filtering logic supports the planned UI features
+
+**Deferral Reason**: Basic text search satisfies core user needs for finding songs and venues. Advanced filtering UI represents polish features that would significantly increase implementation complexity without addressing essential functionality. The solid architectural foundation enables future enhancement when advanced search becomes a priority.
+
 ---
 
 ## Instructions for Future Development

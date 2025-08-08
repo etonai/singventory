@@ -169,3 +169,39 @@ This dedicated document tracks all features that have been deferred from their o
 - User controls when and what gets committed to version control
 
 **VIOLATION OF THIS RULE IS NOT ACCEPTABLE**
+
+## ⚠️ CRITICAL IMPLEMENTATION AUTHORIZATION RULES ⚠️
+
+**ABSOLUTE REQUIREMENT**: You are FORBIDDEN from beginning implementation of any phase, DevCycle, or significant development work without explicit user authorization.
+
+### Implementation Authorization Policy
+- ❌ **DO NOT** start implementing phases or DevCycles automatically
+- ❌ **DO NOT** assume continuation from one phase to the next
+- ❌ **DO NOT** begin coding just because a phase is marked as "TODO"
+- ✅ **ONLY** begin implementation when the user explicitly requests it
+- ✅ **ALWAYS** wait for clear user direction before starting work
+- ✅ **RESEARCH and PLANNING** are allowed without explicit permission
+
+### What This Means
+- You can read, analyze, and understand the codebase freely
+- You can research requirements and plan approaches
+- You can answer questions and provide guidance
+- **NEVER** start actual implementation (writing code, creating files, making changes) without explicit user request
+- User controls when development work begins, not the todo status in documentation
+
+### Approved Activities Without Permission
+- Reading files and documentation
+- Analyzing existing code patterns
+- Researching technical approaches
+- Answering user questions
+- Planning and design discussions
+- Reviewing project status
+
+### Requires Explicit User Permission
+- Writing new code files
+- Modifying existing code
+- Implementing new features
+- Starting phase or DevCycle work
+- Making any changes to the codebase
+
+**VIOLATION OF THIS RULE IS NOT ACCEPTABLE**

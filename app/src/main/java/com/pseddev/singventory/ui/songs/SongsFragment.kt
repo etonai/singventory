@@ -103,11 +103,24 @@ class SongsFragment : Fragment() {
     }
     
     private fun setupSearchBar() {
-        // For now, use a simple text change listener on the SearchBar
-        // In a full implementation, you'd use SearchView with proper expansion
+        // Implement basic search functionality with text input
         binding.searchBar.setOnClickListener {
-            // Simple implementation - in real app would expand to SearchView
-            // For now, just focus for typing
+            // For now, create a simple search input
+            val editText = androidx.appcompat.widget.AppCompatEditText(requireContext())
+            editText.hint = "Search songs by name or artist"
+            editText.setText(viewModel.searchQuery.value)
+            
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Search Songs")
+                .setView(editText)
+                .setPositiveButton("Search") { _, _ ->
+                    viewModel.updateSearchQuery(editText.text.toString())
+                }
+                .setNegativeButton("Clear") { _, _ ->
+                    viewModel.updateSearchQuery("")
+                }
+                .setNeutralButton("Cancel", null)
+                .show()
         }
     }
     
