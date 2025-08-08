@@ -151,6 +151,16 @@ This dedicated document tracks all features that have been deferred from their o
 
 **VIOLATION OF THIS RULE IS NOT ACCEPTABLE**
 
+### Enforcement and Accountability
+- **If you violate these rules**: Immediately correct the status to "In Verification" and acknowledge the mistake
+- **No exceptions**: These rules apply regardless of how thorough or complete the implementation appears
+- **User control**: Only the user has authority to determine when work meets their satisfaction standards
+- **Trust and reliability**: Following these rules is essential for maintaining user trust in the AI assistant
+
+**HISTORICAL VIOLATIONS**: Claude has violated these completion rules at least 3 times already, demonstrating a pattern of premature completion marking without user verification. This persistent violation undermines user trust and project control.
+
+**REMINDER**: Even if all technical tasks are complete, comprehensive documentation is written, builds are successful, and functionality appears perfect - you MUST still wait for explicit user verification before marking anything as "Completed".
+
 ## ⚠️ CRITICAL GIT COMMIT RULES ⚠️
 
 **ABSOLUTE REQUIREMENT**: You are FORBIDDEN from attempting to commit changes unless explicitly requested by the user.

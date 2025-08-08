@@ -92,6 +92,9 @@ class SingventoryRepository(
     
     suspend fun getVisitCount(): Int = visitDao.getVisitCount()
     
+    suspend fun getVisitByVenueAndTimestamp(venueId: Long, timestamp: Long): Visit? = 
+        visitDao.getVisitByVenueAndTimestamp(venueId, timestamp)
+    
     // ================== PERFORMANCE OPERATIONS ==================
     
     fun getAllPerformances(): Flow<List<Performance>> = performanceDao.getAllPerformances()
@@ -343,5 +346,18 @@ class SingventoryRepository(
         
         object NoVisitsToPurge : PurgeResult()
         data class Error(val message: String) : PurgeResult()
+    }
+    
+    /**
+     * Clear all data - DEBUG BUILDS ONLY
+     * Complete database reset for testing fresh user scenarios
+     */
+    suspend fun clearAllData() {
+        // Clear all tables in proper order to respect foreign key constraints
+        performanceDao.deleteAllPerformances()
+        visitDao.deleteAllVisits()
+        songVenueInfoDao.deleteAllSongVenueInfo()
+        songDao.deleteAllSongs()
+        venueDao.deleteAllVenues()
     }
 }

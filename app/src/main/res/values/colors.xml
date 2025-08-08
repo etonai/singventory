@@ -38,4 +38,8 @@
     <color name="bass_clef_red">#FF5722</color>
     <color name="note_silver">#B0B0B0</color>
     <color name="stage_light_yellow">#FFC107</color>
+    
+    <!-- Warning/Alert Colors -->
+    <color name="warning_background">#FFF8E1</color>
+    <color name="warning_border">#FFB74D</color>
 </resources>

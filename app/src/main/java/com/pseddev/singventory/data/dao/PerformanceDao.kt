@@ -54,4 +54,7 @@ interface PerformanceDao {
         WHERE v.venueId = :venueId AND p.songId = :songId
     """)
     suspend fun getPerformanceCountForSongAtVenue(songId: Long, venueId: Long): Int
+    
+    @Query("DELETE FROM performances")
+    suspend fun deleteAllPerformances()
 }

@@ -61,4 +61,7 @@ interface SongVenueInfoDao {
     
     @Query("SELECT COUNT(*) FROM song_venue_info WHERE venueId = :venueId")
     suspend fun getSongCountForVenue(venueId: Long): Int
+    
+    @Query("DELETE FROM song_venue_info")
+    suspend fun deleteAllSongVenueInfo()
 }

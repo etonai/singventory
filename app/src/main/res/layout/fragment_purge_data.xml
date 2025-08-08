@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Data Overview Section -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Data Overview"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:id="@+id/total_visits_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Total Visits: Loading..."
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/total_performances_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Total Performances: Loading..."
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/oldest_visit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Oldest Visit: Loading..."
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:id="@+id/newest_visit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Newest Visit: Loading..."
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:id="@+id/storage_warning_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorError"
+                    android:background="@drawable/warning_background"
+                    android:padding="12dp"
+                    android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_analyze_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Analyze Data"
+                    android:layout_marginTop="8dp"
+                    style="@style/Widget.Material3.Button.OutlinedButton" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Purging Information Section -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="About Data Purging"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/data_impact_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Purging removes detailed visit records while preserving song/venue statistics and performance counts."
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="What gets removed:\n• Individual visit records with dates and times\n• Individual performance records within those visits\n\nWhat gets preserved:\n• Total performance counts for each song\n• Last performed dates\n• Total visit counts for each venue\n• Last visited dates\n• All song and venue information"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Purging Actions Section -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Purging Actions"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:id="@+id/recommended_purge_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorPrimary"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_recommended_purge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Apply Recommended Purge"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone"
+                    style="@style/Widget.Material3.Button" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_purge_old_visits"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Purge Old Visits"
+                    android:drawableStart="@drawable/ic_delete"
+                    android:drawablePadding="8dp"
+                    android:backgroundTint="?attr/colorError"
+                    android:textColor="?attr/colorOnError"
+                    style="@style/Widget.Material3.Button" />
+
+                <TextView
+                    android:id="@+id/purge_result_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="?attr/colorPrimary"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Progress Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:indeterminate="true"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Purging is recommended when you have more than 500 visits to maintain optimal app performance."
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

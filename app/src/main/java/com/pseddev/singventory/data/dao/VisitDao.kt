@@ -48,4 +48,10 @@ interface VisitDao {
     
     @Query("SELECT COUNT(*) FROM visits WHERE venueId = :venueId")
     suspend fun getVisitCountForVenue(venueId: Long): Int
+    
+    @Query("SELECT * FROM visits WHERE venueId = :venueId AND timestamp = :timestamp LIMIT 1")
+    suspend fun getVisitByVenueAndTimestamp(venueId: Long, timestamp: Long): Visit?
+    
+    @Query("DELETE FROM visits")
+    suspend fun deleteAllVisits()
 }

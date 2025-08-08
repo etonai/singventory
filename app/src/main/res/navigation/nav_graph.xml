@@ -77,7 +77,17 @@
     <fragment
         android:id="@+id/navigation_settings"
         android:name="com.pseddev.singventory.ui.settings.SettingsFragment"
-        android:label="@string/title_settings" />
+        android:label="@string/title_settings" >
+        <action
+            android:id="@+id/action_settings_to_importExport"
+            app:destination="@id/importExportFragment" />
+        <action
+            android:id="@+id/action_settings_to_purgeData"
+            app:destination="@id/purgeDataFragment" />
+        <action
+            android:id="@+id/action_settings_to_configuration"
+            app:destination="@id/configurationFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/associateSongsWithVenueFragment"
@@ -114,5 +124,20 @@
             android:name="venueId"
             app:argType="long" />
     </fragment>
+
+    <fragment
+        android:id="@+id/importExportFragment"
+        android:name="com.pseddev.singventory.ui.settings.ImportExportFragment"
+        android:label="Import/Export" />
+
+    <fragment
+        android:id="@+id/purgeDataFragment"
+        android:name="com.pseddev.singventory.ui.settings.PurgeDataFragment"
+        android:label="Purge Data" />
+
+    <fragment
+        android:id="@+id/configurationFragment"
+        android:name="com.pseddev.singventory.ui.settings.ConfigurationFragment"
+        android:label="Configuration" />
 
 </navigation>

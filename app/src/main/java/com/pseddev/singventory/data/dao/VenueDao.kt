@@ -39,4 +39,7 @@ interface VenueDao {
     
     @Query("SELECT COUNT(*) FROM venues")
     suspend fun getVenueCount(): Int
+    
+    @Query("DELETE FROM venues")
+    suspend fun deleteAllVenues()
 }

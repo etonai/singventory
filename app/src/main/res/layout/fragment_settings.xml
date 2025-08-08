@@ -59,7 +59,61 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/performances_count_placeholder"
-                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/associations_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Song-Venue Associations: 0"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Relationship Statistics"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/relationship_stats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Avg songs per venue: 0, Avg venues per song: 0"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:layout_marginBottom="4dp" />
+
+
+                <TextView
+                    android:id="@+id/visit_frequency"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Avg visit frequency: N/A"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone" />
+
+
+                <TextView
+                    android:id="@+id/backup_recommendation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No backup needed yet"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_backup_now"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Backup Data"
+                    android:drawableStart="@drawable/ic_download"
+                    android:drawablePadding="8dp"
+                    android:visibility="gone"
+                    style="@style/Widget.Material3.Button.OutlinedButton" />
 
             </LinearLayout>
 
@@ -106,7 +160,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/configuration"
+                    android:layout_marginBottom="8dp"
                     style="@style/Widget.Material3.Button.OutlinedButton" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_clear_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Clear Data (Debug)"
+                    android:backgroundTint="?attr/colorError"
+                    android:textColor="?attr/colorOnError"
+                    android:visibility="gone"
+                    style="@style/Widget.Material3.Button" />
 
             </LinearLayout>
 

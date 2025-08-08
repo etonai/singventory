@@ -39,4 +39,7 @@ interface SongDao {
     
     @Query("SELECT COUNT(*) FROM songs")
     suspend fun getSongCount(): Int
+    
+    @Query("DELETE FROM songs")
+    suspend fun deleteAllSongs()
 }
