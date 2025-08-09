@@ -16,9 +16,6 @@ class StartVisitViewModel(private val repository: SingventoryRepository) : ViewM
     private val _selectedVenue = MutableStateFlow<Venue?>(null)
     val selectedVenue: StateFlow<Venue?> = _selectedVenue.asStateFlow()
     
-    private val _venueSearchQuery = MutableStateFlow("")
-    val venueSearchQuery: StateFlow<String> = _venueSearchQuery.asStateFlow()
-    
     private val _visitNotes = MutableStateFlow<String?>(null)
     val visitNotes: StateFlow<String?> = _visitNotes.asStateFlow()
     
@@ -31,12 +28,8 @@ class StartVisitViewModel(private val repository: SingventoryRepository) : ViewM
     private val _showCreateVenue = MutableStateFlow(false)
     val showCreateVenue: StateFlow<Boolean> = _showCreateVenue.asStateFlow()
     
-    // Get all venues for autocomplete
+    // Get all venues for dropdown population
     val allVenues = repository.getAllVenues()
-    
-    fun updateVenueSearchQuery(query: String) {
-        _venueSearchQuery.value = query
-    }
     
     fun selectVenue(venue: Venue) {
         _selectedVenue.value = venue

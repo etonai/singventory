@@ -42,17 +42,17 @@
                     android:layout_marginBottom="16dp" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/venue_search_layout"
+                    android:id="@+id/venue_selection_layout"
+                    style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Search or select venue">
+                    android:hint="Select venue">
 
                     <AutoCompleteTextView
-                        android:id="@+id/venue_search_input"
+                        android:id="@+id/venue_selection_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:completionThreshold="1" />
+                        android:inputType="none" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

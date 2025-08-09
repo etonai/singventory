@@ -84,7 +84,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Log Performance"
+                        android:text="Song Info"
                         android:textAppearance="?attr/textAppearanceHeadlineSmall"
                         android:layout_marginBottom="8dp" />
 

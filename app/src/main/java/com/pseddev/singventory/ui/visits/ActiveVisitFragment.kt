@@ -54,6 +54,7 @@ class ActiveVisitFragment : Fragment() {
     private lateinit var songAdapter: ArrayAdapter<String>
     private lateinit var songDropdownAdapter: ArrayAdapter<String>
     private var songsList: List<Song> = emptyList()
+    private var songsWithVenueInfoList: List<SongWithVenueInfo> = emptyList()
     private val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
     private var isDropdownMode = false
     
@@ -63,6 +64,10 @@ class ActiveVisitFragment : Fragment() {
         } else {
             "${song.name} - ${song.artist}"
         }
+    }
+    
+    private fun formatSongDisplayWithKeyAdjustment(songWithVenueInfo: SongWithVenueInfo): String {
+        return viewModel.formatSongDisplayWithKeyAdjustment(songWithVenueInfo)
     }
     
     override fun onCreateView(
@@ -109,10 +114,12 @@ class ActiveVisitFragment : Fragment() {
         binding.songSearchInput.setOnItemClickListener { _, _, position, _ ->
             val selectedSongName = songAdapter.getItem(position)
             selectedSongName?.let { name ->
-                val song = songsList.find { formatSongDisplay(it).equals(name, ignoreCase = true) }
-                if (song != null) {
-                    viewModel.selectSong(song)
-                    showQuickLogDialog(song)
+                val songWithVenueInfo = songsWithVenueInfoList.find { 
+                    formatSongDisplayWithKeyAdjustment(it).equals(name, ignoreCase = true) 
+                }
+                if (songWithVenueInfo != null) {
+                    viewModel.selectSong(songWithVenueInfo.song)
+                    showSongInfoDialog(songWithVenueInfo.song, songWithVenueInfo.keyAdjustment)
                 }
             }
         }
@@ -128,10 +135,12 @@ class ActiveVisitFragment : Fragment() {
         binding.songDropdownInput.setOnItemClickListener { _, _, position, _ ->
             val selectedSongName = songDropdownAdapter.getItem(position)
             selectedSongName?.let { name ->
-                val song = songsList.find { formatSongDisplay(it).equals(name, ignoreCase = true) }
-                if (song != null) {
-                    viewModel.selectSong(song)
-                    showQuickLogDialog(song)
+                val songWithVenueInfo = songsWithVenueInfoList.find { 
+                    formatSongDisplayWithKeyAdjustment(it).equals(name, ignoreCase = true) 
+                }
+                if (songWithVenueInfo != null) {
+                    viewModel.selectSong(songWithVenueInfo.song)
+                    showSongInfoDialog(songWithVenueInfo.song, songWithVenueInfo.keyAdjustment)
                 }
             }
         }
@@ -162,10 +171,10 @@ class ActiveVisitFragment : Fragment() {
                     showQuickSongDialog()
                 } else {
                     // Check if selection matches a song
-                    val song = songsList.find { formatSongDisplay(it).equals(selectedText, ignoreCase = true) }
-                    if (song != null) {
-                        viewModel.selectSong(song)
-                        showQuickLogDialog(song)
+                    val songWithVenueInfo = songsWithVenueInfoList.find { formatSongDisplayWithKeyAdjustment(it).equals(selectedText, ignoreCase = true) }
+                    if (songWithVenueInfo != null) {
+                        viewModel.selectSong(songWithVenueInfo.song)
+                        showSongInfoDialog(songWithVenueInfo.song, songWithVenueInfo.keyAdjustment)
                     } else {
                         showQuickSongDialog()
                     }
@@ -214,9 +223,10 @@ class ActiveVisitFragment : Fragment() {
         
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.allSongs.collect { songs ->
-                    songsList = songs
-                    val songDisplayNames = songs.map { formatSongDisplay(it) }.sorted()
+                viewModel.songsWithVenueInfo.collect { songsWithVenueInfo ->
+                    songsWithVenueInfoList = songsWithVenueInfo
+                    songsList = songsWithVenueInfo.map { it.song }
+                    val songDisplayNames = songsWithVenueInfo.map { formatSongDisplayWithKeyAdjustment(it) }.sorted()
                     
                     if (isDropdownMode) {
                         songDropdownAdapter.clear()
@@ -262,8 +272,10 @@ class ActiveVisitFragment : Fragment() {
             }
             
             if (existingSong != null) {
+                // Find the venue info for this song to get key adjustment
+                val songWithVenueInfo = songsWithVenueInfoList.find { it.song.id == existingSong.id }
                 viewModel.selectSong(existingSong)
-                showQuickLogDialog(existingSong)
+                showSongInfoDialog(existingSong, songWithVenueInfo?.keyAdjustment)
             } else {
                 // Show create new song dialog
                 showCreateSongDialog(searchText)
@@ -336,10 +348,48 @@ class ActiveVisitFragment : Fragment() {
             .show()
     }
     
-    private fun showQuickLogDialog(song: Song) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Log Performance")
-            .setMessage(formatSongDisplay(song))
+    private fun showSongInfoDialog(song: Song, venueKeyAdjustment: Int? = null) {
+        val currentVenue = viewModel.venue.value
+        
+        lifecycleScope.launch {
+            // Get venue song information first
+            val venueInfo = if (currentVenue != null) {
+                viewModel.getSongVenueInfo(song.id, currentVenue.id)
+            } else null
+            
+            // Create comprehensive song information display
+            val songInfo = buildString {
+                append("Song: ${song.name}\n")
+                if (!song.artist.isNullOrBlank()) {
+                    append("Artist: ${song.artist}\n")
+                }
+                
+                // Display venue song number if available
+                if (!venueInfo?.venuesSongId.isNullOrBlank()) {
+                    append("Venue Song #: ${venueInfo?.venuesSongId}\n")
+                }
+                append("\n")
+                
+                // Key information
+                append("Key Information:\n")
+                if (!song.referenceKey.isNullOrBlank()) {
+                    append("Reference Key: ${song.referenceKey}\n")
+                }
+                if (!song.preferredKey.isNullOrBlank()) {
+                    append("Preferred Key: ${song.preferredKey}\n")
+                }
+                if (venueKeyAdjustment != null && venueKeyAdjustment != 0) {
+                    val adjustmentString = if (venueKeyAdjustment > 0) "+$venueKeyAdjustment" else venueKeyAdjustment.toString()
+                    append("Venue Adjustment: $adjustmentString steps")
+                } else if (song.referenceKey == null && song.preferredKey == null) {
+                    append("No key information available")
+                }
+            }
+            
+            // Show dialog on main thread
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Song Info")
+                .setMessage(songInfo)
             .setPositiveButton("Just Sang It!") { _, _ ->
                 viewModel.logPerformance()
                 if (isDropdownMode) {
@@ -352,49 +402,87 @@ class ActiveVisitFragment : Fragment() {
                 Snackbar.make(binding.root, "Performance logged!", Snackbar.LENGTH_SHORT).show()
             }
             .setNeutralButton("With Notes...") { _, _ ->
-                showDetailedLogDialog(song)
+                showDetailedSongInfoDialog(song, venueKeyAdjustment)
             }
             .setNegativeButton("Cancel") { _, _ ->
                 viewModel.clearSelectedSong()
             }
             .show()
+        }
     }
     
-    private fun showDetailedLogDialog(song: Song) {
-        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_log_performance, null)
+    private fun showDetailedSongInfoDialog(song: Song, venueKeyAdjustment: Int? = null) {
+        val currentVenue = viewModel.venue.value
         
-        // Setup key adjustment controls
-        val keyAdjustmentValue = dialogView.findViewById<TextView>(R.id.keyAdjustmentValue)
-        val btnKeyMinus = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnKeyMinus)
-        val btnKeyPlus = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnKeyPlus)
-        val notesInput = dialogView.findViewById<TextInputEditText>(R.id.performance_notes_input)
-        
-        var currentKeyAdjustment = 0
-        
-        fun updateKeyAdjustmentDisplay(keyAdjustment: Int) {
-            keyAdjustmentValue.text = when {
-                keyAdjustment > 0 -> "+$keyAdjustment"
-                keyAdjustment < 0 -> keyAdjustment.toString()
-                else -> "0"
+        lifecycleScope.launch {
+            // Get venue song information first
+            val venueInfo = if (currentVenue != null) {
+                viewModel.getSongVenueInfo(song.id, currentVenue.id)
+            } else null
+            
+            val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_log_performance, null)
+            
+            // Setup key adjustment controls
+            val keyAdjustmentValue = dialogView.findViewById<TextView>(R.id.keyAdjustmentValue)
+            val btnKeyMinus = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnKeyMinus)
+            val btnKeyPlus = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnKeyPlus)
+            val notesInput = dialogView.findViewById<TextInputEditText>(R.id.performance_notes_input)
+            
+            var currentKeyAdjustment = 0
+            
+            fun updateKeyAdjustmentDisplay(keyAdjustment: Int) {
+                keyAdjustmentValue.text = when {
+                    keyAdjustment > 0 -> "+$keyAdjustment"
+                    keyAdjustment < 0 -> keyAdjustment.toString()
+                    else -> "0"
+                }
             }
-        }
-        
-        btnKeyMinus.setOnClickListener {
-            currentKeyAdjustment = (currentKeyAdjustment - 1).coerceIn(-12, 12)
+            
+            btnKeyMinus.setOnClickListener {
+                currentKeyAdjustment = (currentKeyAdjustment - 1).coerceIn(-12, 12)
+                updateKeyAdjustmentDisplay(currentKeyAdjustment)
+            }
+            
+            btnKeyPlus.setOnClickListener {
+                currentKeyAdjustment = (currentKeyAdjustment + 1).coerceIn(-12, 12)
+                updateKeyAdjustmentDisplay(currentKeyAdjustment)
+            }
+            
+            // Initialize display
             updateKeyAdjustmentDisplay(currentKeyAdjustment)
-        }
-        
-        btnKeyPlus.setOnClickListener {
-            currentKeyAdjustment = (currentKeyAdjustment + 1).coerceIn(-12, 12)
-            updateKeyAdjustmentDisplay(currentKeyAdjustment)
-        }
-        
-        // Initialize display
-        updateKeyAdjustmentDisplay(currentKeyAdjustment)
-        
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Log Performance Details")
-            .setMessage(formatSongDisplay(song))
+            
+            // Create comprehensive song information display for detailed dialog
+            val songInfo = buildString {
+                append("Song: ${song.name}\n")
+                if (!song.artist.isNullOrBlank()) {
+                    append("Artist: ${song.artist}\n")
+                }
+                
+                // Display venue song number if available
+                if (!venueInfo?.venuesSongId.isNullOrBlank()) {
+                    append("Venue Song #: ${venueInfo?.venuesSongId}\n")
+                }
+                append("\n")
+                
+                // Key information
+                append("Key Information:\n")
+                if (!song.referenceKey.isNullOrBlank()) {
+                    append("Reference Key: ${song.referenceKey}\n")
+                }
+                if (!song.preferredKey.isNullOrBlank()) {
+                    append("Preferred Key: ${song.preferredKey}\n")
+                }
+                if (venueKeyAdjustment != null && venueKeyAdjustment != 0) {
+                    val adjustmentString = if (venueKeyAdjustment > 0) "+$venueKeyAdjustment" else venueKeyAdjustment.toString()
+                    append("Venue Adjustment: $adjustmentString steps\n")
+                }
+                append("\nAdjust the key and add notes for this performance:")
+            }
+            
+            // Show dialog on main thread
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Song Info")
+                .setMessage(songInfo)
             .setView(dialogView)
             .setPositiveButton("Log Performance") { _, _ ->
                 // Get key adjustment and notes from dialog
@@ -411,6 +499,7 @@ class ActiveVisitFragment : Fragment() {
             }
             .setNegativeButton("Cancel", null)
             .show()
+        }
     }
     
     private fun showAddNoteDialog() {

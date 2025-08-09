@@ -56,27 +56,23 @@ class StartVisitFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        setupVenueAutoComplete()
+        setupVenueDropdown()
         setupFormInputs()
         setupButtons()
         setupObservers()
     }
     
-    private fun setupVenueAutoComplete() {
+    private fun setupVenueDropdown() {
         venueAdapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_dropdown_item_1line)
-        binding.venueSearchInput.setAdapter(venueAdapter)
-        binding.venueSearchInput.threshold = 1
+        binding.venueSelectionInput.setAdapter(venueAdapter)
         
-        binding.venueSearchInput.doOnTextChanged { text, _, _, _ ->
-            viewModel.updateVenueSearchQuery(text?.toString() ?: "")
-        }
-        
-        binding.venueSearchInput.setOnItemClickListener { _, _, position, _ ->
+        binding.venueSelectionInput.setOnItemClickListener { _, _, position, _ ->
             val selectedVenueName = venueAdapter.getItem(position)
             selectedVenueName?.let { name ->
                 val venue = venuesList.find { it.name == name }
                 if (venue != null) {
                     viewModel.selectVenue(venue)
+                    clearError(binding.venueSelectionLayout)
                 }
             }
         }
@@ -117,8 +113,8 @@ class StartVisitFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.selectedVenue.collect { venue ->
                     if (venue != null) {
-                        binding.venueSearchInput.setText(venue.name, false)
-                        clearError(binding.venueSearchLayout)
+                        binding.venueSelectionInput.setText(venue.name, false)
+                        clearError(binding.venueSelectionLayout)
                     }
                 }
             }
@@ -154,7 +150,7 @@ class StartVisitFragment : Fragment() {
     }
     
     private fun showCreateNewVenueDialog() {
-        val currentQuery = binding.venueSearchInput.text?.toString()?.trim() ?: ""
+        val currentQuery = binding.venueSelectionInput.text?.toString()?.trim() ?: ""
         
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_create_venue, null)
         val venueNameInput = dialogView.findViewById<TextInputEditText>(R.id.venue_name_input)
@@ -183,23 +179,9 @@ class StartVisitFragment : Fragment() {
     
     private fun validateForm(): Boolean {
         val selectedVenue = viewModel.selectedVenue.value
-        val searchText = binding.venueSearchInput.text?.toString()?.trim()
-        
-        if (selectedVenue == null && searchText.isNullOrBlank()) {
-            binding.venueSearchLayout.error = "Please select or create a venue"
+        if (selectedVenue == null) {
+            binding.venueSelectionLayout.error = "Please select or create a venue"
             return false
-        }
-        
-        // If there's search text but no selected venue, try to find existing venue or create new one
-        if (selectedVenue == null && !searchText.isNullOrBlank()) {
-            val existingVenue = venuesList.find { it.name.equals(searchText, ignoreCase = true) }
-            if (existingVenue != null) {
-                viewModel.selectVenue(existingVenue)
-            } else {
-                // Offer to create new venue
-                showCreateNewVenueDialog()
-                return false
-            }
         }
         
         return true
