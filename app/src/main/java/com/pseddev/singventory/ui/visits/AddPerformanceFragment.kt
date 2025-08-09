@@ -14,27 +14,29 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.pseddev.singventory.R
 import com.pseddev.singventory.data.database.SingventoryDatabase
 import com.pseddev.singventory.data.entity.Song
 import com.pseddev.singventory.data.repository.SingventoryRepository
-import com.pseddev.singventory.databinding.FragmentPerformanceEditBinding
+import com.pseddev.singventory.databinding.FragmentAddPerformanceBinding
 import com.pseddev.singventory.ui.settings.ConfigurationFragment
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PerformanceEditFragment : Fragment() {
+class AddPerformanceFragment : Fragment() {
     
-    private var _binding: FragmentPerformanceEditBinding? = null
+    private var _binding: FragmentAddPerformanceBinding? = null
     private val binding get() = _binding!!
     
-    private val viewModel: PerformanceEditViewModel by viewModels {
+    private val visitId: Long by lazy {
+        arguments?.getLong("visitId") ?: -1L
+    }
+    
+    private val viewModel: AddPerformanceViewModel by viewModels {
         val database = SingventoryDatabase.getDatabase(requireContext())
-        val performanceId = arguments?.getLong("performanceId") ?: -1L
-        PerformanceEditViewModel.Factory(
+        AddPerformanceViewModel.Factory(
             SingventoryRepository(
                 database.songDao(),
                 database.venueDao(),
@@ -42,7 +44,7 @@ class PerformanceEditFragment : Fragment() {
                 database.performanceDao(),
                 database.songVenueInfoDao()
             ),
-            performanceId
+            visitId
         )
     }
     
@@ -61,7 +63,7 @@ class PerformanceEditFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentPerformanceEditBinding.inflate(inflater, container, false)
+        _binding = FragmentAddPerformanceBinding.inflate(inflater, container, false)
         return binding.root
     }
     
@@ -69,6 +71,7 @@ class PerformanceEditFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         setupSongSelection()
+        setupPerformanceDetails()
         setupObservers()
         setupClickListeners()
     }
@@ -95,8 +98,16 @@ class PerformanceEditFragment : Fragment() {
         
         // Handle song selection from search
         binding.songSearchInput.setOnItemClickListener { _, _, position, _ ->
-            if (position < songsList.size) {
-                selectedSong = songsList[position]
+            if (isDropdownMode) {
+                // In dropdown mode, use songsWithVenueInfoList
+                if (position < songsWithVenueInfoList.size) {
+                    selectedSong = songsWithVenueInfoList[position].song
+                }
+            } else {
+                // In search mode, use songsList
+                if (position < songsList.size) {
+                    selectedSong = songsList[position]
+                }
             }
         }
         
@@ -124,12 +135,21 @@ class PerformanceEditFragment : Fragment() {
         }
     }
     
+    private fun setupPerformanceDetails() {
+        // Initialize performance timestamp to current time
+        updateTimestampDisplay()
+        
+        // Initialize key adjustment
+        updateKeyAdjustmentDisplay()
+    }
+    
     private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.performanceDetails.collect { details ->
-                    details?.let { performanceDetails ->
-                        updateUI(performanceDetails)
+                viewModel.visitDetails.collect { visitDetails ->
+                    visitDetails?.let { details ->
+                        binding.venueName.text = details.venueName
+                        binding.visitDateTime.text = details.formattedDateTime
                     }
                 }
             }
@@ -161,8 +181,22 @@ class PerformanceEditFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isLoading.collect { isLoading ->
                     binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-                    binding.btnSaveChanges.isEnabled = !isLoading
-                    binding.btnDeletePerformance.isEnabled = !isLoading
+                }
+            }
+        }
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.saveResult.collect { result ->
+                    result?.let {
+                        if (it.isSuccess) {
+                            Snackbar.make(binding.root, "Performance added successfully!", Snackbar.LENGTH_SHORT).show()
+                            findNavController().navigateUp()
+                        } else {
+                            val error = it.exceptionOrNull()?.message ?: "Failed to save performance"
+                            Snackbar.make(binding.root, error, Snackbar.LENGTH_LONG).show()
+                        }
+                    }
                 }
             }
         }
@@ -174,7 +208,7 @@ class PerformanceEditFragment : Fragment() {
             showDateTimePicker()
         }
         
-        // Key adjustment buttons
+        // Key adjustment controls
         binding.btnKeyMinus.setOnClickListener {
             keyAdjustment--
             updateKeyAdjustmentDisplay()
@@ -186,56 +220,13 @@ class PerformanceEditFragment : Fragment() {
         }
         
         // Action buttons
-        binding.btnSaveChanges.setOnClickListener {
-            saveChanges()
+        binding.btnCancel.setOnClickListener {
+            findNavController().navigateUp()
         }
         
-        binding.btnDeletePerformance.setOnClickListener {
-            showDeleteConfirmation()
+        binding.btnSavePerformance.setOnClickListener {
+            savePerformance()
         }
-    }
-    
-    private fun updateUI(details: PerformanceEditData) {
-        // Initialize values from performance details
-        selectedSong = null // Will be set when we find the matching song
-        performanceTimestamp = details.performance.timestamp
-        keyAdjustment = details.performance.keyAdjustment
-        
-        // Set current song in selection UI
-        val currentSongDisplay = if (details.artistName.isBlank()) {
-            details.songName
-        } else {
-            "${details.songName} - ${details.artistName}"
-        }
-        
-        if (isDropdownMode) {
-            binding.songDropdownInput.setText(currentSongDisplay, false)
-        } else {
-            binding.songSearchInput.setText(currentSongDisplay)
-        }
-        
-        // Set timestamp
-        updateTimestampDisplay()
-        
-        // Set key adjustment
-        updateKeyAdjustmentDisplay()
-        
-        // Set notes
-        binding.etNotes.setText(details.performance.notes ?: "")
-    }
-    
-    private fun updateKeyAdjustmentDisplay() {
-        binding.keyAdjustmentValue.text = if (keyAdjustment == 0) {
-            "0"
-        } else if (keyAdjustment > 0) {
-            "+$keyAdjustment"
-        } else {
-            keyAdjustment.toString()
-        }
-    }
-    
-    private fun updateTimestampDisplay() {
-        binding.etPerformanceDateTime.setText(dateTimeFormat.format(Date(performanceTimestamp)))
     }
     
     private fun showDateTimePicker() {
@@ -271,32 +262,35 @@ class PerformanceEditFragment : Fragment() {
         ).show()
     }
     
-    private fun saveChanges() {
-        val notes = binding.etNotes.text.toString().trim().takeIf { it.isNotBlank() }
+    private fun updateTimestampDisplay() {
+        binding.etPerformanceDateTime.setText(dateTimeFormat.format(Date(performanceTimestamp)))
+    }
+    
+    private fun updateKeyAdjustmentDisplay() {
+        binding.keyAdjustmentValue.text = if (keyAdjustment == 0) {
+            "0"
+        } else if (keyAdjustment > 0) {
+            "+$keyAdjustment"
+        } else {
+            keyAdjustment.toString()
+        }
+    }
+    
+    private fun savePerformance() {
+        val song = selectedSong
+        if (song == null) {
+            Snackbar.make(binding.root, "Please select a song", Snackbar.LENGTH_SHORT).show()
+            return
+        }
         
-        viewModel.saveChanges(
-            song = selectedSong,
+        val notes = binding.etPerformanceNotes.text.toString().trim().takeIf { it.isNotBlank() }
+        
+        viewModel.savePerformance(
+            song = song,
             timestamp = performanceTimestamp,
             keyAdjustment = keyAdjustment,
             notes = notes
         )
-        
-        Snackbar.make(binding.root, "Performance updated successfully!", Snackbar.LENGTH_SHORT).show()
-        
-        // Navigate back
-        findNavController().navigateUp()
-    }
-    
-    private fun showDeleteConfirmation() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Delete Performance")
-            .setMessage("Are you sure you want to delete this performance? This action cannot be undone.")
-            .setPositiveButton("Delete") { _, _ ->
-                viewModel.deletePerformance()
-                findNavController().navigateUp()
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
     }
     
     private fun formatSongDisplay(song: Song): String {
@@ -309,11 +303,12 @@ class PerformanceEditFragment : Fragment() {
     
     private fun formatSongDisplayWithKeyAdjustment(songWithVenueInfo: SongWithVenueInfo): String {
         val baseDisplay = formatSongDisplay(songWithVenueInfo.song)
-        return if (songWithVenueInfo.keyAdjustment != 0 && songWithVenueInfo.keyAdjustment != null) {
-            val adjustmentText = if (songWithVenueInfo.keyAdjustment > 0) {
-                "+${songWithVenueInfo.keyAdjustment}"
+        val keyAdjustment = songWithVenueInfo.keyAdjustment
+        return if (keyAdjustment != null && keyAdjustment != 0) {
+            val adjustmentText = if (keyAdjustment > 0) {
+                "+$keyAdjustment"
             } else {
-                songWithVenueInfo.keyAdjustment.toString()
+                keyAdjustment.toString()
             }
             "$baseDisplay ($adjustmentText)"
         } else {

@@ -37,6 +37,12 @@ interface SongDao {
     @Query("UPDATE songs SET totalPerformances = totalPerformances + 1, lastPerformed = :timestamp WHERE id = :songId")
     suspend fun incrementPerformanceCount(songId: Long, timestamp: Long)
     
+    @Query("UPDATE songs SET totalPerformances = CASE WHEN totalPerformances > 0 THEN totalPerformances - 1 ELSE 0 END WHERE id = :songId")
+    suspend fun decrementPerformanceCount(songId: Long)
+    
+    @Query("UPDATE songs SET lastPerformed = :timestamp WHERE id = :songId")
+    suspend fun updateLastPerformed(songId: Long, timestamp: Long)
+    
     @Query("SELECT COUNT(*) FROM songs")
     suspend fun getSongCount(): Int
     

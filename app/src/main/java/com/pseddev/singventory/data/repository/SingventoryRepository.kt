@@ -206,6 +206,89 @@ class SingventoryRepository(
     }
     
     /**
+     * Log a performance with statistics updates (overload for Performance object)
+     */
+    suspend fun logPerformance(performance: Performance): Long {
+        return logPerformance(
+            visitId = performance.visitId,
+            songId = performance.songId,
+            keyAdjustment = performance.keyAdjustment,
+            notes = performance.notes,
+            timestamp = performance.timestamp
+        )
+    }
+    
+    /**
+     * Update a performance with proper statistics handling
+     */
+    suspend fun updatePerformanceWithStats(
+        oldPerformance: Performance,
+        newPerformance: Performance
+    ) {
+        // Get visit information for venue context
+        val visit = getVisitById(newPerformance.visitId) ?: return
+        
+        // If song changed, handle statistics updates
+        if (oldPerformance.songId != newPerformance.songId) {
+            // Decrement stats for old song
+            songDao.decrementPerformanceCount(oldPerformance.songId)
+            
+            // Decrement venue stats for old song
+            val oldSongVenueInfo = getSongVenueInfo(oldPerformance.songId, visit.venueId)
+            if (oldSongVenueInfo != null && oldSongVenueInfo.performanceCount > 0) {
+                songVenueInfoDao.decrementVenuePerformanceCount(oldPerformance.songId, visit.venueId)
+            }
+            
+            // Increment stats for new song
+            songDao.incrementPerformanceCount(newPerformance.songId, newPerformance.timestamp)
+            
+            // Update or create song-venue info for new song
+            val newSongVenueInfo = getSongVenueInfo(newPerformance.songId, visit.venueId)
+            if (newSongVenueInfo != null) {
+                songVenueInfoDao.incrementVenuePerformanceCount(newPerformance.songId, visit.venueId, newPerformance.timestamp)
+            } else {
+                // Create new song-venue relationship
+                val songVenueInfo = SongVenueInfo(
+                    songId = newPerformance.songId,
+                    venueId = visit.venueId,
+                    performanceCount = 1,
+                    lastPerformed = newPerformance.timestamp
+                )
+                songVenueInfoDao.insertSongVenueInfo(songVenueInfo)
+            }
+        } else {
+            // Same song, just update timestamp if it changed
+            if (oldPerformance.timestamp != newPerformance.timestamp) {
+                songDao.updateLastPerformed(newPerformance.songId, newPerformance.timestamp)
+                songVenueInfoDao.updateLastPerformed(newPerformance.songId, visit.venueId, newPerformance.timestamp)
+            }
+        }
+        
+        // Update the performance record
+        performanceDao.updatePerformance(newPerformance)
+    }
+    
+    /**
+     * Delete a performance with proper statistics handling
+     */
+    suspend fun deletePerformanceWithStats(performance: Performance) {
+        // Get visit information for venue context
+        val visit = getVisitById(performance.visitId) ?: return
+        
+        // Decrement song statistics
+        songDao.decrementPerformanceCount(performance.songId)
+        
+        // Decrement venue statistics
+        val songVenueInfo = getSongVenueInfo(performance.songId, visit.venueId)
+        if (songVenueInfo != null && songVenueInfo.performanceCount > 0) {
+            songVenueInfoDao.decrementVenuePerformanceCount(performance.songId, visit.venueId)
+        }
+        
+        // Delete the performance
+        performanceDao.deletePerformance(performance)
+    }
+    
+    /**
      * Start a new visit at a venue
      */
     suspend fun startVisit(venueId: Long, timestamp: Long, notes: String?, isActive: Boolean = true): Long {

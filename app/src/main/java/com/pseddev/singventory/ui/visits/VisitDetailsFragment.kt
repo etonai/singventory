@@ -107,10 +107,10 @@ class VisitDetailsFragment : Fragment() {
         }
         
         binding.btnAddPerformance.setOnClickListener {
-            // Navigate to ActiveVisitFragment for quick performance logging
+            // Navigate to AddPerformanceFragment for comprehensive performance management
             val visitId = arguments?.getLong("visitId") ?: -1L
             findNavController().navigate(
-                R.id.action_visitDetails_to_activeVisit,
+                R.id.action_visitDetails_to_addPerformance,
                 bundleOf("visitId" to visitId)
             )
         }
@@ -138,8 +138,8 @@ class VisitDetailsFragment : Fragment() {
             binding.visitDuration.visibility = View.GONE
         }
         
-        // Show/hide Add Performance button based on visit status
-        binding.btnAddPerformance.visibility = if (visitDetails.visit.endTimestamp == null) View.VISIBLE else View.GONE
+        // Show Add Performance button for all visits (both active and completed)
+        binding.btnAddPerformance.visibility = View.VISIBLE
     }
     
     private fun updatePerformanceCount(count: Int) {

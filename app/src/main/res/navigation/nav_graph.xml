@@ -159,6 +159,18 @@
         <action
             android:id="@+id/action_visitDetails_to_activeVisit"
             app:destination="@id/activeVisitFragment" />
+        <action
+            android:id="@+id/action_visitDetails_to_addPerformance"
+            app:destination="@id/addPerformanceFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addPerformanceFragment"
+        android:name="com.pseddev.singventory.ui.visits.AddPerformanceFragment"
+        android:label="Add Performance" >
+        <argument
+            android:name="visitId"
+            app:argType="long" />
     </fragment>
 
     <fragment

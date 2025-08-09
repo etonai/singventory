@@ -5,32 +5,27 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.pseddev.singventory.data.entity.Performance
 import com.pseddev.singventory.data.entity.Song
+import com.pseddev.singventory.data.entity.Visit
 import com.pseddev.singventory.data.repository.SingventoryRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class PerformanceEditData(
-    val performance: Performance,
-    val songName: String,
-    val artistName: String,
-    val formattedTime: String
-)
-
-class PerformanceEditViewModel(
+class AddPerformanceViewModel(
     private val repository: SingventoryRepository,
-    private val performanceId: Long
+    private val visitId: Long
 ) : ViewModel() {
     
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     
-    private val _performanceDetails = MutableStateFlow<PerformanceEditData?>(null)
-    val performanceDetails: StateFlow<PerformanceEditData?> = _performanceDetails.asStateFlow()
+    private val _visitDetails = MutableStateFlow<VisitDetailsData?>(null)
+    val visitDetails: StateFlow<VisitDetailsData?> = _visitDetails.asStateFlow()
     
     private val _venue = MutableStateFlow<com.pseddev.singventory.data.entity.Venue?>(null)
     val venue: StateFlow<com.pseddev.singventory.data.entity.Venue?> = _venue.asStateFlow()
@@ -38,7 +33,10 @@ class PerformanceEditViewModel(
     private val _songSearchQuery = MutableStateFlow("")
     val songSearchQuery: StateFlow<String> = _songSearchQuery.asStateFlow()
     
-    private val timeFormat = SimpleDateFormat("MMM dd, yyyy 'at' h:mm a", Locale.getDefault())
+    private val _saveResult = MutableStateFlow<Result<Unit>?>(null)
+    val saveResult: StateFlow<Result<Unit>?> = _saveResult.asStateFlow()
+    
+    private val dateFormat = SimpleDateFormat("MMM dd, yyyy 'at' h:mm a", Locale.getDefault())
     
     // Get all songs for search mode
     val allSongs = repository.getAllSongs()
@@ -82,30 +80,23 @@ class PerformanceEditViewModel(
     }
     
     init {
-        loadPerformanceDetails()
+        loadVisitDetails()
     }
     
-    private fun loadPerformanceDetails() {
+    private fun loadVisitDetails() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val performance = repository.getPerformanceById(performanceId)
-                performance?.let { perf ->
-                    val song = repository.getSongById(perf.songId)
-                    val performanceTime = Date(perf.timestamp)
+                val visit = repository.getVisitById(visitId)
+                visit?.let { v ->
+                    val venue = repository.getVenueById(v.venueId)
+                    _venue.value = venue
                     
-                    // Load venue information for song selection
-                    val visit = repository.getVisitById(perf.visitId)
-                    visit?.let { v ->
-                        val venue = repository.getVenueById(v.venueId)
-                        _venue.value = venue
-                    }
-                    
-                    _performanceDetails.value = PerformanceEditData(
-                        performance = perf,
-                        songName = song?.name ?: "Unknown Song",
-                        artistName = song?.artist ?: "",
-                        formattedTime = timeFormat.format(performanceTime)
+                    val visitDate = Date(v.timestamp)
+                    _visitDetails.value = VisitDetailsData(
+                        visit = v,
+                        venueName = venue?.name ?: "Unknown Venue",
+                        formattedDateTime = dateFormat.format(visitDate)
                     )
                 }
             } finally {
@@ -118,8 +109,8 @@ class PerformanceEditViewModel(
         _songSearchQuery.value = query
     }
     
-    fun saveChanges(
-        song: Song?,
+    fun savePerformance(
+        song: Song,
         timestamp: Long,
         keyAdjustment: Int,
         notes: String?
@@ -127,54 +118,39 @@ class PerformanceEditViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val currentDetails = _performanceDetails.value ?: return@launch
-                val updatedPerformance = currentDetails.performance.copy(
-                    songId = song?.id ?: currentDetails.performance.songId,
+                val performance = Performance(
+                    id = 0, // Auto-generated
+                    visitId = visitId,
+                    songId = song.id,
                     timestamp = timestamp,
                     keyAdjustment = keyAdjustment,
                     notes = notes
                 )
                 
-                // Update performance with proper statistics handling
-                repository.updatePerformanceWithStats(currentDetails.performance, updatedPerformance)
+                // Use repository's logPerformance method to ensure statistics are updated
+                repository.logPerformance(performance)
                 
-                // Update local state with new song information if song changed
-                val newSongName = song?.name ?: currentDetails.songName
-                val newArtistName = song?.artist ?: currentDetails.artistName
-                val newFormattedTime = timeFormat.format(Date(timestamp))
-                
-                _performanceDetails.value = currentDetails.copy(
-                    performance = updatedPerformance,
-                    songName = newSongName,
-                    artistName = newArtistName,
-                    formattedTime = newFormattedTime
-                )
+                _saveResult.value = Result.success(Unit)
+            } catch (e: Exception) {
+                _saveResult.value = Result.failure(e)
             } finally {
                 _isLoading.value = false
             }
         }
     }
     
-    fun deletePerformance() {
-        viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                val currentDetails = _performanceDetails.value ?: return@launch
-                repository.deletePerformanceWithStats(currentDetails.performance)
-            } finally {
-                _isLoading.value = false
-            }
-        }
+    fun clearSaveResult() {
+        _saveResult.value = null
     }
     
     class Factory(
         private val repository: SingventoryRepository,
-        private val performanceId: Long
+        private val visitId: Long
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(PerformanceEditViewModel::class.java)) {
-                return PerformanceEditViewModel(repository, performanceId) as T
+            if (modelClass.isAssignableFrom(AddPerformanceViewModel::class.java)) {
+                return AddPerformanceViewModel(repository, visitId) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }
