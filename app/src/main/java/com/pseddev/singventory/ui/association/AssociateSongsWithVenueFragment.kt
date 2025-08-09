@@ -74,11 +74,13 @@ class AssociateSongsWithVenueFragment : Fragment() {
                 viewModel.toggleSongSelection(item.song.id, isSelected)
             },
             onSingleAssociate = { item ->
-                if (item.existingAssociation != null) {
-                    // Show association details dialog for update
+                val hasKeyInfo = item.song.referenceKey != null || item.song.preferredKey != null
+                
+                if (item.existingAssociation != null || hasKeyInfo) {
+                    // Show association details dialog for update OR if song has key info for smart auto-population
                     showAssociationDetailsDialog(item)
                 } else {
-                    // Quick associate without details
+                    // Quick associate without details (only if song has no key info)
                     lifecycleScope.launch {
                         val success = viewModel.associateSingleSong(item.song.id)
                         if (success) {
@@ -237,7 +239,9 @@ class AssociateSongsWithVenueFragment : Fragment() {
             venueName = venue.name,
             existingVenueSongId = item.existingAssociation?.venuesSongId,
             existingVenueKey = item.existingAssociation?.venueKey,
-            existingKeyAdjustment = item.existingAssociation?.keyAdjustment ?: 0
+            existingKeyAdjustment = item.existingAssociation?.keyAdjustment ?: 0,
+            songReferenceKey = item.song.referenceKey,
+            songPreferredKey = item.song.preferredKey
         )
         
         dialog.onDetailsConfirmed = { details ->

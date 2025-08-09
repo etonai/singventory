@@ -8,10 +8,10 @@
     <string name="nav_settings">Settings</string>
     
     <!-- Screen Titles -->
-    <string name="title_songs">Your Songs</string>
-    <string name="title_venues">Your Venues</string>
-    <string name="title_visits">Your Visits</string>
-    <string name="title_settings">Settings</string>
+    <string name="title_songs">Singventory - Songs</string>
+    <string name="title_venues">Singventory - Venues</string>
+    <string name="title_visits">Singventory - Visits</string>
+    <string name="title_settings">Singventory - Settings</string>
     
     <!-- Search Hints -->
     <string name="search_songs_hint">Search songs by name or artist</string>
