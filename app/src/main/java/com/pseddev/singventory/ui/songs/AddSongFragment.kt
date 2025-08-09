@@ -58,19 +58,34 @@ class AddSongFragment : Fragment() {
     }
     
     private fun setupKeyDropdowns() {
-        val keyOptions = listOf("") + MusicalKey.values().map { it.displayName }
+        val keyOptions = listOf(
+            "",  // Empty option for no key specified
+            "C",
+            "C#/Db",
+            "D",
+            "D#/Eb", 
+            "E",
+            "F",
+            "F#/Gb",
+            "G",
+            "G#/Ab",
+            "A",
+            "A#/Bb",
+            "B"
+        )
+        
         val keyAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, keyOptions)
         
         binding.referenceKeyInput.setAdapter(keyAdapter)
         binding.preferredKeyInput.setAdapter(keyAdapter)
         
         binding.referenceKeyInput.setOnItemClickListener { _, _, position, _ ->
-            val selectedKey = if (position == 0) null else MusicalKey.values()[position - 1]
+            val selectedKey = if (position == 0) null else MusicalKey.fromDisplayName(keyOptions[position])
             viewModel.setReferenceKey(selectedKey)
         }
         
         binding.preferredKeyInput.setOnItemClickListener { _, _, position, _ ->
-            val selectedKey = if (position == 0) null else MusicalKey.values()[position - 1]
+            val selectedKey = if (position == 0) null else MusicalKey.fromDisplayName(keyOptions[position])
             viewModel.setPreferredKey(selectedKey)
         }
     }

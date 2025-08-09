@@ -106,11 +106,24 @@ class AssociateSongsWithVenueFragment : Fragment() {
     }
 
     private fun setupSearch() {
-        // For now, implement a simple click listener that shows a basic search
-        // In a full implementation, you'd use SearchView with expansion
+        // Implement basic search functionality with text input
         binding.searchBar.setOnClickListener {
-            // TODO: Implement proper search functionality
-            // For now, just enable simple text-based filtering
+            // Create a simple search input
+            val editText = androidx.appcompat.widget.AppCompatEditText(requireContext())
+            editText.hint = "Search songs by name or artist"
+            editText.setText(viewModel.searchQuery.value)
+            
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Search Songs")
+                .setView(editText)
+                .setPositiveButton("Search") { _, _ ->
+                    viewModel.updateSearchQuery(editText.text.toString())
+                }
+                .setNegativeButton("Clear") { _, _ ->
+                    viewModel.updateSearchQuery("")
+                }
+                .setNeutralButton("Cancel", null)
+                .show()
         }
     }
 
@@ -213,24 +226,45 @@ class AssociateSongsWithVenueFragment : Fragment() {
     }
 
     private fun showAssociationDetailsDialog(item: SongAssociationItem) {
-        // TODO: Implement association details dialog
-        // For now, just show a simple association
-        lifecycleScope.launch {
-            val success = viewModel.associateSingleSong(item.song.id)
-            if (success) {
-                Snackbar.make(
-                    binding.root,
-                    "${item.song.name} association updated",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            } else {
-                Snackbar.make(
-                    binding.root,
-                    "Failed to update association",
-                    Snackbar.LENGTH_SHORT
-                ).show()
+        val venue = viewModel.venue.value
+        if (venue == null) {
+            Snackbar.make(binding.root, "Venue information not available", Snackbar.LENGTH_SHORT).show()
+            return
+        }
+        
+        val dialog = AssociationDetailsDialog.newInstance(
+            songName = item.song.name,
+            venueName = venue.name,
+            existingVenueSongId = item.existingAssociation?.venuesSongId,
+            existingVenueKey = item.existingAssociation?.venueKey,
+            existingKeyAdjustment = item.existingAssociation?.keyAdjustment ?: 0
+        )
+        
+        dialog.onDetailsConfirmed = { details ->
+            lifecycleScope.launch {
+                val success = viewModel.associateSongWithDetails(
+                    songId = item.song.id,
+                    venueSongId = details.venueSongId,
+                    venueKey = details.venueKey,
+                    keyAdjustment = details.keyAdjustment
+                )
+                if (success) {
+                    Snackbar.make(
+                        binding.root,
+                        "${item.song.name} association updated",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Snackbar.make(
+                        binding.root,
+                        "Failed to update association",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
+        
+        dialog.show(parentFragmentManager, "AssociationDetailsDialog")
     }
 
     override fun onDestroyView() {

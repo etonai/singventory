@@ -164,6 +164,46 @@ class AssociateSongsViewModel(
         return associateSongs(listOf(songId))
     }
 
+    suspend fun associateSongWithDetails(
+        songId: Long,
+        venueSongId: String?,
+        venueKey: String?,
+        keyAdjustment: Int
+    ): Boolean {
+        return try {
+            _isLoading.value = true
+            
+            // Check if association already exists
+            val existing = repository.getSongVenueInfo(songId, venueId)
+            if (existing != null) {
+                // Update existing association
+                val updated = existing.copy(
+                    venuesSongId = venueSongId,
+                    venueKey = venueKey,
+                    keyAdjustment = keyAdjustment
+                )
+                repository.updateSongVenueInfo(updated)
+            } else {
+                // Create new association
+                val association = SongVenueInfo(
+                    songId = songId,
+                    venueId = venueId,
+                    venuesSongId = venueSongId,
+                    venueKey = venueKey,
+                    keyAdjustment = keyAdjustment,
+                    lyrics = null
+                )
+                repository.insertSongVenueInfo(association)
+            }
+            updateAssociatedSongsCount()
+            true
+        } catch (e: Exception) {
+            false
+        } finally {
+            _isLoading.value = false
+        }
+    }
+
     class Factory(
         private val repository: SingventoryRepository,
         private val venueId: Long

@@ -70,7 +70,21 @@ class EditSongFragment : Fragment() {
     }
 
     private fun setupKeySpinners() {
-        val keyOptions = listOf("None") + MusicalKey.entries.map { it.displayName }
+        val keyOptions = listOf(
+            "",  // Empty option for no key specified
+            "C",
+            "C#/Db",
+            "D",
+            "D#/Eb", 
+            "E",
+            "F",
+            "F#/Gb",
+            "G",
+            "G#/Ab",
+            "A",
+            "A#/Bb",
+            "B"
+        )
         
         referenceKeyAdapter = ArrayAdapter(
             requireContext(),
@@ -87,12 +101,12 @@ class EditSongFragment : Fragment() {
         binding.preferredKeyInput.setAdapter(preferredKeyAdapter)
         
         binding.referenceKeyInput.setOnItemClickListener { _, _, position, _ ->
-            val selectedKey = if (position == 0) null else MusicalKey.entries[position - 1]
+            val selectedKey = if (position == 0) null else MusicalKey.fromDisplayName(keyOptions[position])
             viewModel.setReferenceKey(selectedKey)
         }
         
         binding.preferredKeyInput.setOnItemClickListener { _, _, position, _ ->
-            val selectedKey = if (position == 0) null else MusicalKey.entries[position - 1]
+            val selectedKey = if (position == 0) null else MusicalKey.fromDisplayName(keyOptions[position])
             viewModel.setPreferredKey(selectedKey)
         }
     }
@@ -124,7 +138,7 @@ class EditSongFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.referenceKey.collect { key ->
-                val displayText = key?.displayName ?: "None"
+                val displayText = key?.displayName ?: ""
                 if (binding.referenceKeyInput.text.toString() != displayText) {
                     binding.referenceKeyInput.setText(displayText, false)
                 }
@@ -133,7 +147,7 @@ class EditSongFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.preferredKey.collect { key ->
-                val displayText = key?.displayName ?: "None"
+                val displayText = key?.displayName ?: ""
                 if (binding.preferredKeyInput.text.toString() != displayText) {
                     binding.preferredKeyInput.setText(displayText, false)
                 }
