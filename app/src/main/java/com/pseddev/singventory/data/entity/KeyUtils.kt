@@ -7,7 +7,7 @@ object KeyUtils {
     
     /**
      * Validate and normalize a key string to a MusicalKey enum
-     * Accepts various formats like "C", "C#", "Db", "F#/Gb", etc.
+     * Accepts various formats like "C", "C#", "Db", "F#/Gb", "Am", "C#m", etc.
      */
     fun parseKey(keyString: String?): MusicalKey? {
         if (keyString.isNullOrBlank()) return null
@@ -15,6 +15,7 @@ object KeyUtils {
         val normalized = keyString.trim().uppercase()
         
         return when (normalized) {
+            // Major keys
             "C" -> MusicalKey.C
             "C#", "DB", "C#/DB", "DB/C#" -> MusicalKey.C_SHARP
             "D" -> MusicalKey.D
@@ -27,6 +28,21 @@ object KeyUtils {
             "A" -> MusicalKey.A
             "A#", "BB", "A#/BB", "BB/A#" -> MusicalKey.A_SHARP
             "B" -> MusicalKey.B
+            
+            // Minor keys
+            "AM" -> MusicalKey.A_MINOR
+            "A#M", "BBM", "A#M/BBM", "BBM/A#M" -> MusicalKey.A_SHARP_MINOR
+            "BM" -> MusicalKey.B_MINOR
+            "CM" -> MusicalKey.C_MINOR
+            "C#M", "DBM", "C#M/DBM", "DBM/C#M" -> MusicalKey.C_SHARP_MINOR
+            "DM" -> MusicalKey.D_MINOR
+            "D#M", "EBM", "D#M/EBM", "EBM/D#M" -> MusicalKey.D_SHARP_MINOR
+            "EM" -> MusicalKey.E_MINOR
+            "FM" -> MusicalKey.F_MINOR
+            "F#M", "GBM", "F#M/GBM", "GBM/F#M" -> MusicalKey.F_SHARP_MINOR
+            "GM" -> MusicalKey.G_MINOR
+            "G#M", "ABM", "G#M/ABM", "ABM/G#M" -> MusicalKey.G_SHARP_MINOR
+            
             else -> null
         }
     }
@@ -84,10 +100,10 @@ object KeyUtils {
     }
     
     /**
-     * Get all musical keys as a list for dropdown selection
+     * Get all musical keys as a list for dropdown selection (organized: major then minor)
      */
     fun getAllKeys(): List<MusicalKey> {
-        return MusicalKey.values().toList()
+        return MusicalKey.getAllKeysOrganized()
     }
     
     /**

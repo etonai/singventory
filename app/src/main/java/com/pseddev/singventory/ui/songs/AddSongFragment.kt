@@ -58,21 +58,13 @@ class AddSongFragment : Fragment() {
     }
     
     private fun setupKeyDropdowns() {
-        val keyOptions = listOf(
-            "",  // Empty option for no key specified
-            "C",
-            "C#/Db",
-            "D",
-            "D#/Eb", 
-            "E",
-            "F",
-            "F#/Gb",
-            "G",
-            "G#/Ab",
-            "A",
-            "A#/Bb",
-            "B"
-        )
+        val keyOptions = buildList {
+            add("")  // Empty option for no key specified
+            // Add all major keys first
+            addAll(MusicalKey.getMajorKeys().map { it.displayName })
+            // Add all minor keys second
+            addAll(MusicalKey.getMinorKeys().map { it.displayName })
+        }
         
         val keyAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, keyOptions)
         

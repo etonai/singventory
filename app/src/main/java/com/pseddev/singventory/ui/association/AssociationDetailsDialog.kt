@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.pseddev.singventory.data.entity.MusicalKey
 import com.pseddev.singventory.databinding.DialogAssociationDetailsBinding
 
 data class AssociationDetails(
@@ -23,21 +24,13 @@ class AssociationDetailsDialog : DialogFragment() {
         private const val ARG_EXISTING_VENUE_KEY = "existing_venue_key"
         private const val ARG_EXISTING_KEY_ADJUSTMENT = "existing_key_adjustment"
         
-        private val MUSICAL_KEYS = listOf(
-            "",  // Empty option for no key specified
-            "C",
-            "C#/Db",
-            "D",
-            "D#/Eb", 
-            "E",
-            "F",
-            "F#/Gb",
-            "G",
-            "G#/Ab",
-            "A",
-            "A#/Bb",
-            "B"
-        )
+        private val MUSICAL_KEYS = buildList {
+            add("")  // Empty option for no key specified
+            // Add all major keys first
+            addAll(MusicalKey.getMajorKeys().map { it.displayName })
+            // Add all minor keys second
+            addAll(MusicalKey.getMinorKeys().map { it.displayName })
+        }
         
         fun newInstance(
             songName: String,
