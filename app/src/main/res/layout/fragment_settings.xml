@@ -10,6 +10,64 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Data Management Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/data_management"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                    android:layout_marginBottom="16dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_import_export"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/import_export"
+                    android:layout_marginBottom="8dp"
+                    style="@style/Widget.Material3.Button.OutlinedButton" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_purge_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/purge_data"
+                    android:layout_marginBottom="8dp"
+                    style="@style/Widget.Material3.Button.OutlinedButton" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_configuration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/configuration"
+                    android:layout_marginBottom="8dp"
+                    style="@style/Widget.Material3.Button.OutlinedButton" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_clear_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Clear Data (Debug)"
+                    android:backgroundTint="?attr/colorError"
+                    android:textColor="?attr/colorOnError"
+                    android:visibility="gone"
+                    style="@style/Widget.Material3.Button" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Data Overview Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -68,23 +126,7 @@
                     android:layout_height="wrap_content"
                     android:text="Song-Venue Associations: 0"
                     android:textAppearance="?attr/textAppearanceBodyLarge"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Relationship Statistics"
-                    android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/relationship_stats"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Avg songs per venue: 0, Avg venues per song: 0"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:layout_marginBottom="4dp" />
-
 
                 <TextView
                     android:id="@+id/visit_frequency"
@@ -95,31 +137,11 @@
                     android:layout_marginBottom="16dp"
                     android:visibility="gone" />
 
-
-                <TextView
-                    android:id="@+id/backup_recommendation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="No backup needed yet"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:layout_marginBottom="8dp"
-                    android:visibility="gone" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_backup_now"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Backup Data"
-                    android:drawableStart="@drawable/ic_download"
-                    android:drawablePadding="8dp"
-                    android:visibility="gone"
-                    style="@style/Widget.Material3.Button.OutlinedButton" />
-
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Data Management Card -->
+        <!-- App Information Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -133,45 +155,30 @@
                 android:padding="16dp">
 
                 <TextView
+                    android:id="@+id/app_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/data_management"
-                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                    android:layout_marginBottom="16dp" />
+                    android:text="Singventory"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textAlignment="center"
+                    android:layout_marginBottom="8dp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_import_export"
+                <TextView
+                    android:id="@+id/app_owner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/import_export"
-                    android:layout_marginBottom="8dp"
-                    style="@style/Widget.Material3.Button.OutlinedButton" />
+                    android:text="PseudonymousEd"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textAlignment="center"
+                    android:layout_marginBottom="8dp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_purge_data"
+                <TextView
+                    android:id="@+id/app_build_version"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/purge_data"
-                    android:layout_marginBottom="8dp"
-                    style="@style/Widget.Material3.Button.OutlinedButton" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_configuration"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/configuration"
-                    android:layout_marginBottom="8dp"
-                    style="@style/Widget.Material3.Button.OutlinedButton" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_clear_data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Clear Data (Debug)"
-                    android:backgroundTint="?attr/colorError"
-                    android:textColor="?attr/colorOnError"
-                    android:visibility="gone"
-                    style="@style/Widget.Material3.Button" />
+                    android:text="Version 0.0.1 (1)"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textAlignment="center" />
 
             </LinearLayout>
 

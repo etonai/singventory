@@ -77,10 +77,7 @@ class SettingsFragment : Fragment() {
             venuesCount.text = "Venues: ${statistics.venuesCount}"
             visitsCount.text = "Visits: ${statistics.visitsCount}"
             performancesCount.text = "Performances: ${statistics.performancesCount}"
-            
-            // Additional statistics text
             associationsCount.text = "Song-Venue Associations: ${statistics.associationsCount}"
-            relationshipStats.text = "Avg songs per venue: ${statistics.songsPerVenueAverage.roundToInt()}, Avg venues per song: ${statistics.venuesPerSongAverage.roundToInt()}"
             
             if (statistics.visitFrequencyDays > 0) {
                 visitFrequency.text = "Avg visit frequency: Every ${statistics.visitFrequencyDays.roundToInt()} days"
@@ -89,41 +86,13 @@ class SettingsFragment : Fragment() {
                 visitFrequency.visibility = View.GONE
             }
             
-            // Update backup recommendation
-            updateBackupRecommendation(statistics.backupRecommendation)
+            // Update app information
+            appName.text = "Singventory"
+            appOwner.text = "PseudonymousEd" 
+            appBuildVersion.text = "Version ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
         }
     }
     
-    private fun updateBackupRecommendation(recommendation: BackupRecommendation) {
-        with(binding) {
-            backupRecommendation.text = recommendation.message
-            
-            when (recommendation.urgency) {
-                BackupUrgency.NONE -> {
-                    backupRecommendation.visibility = View.GONE
-                    btnBackupNow.visibility = View.GONE
-                }
-                BackupUrgency.LOW -> {
-                    backupRecommendation.visibility = View.VISIBLE
-                    backupRecommendation.setTextColor(requireContext().getColor(android.R.color.holo_blue_dark))
-                    btnBackupNow.visibility = View.VISIBLE
-                    btnBackupNow.text = "Backup Data"
-                }
-                BackupUrgency.MEDIUM -> {
-                    backupRecommendation.visibility = View.VISIBLE
-                    backupRecommendation.setTextColor(requireContext().getColor(android.R.color.holo_orange_dark))
-                    btnBackupNow.visibility = View.VISIBLE
-                    btnBackupNow.text = "⚠️ Backup Recommended"
-                }
-                BackupUrgency.HIGH -> {
-                    backupRecommendation.visibility = View.VISIBLE
-                    backupRecommendation.setTextColor(requireContext().getColor(android.R.color.holo_red_dark))
-                    btnBackupNow.visibility = View.VISIBLE
-                    btnBackupNow.text = "🚨 Backup Now!"
-                }
-            }
-        }
-    }
     
     private fun updateClearDataButton(enabled: Boolean) {
         binding.btnClearData.visibility = if (enabled) View.VISIBLE else View.GONE
@@ -144,10 +113,6 @@ class SettingsFragment : Fragment() {
         
         binding.btnClearData.setOnClickListener {
             showClearDataConfirmation()
-        }
-        
-        binding.btnBackupNow.setOnClickListener {
-            findNavController().navigate(R.id.action_settings_to_importExport)
         }
     }
     

@@ -13,7 +13,7 @@ android {
         minSdk = 28
         targetSdk = 36
         versionCode = 1
-        versionName = "0.0.1"
+        versionName = "0.0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -37,6 +37,17 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+    }
+    
+    applicationVariants.all {
+        val variant = this
+        variant.outputs.all {
+            val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            val appName = "Singventory"
+            val versionName = variant.versionName
+            val buildType = variant.buildType.name
+            output.outputFileName = "${appName}-${versionName}-${buildType}.apk"
+        }
     }
 }
 

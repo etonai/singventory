@@ -22,22 +22,9 @@ data class DataStatistics(
     val visitsCount: Int = 0,
     val performancesCount: Int = 0,
     val associationsCount: Int = 0,
-    val songsPerVenueAverage: Double = 0.0,
-    val venuesPerSongAverage: Double = 0.0,
-    val visitFrequencyDays: Double = 0.0, // average days between visits
-    val backupRecommendation: BackupRecommendation = BackupRecommendation.NOT_NEEDED
+    val visitFrequencyDays: Double = 0.0 // average days between visits
 )
 
-enum class BackupRecommendation(val message: String, val urgency: BackupUrgency) {
-    NOT_NEEDED("No backup needed yet", BackupUrgency.NONE),
-    SUGGESTED("Consider backing up your data", BackupUrgency.LOW),
-    RECOMMENDED("Backup recommended - you have valuable data", BackupUrgency.MEDIUM),
-    URGENT("Backup strongly recommended - you have lots of data", BackupUrgency.HIGH)
-}
-
-enum class BackupUrgency {
-    NONE, LOW, MEDIUM, HIGH
-}
 
 class SettingsViewModel(private val repository: SingventoryRepository) : ViewModel() {
     
@@ -74,16 +61,6 @@ class SettingsViewModel(private val repository: SingventoryRepository) : ViewMod
                     val performancesCount = performances.size
                     val associationsCount = associations.size
                     
-                    // Calculate relationship averages
-                    val songsPerVenueAverage = if (venuesCount > 0) {
-                        associations.groupBy { it.venueId }.size.toDouble() / venuesCount
-                    } else 0.0
-                    
-                    val venuesPerSongAverage = if (songsCount > 0) {
-                        associations.groupBy { it.songId }.size.toDouble() / songsCount
-                    } else 0.0
-                    
-                    
                     // Calculate visit frequency (average days between visits)
                     val visitFrequencyDays = if (visits.size >= 2) {
                         val sortedVisits = visits.sortedBy { it.timestamp }
@@ -91,19 +68,13 @@ class SettingsViewModel(private val repository: SingventoryRepository) : ViewMod
                         totalDays.toDouble() / (visits.size - 1)
                     } else 0.0
                     
-                    // Calculate backup recommendation
-                    val backupRecommendation = calculateBackupRecommendation(songsCount, venuesCount, visitsCount, performancesCount)
-                    
                     DataStatistics(
                         songsCount = songsCount,
                         venuesCount = venuesCount,
                         visitsCount = visitsCount,
                         performancesCount = performancesCount,
                         associationsCount = associationsCount,
-                        songsPerVenueAverage = songsPerVenueAverage,
-                        venuesPerSongAverage = venuesPerSongAverage,
-                        visitFrequencyDays = visitFrequencyDays,
-                        backupRecommendation = backupRecommendation
+                        visitFrequencyDays = visitFrequencyDays
                     )
                 }.collect { statistics ->
                     _dataStatistics.value = statistics
@@ -138,21 +109,6 @@ class SettingsViewModel(private val repository: SingventoryRepository) : ViewMod
         loadDataStatistics()
     }
     
-    private fun calculateBackupRecommendation(
-        songsCount: Int, 
-        venuesCount: Int, 
-        visitsCount: Int, 
-        performancesCount: Int
-    ): BackupRecommendation {
-        val totalDataPoints = songsCount + venuesCount + visitsCount + performancesCount
-        
-        return when {
-            totalDataPoints >= 500 -> BackupRecommendation.URGENT
-            totalDataPoints >= 100 -> BackupRecommendation.RECOMMENDED
-            totalDataPoints >= 25 -> BackupRecommendation.SUGGESTED
-            else -> BackupRecommendation.NOT_NEEDED
-        }
-    }
     
     
     class Factory(private val repository: SingventoryRepository) : ViewModelProvider.Factory {
