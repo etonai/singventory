@@ -78,8 +78,61 @@ class MainActivity : AppCompatActivity() {
         // Connect ActionBar with NavController
         setupActionBarWithNavController(navController, appBarConfiguration)
         
-        // Connect BottomNavigationView with NavController
+        // Connect BottomNavigationView with NavController with custom destination mapping
+        setupBottomNavigationWithCustomMapping(navController)
+    }
+    
+    private fun setupBottomNavigationWithCustomMapping(navController: androidx.navigation.NavController) {
+        // First set up the default behavior
         binding.bottomNavigation.setupWithNavController(navController)
+        
+        // Add custom destination listener to handle subpage highlighting
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val parentNavigationId = getParentNavigationId(destination.id)
+            if (parentNavigationId != null) {
+                // Only update if the computed parent is different from currently selected
+                if (binding.bottomNavigation.selectedItemId != parentNavigationId) {
+                    binding.bottomNavigation.selectedItemId = parentNavigationId
+                }
+            }
+        }
+    }
+    
+    private fun getParentNavigationId(destinationId: Int): Int? {
+        return when (destinationId) {
+            // Songs subpages
+            R.id.addSongFragment,
+            R.id.editSongFragment,
+            R.id.associateVenuesWithSongFragment -> R.id.navigation_songs
+            
+            // Venues subpages  
+            R.id.addVenueFragment,
+            R.id.editVenueFragment,
+            R.id.venueSongsFragment,
+            R.id.associateSongsWithVenueFragment,
+            R.id.editSongVenueInfoFragment -> R.id.navigation_venues
+            
+            // Visits subpages
+            R.id.startVisitFragment,
+            R.id.activeVisitFragment,
+            R.id.visitDetailsFragment,
+            R.id.addPerformanceFragment,
+            R.id.performanceEditFragment -> R.id.navigation_visits
+            
+            // Settings subpages
+            R.id.importExportFragment,
+            R.id.purgeDataFragment,
+            R.id.configurationFragment -> R.id.navigation_settings
+            
+            // Main pages - return null to use default behavior
+            R.id.navigation_songs,
+            R.id.navigation_venues, 
+            R.id.navigation_visits,
+            R.id.navigation_settings -> null
+            
+            // Unknown destinations - return null
+            else -> null
+        }
     }
     
     private fun restoreBottomNavigationState(savedInstanceState: Bundle?) {
