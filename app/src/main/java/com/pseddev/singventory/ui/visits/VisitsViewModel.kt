@@ -21,19 +21,22 @@ class VisitsViewModel(private val repository: SingventoryRepository) : ViewModel
     val activeVisit: StateFlow<Visit?> = _activeVisit.asStateFlow()
     
     // Get all visits with details (venue name and performance count)
-    val visits = repository.getAllVisits().map { visitList ->
-        visitList.map { visit ->
-            val venue = repository.getVenueById(visit.venueId)
-            val performanceCount = repository.getPerformancesByVisit(visit.id)
-            
-            // We need to collect the flow synchronously here - this is a simplified approach
-            // In a production app, you'd want to use a more sophisticated approach
+    val visits = repository.getAllVisitsWithDetails().map { visitDetailsList ->
+        visitDetailsList.map { visitDetails ->
             VisitWithDetails(
-                visit = visit,
-                venueName = venue?.name ?: "Unknown Venue",
-                performanceCount = 0 // We'll count this properly in the next iteration
+                visit = Visit(
+                    id = visitDetails.id,
+                    venueId = visitDetails.venueId,
+                    timestamp = visitDetails.timestamp,
+                    endTimestamp = visitDetails.endTimestamp,
+                    isActive = visitDetails.isActive,
+                    notes = visitDetails.notes,
+                    amountSpent = visitDetails.amountSpent
+                ),
+                venueName = visitDetails.venueName ?: "Unknown Venue",
+                performanceCount = visitDetails.performanceCount
             )
-        }.sortedByDescending { it.visit.timestamp } // Most recent first
+        }
     }
     
     init {
@@ -70,7 +73,7 @@ class VisitsViewModel(private val repository: SingventoryRepository) : ViewModel
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                repository.deleteVisit(visitWithDetails.visit)
+                repository.deleteVisitWithStats(visitWithDetails.visit)
                 
                 // Clear active visit if this was the active one
                 if (_activeVisit.value?.id == visitWithDetails.visit.id) {

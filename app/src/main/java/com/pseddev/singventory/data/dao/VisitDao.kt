@@ -4,6 +4,19 @@ import androidx.room.*
 import com.pseddev.singventory.data.entity.Visit
 import kotlinx.coroutines.flow.Flow
 
+// Data class for Visit with aggregated details
+data class VisitWithDetailsEntity(
+    val id: Long,
+    val venueId: Long,
+    val timestamp: Long,
+    val endTimestamp: Long?,
+    val isActive: Boolean,
+    val notes: String?,
+    val amountSpent: Double?,
+    val venueName: String?,
+    val performanceCount: Int
+)
+
 @Dao
 interface VisitDao {
     
@@ -54,4 +67,16 @@ interface VisitDao {
     
     @Query("DELETE FROM visits")
     suspend fun deleteAllVisits()
+    
+    @Query("""
+        SELECT visits.*, 
+               venues.name as venueName,
+               COUNT(performances.id) as performanceCount
+        FROM visits 
+        LEFT JOIN venues ON visits.venueId = venues.id
+        LEFT JOIN performances ON visits.id = performances.visitId
+        GROUP BY visits.id, venues.name
+        ORDER BY visits.timestamp DESC
+    """)
+    fun getAllVisitsWithDetails(): Flow<List<VisitWithDetailsEntity>>
 }

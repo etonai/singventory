@@ -99,6 +99,26 @@ class VisitDetailsFragment : Fragment() {
                 }
             }
         }
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.deleteResult.collect { result ->
+                    result?.let { success ->
+                        if (success) {
+                            findNavController().navigateUp()
+                        } else {
+                            // Show error message
+                            com.google.android.material.snackbar.Snackbar.make(
+                                binding.root, 
+                                "Failed to delete visit", 
+                                com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
+                        viewModel.clearDeleteResult()
+                    }
+                }
+            }
+        }
     }
     
     private fun setupClickListeners() {
@@ -160,7 +180,6 @@ class VisitDetailsFragment : Fragment() {
             .setMessage("Are you sure you want to delete this visit and all its performances? This action cannot be undone.")
             .setPositiveButton("Delete") { _, _ ->
                 viewModel.deleteVisit()
-                findNavController().navigateUp()
             }
             .setNegativeButton("Cancel", null)
             .show()

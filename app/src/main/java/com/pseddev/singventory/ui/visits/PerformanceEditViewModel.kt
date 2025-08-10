@@ -38,6 +38,9 @@ class PerformanceEditViewModel(
     private val _songSearchQuery = MutableStateFlow("")
     val songSearchQuery: StateFlow<String> = _songSearchQuery.asStateFlow()
     
+    private val _deleteResult = MutableStateFlow<Boolean?>(null)
+    val deleteResult: StateFlow<Boolean?> = _deleteResult.asStateFlow()
+    
     private val timeFormat = SimpleDateFormat("MMM dd, yyyy 'at' h:mm a", Locale.getDefault())
     
     // Get all songs for search mode
@@ -161,10 +164,17 @@ class PerformanceEditViewModel(
             try {
                 val currentDetails = _performanceDetails.value ?: return@launch
                 repository.deletePerformanceWithStats(currentDetails.performance)
+                _deleteResult.value = true
+            } catch (e: Exception) {
+                _deleteResult.value = false
             } finally {
                 _isLoading.value = false
             }
         }
+    }
+    
+    fun clearDeleteResult() {
+        _deleteResult.value = null
     }
     
     class Factory(

@@ -16,6 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import android.widget.Toast
 import com.pseddev.singventory.R
 import com.pseddev.singventory.data.database.SingventoryDatabase
 import com.pseddev.singventory.data.entity.Song
@@ -166,6 +167,22 @@ class PerformanceEditFragment : Fragment() {
                 }
             }
         }
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.deleteResult.collect { result ->
+                    result?.let { success ->
+                        if (success) {
+                            Toast.makeText(requireContext(), "Performance deleted successfully", Toast.LENGTH_SHORT).show()
+                            findNavController().navigateUp()
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to delete performance", Toast.LENGTH_SHORT).show()
+                        }
+                        viewModel.clearDeleteResult()
+                    }
+                }
+            }
+        }
     }
     
     private fun setupClickListeners() {
@@ -293,7 +310,6 @@ class PerformanceEditFragment : Fragment() {
             .setMessage("Are you sure you want to delete this performance? This action cannot be undone.")
             .setPositiveButton("Delete") { _, _ ->
                 viewModel.deletePerformance()
-                findNavController().navigateUp()
             }
             .setNegativeButton("Cancel", null)
             .show()

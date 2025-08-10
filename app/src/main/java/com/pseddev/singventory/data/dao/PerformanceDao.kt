@@ -57,4 +57,15 @@ interface PerformanceDao {
     
     @Query("DELETE FROM performances")
     suspend fun deleteAllPerformances()
+    
+    @Query("SELECT * FROM performances WHERE songId = :songId ORDER BY timestamp DESC LIMIT 1")
+    suspend fun getLatestPerformanceForSong(songId: Long): Performance?
+    
+    @Query("""
+        SELECT p.* FROM performances p 
+        INNER JOIN visits v ON p.visitId = v.id 
+        WHERE v.venueId = :venueId AND p.songId = :songId 
+        ORDER BY p.timestamp DESC LIMIT 1
+    """)
+    suspend fun getLatestPerformanceForSongAtVenue(songId: Long, venueId: Long): Performance?
 }

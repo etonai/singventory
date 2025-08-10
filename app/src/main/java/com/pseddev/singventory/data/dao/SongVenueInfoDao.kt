@@ -62,6 +62,9 @@ interface SongVenueInfoDao {
     @Query("UPDATE song_venue_info SET lastPerformed = :timestamp WHERE songId = :songId AND venueId = :venueId")
     suspend fun updateLastPerformed(songId: Long, venueId: Long, timestamp: Long)
     
+    @Query("UPDATE song_venue_info SET performanceCount = 0, lastPerformed = NULL WHERE songId = :songId AND venueId = :venueId")
+    suspend fun resetVenuePerformanceStats(songId: Long, venueId: Long)
+    
     @Query("SELECT COUNT(*) FROM song_venue_info WHERE songId = :songId")
     suspend fun getVenueCountForSong(songId: Long): Int
     

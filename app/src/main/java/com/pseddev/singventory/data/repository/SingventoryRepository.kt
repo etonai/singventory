@@ -1,6 +1,7 @@
 package com.pseddev.singventory.data.repository
 
 import com.pseddev.singventory.data.dao.*
+import com.pseddev.singventory.data.dao.VisitWithDetailsEntity
 import com.pseddev.singventory.data.entity.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -70,6 +71,8 @@ class SingventoryRepository(
     // ================== VISIT OPERATIONS ==================
     
     fun getAllVisits(): Flow<List<Visit>> = visitDao.getAllVisits()
+    
+    fun getAllVisitsWithDetails() = visitDao.getAllVisitsWithDetails()
     
     suspend fun getVisitById(id: Long): Visit? = visitDao.getVisitById(id)
     
@@ -286,6 +289,58 @@ class SingventoryRepository(
         
         // Delete the performance
         performanceDao.deletePerformance(performance)
+    }
+    
+    /**
+     * Delete a visit with proper statistics handling
+     */
+    suspend fun deleteVisitWithStats(visit: Visit) {
+        // Get all performances for this visit BEFORE deleting anything
+        val performances = performanceDao.getPerformancesByVisitIds(listOf(visit.id))
+        
+        // Update venue visit statistics only if this visit was counted (had performances)
+        if (performances.isNotEmpty()) {
+            venueDao.decrementVisitCount(visit.venueId)
+        }
+        
+        // For each performance, update statistics as if we're deleting the performance
+        for (performance in performances) {
+            // Decrement song statistics - each performance decrements by 1
+            songDao.decrementPerformanceCount(performance.songId)
+            
+            // Decrement venue statistics - each performance decrements by 1
+            val songVenueInfo = getSongVenueInfo(performance.songId, visit.venueId)
+            if (songVenueInfo != null && songVenueInfo.performanceCount > 0) {
+                songVenueInfoDao.decrementVenuePerformanceCount(performance.songId, visit.venueId)
+            }
+        }
+        
+        // Collect unique songs and song-venue pairs for lastPerformed updates
+        val songIds = mutableSetOf<Long>()
+        val songVenuePairs = mutableSetOf<Pair<Long, Long>>()
+        
+        for (performance in performances) {
+            songIds.add(performance.songId)
+            songVenuePairs.add(Pair(performance.songId, visit.venueId))
+        }
+        
+        // Delete the visit (this will cascade delete all performances due to foreign key constraints)
+        visitDao.deleteVisit(visit)
+        
+        // Now recalculate last performed dates after deletion
+        for (songId in songIds) {
+            val latestPerformance = performanceDao.getLatestPerformanceForSong(songId)
+            latestPerformance?.let { 
+                songDao.updateLastPerformed(songId, it.timestamp) 
+            }
+        }
+        
+        for ((songId, venueId) in songVenuePairs) {
+            val latestVenuePerformance = performanceDao.getLatestPerformanceForSongAtVenue(songId, venueId)
+            latestVenuePerformance?.let { 
+                songVenueInfoDao.updateLastPerformed(songId, venueId, it.timestamp) 
+            }
+        }
     }
     
     /**

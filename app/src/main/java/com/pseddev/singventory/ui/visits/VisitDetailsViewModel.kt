@@ -32,6 +32,9 @@ class VisitDetailsViewModel(
     private val _visitDetails = MutableStateFlow<VisitDetailsData?>(null)
     val visitDetails: StateFlow<VisitDetailsData?> = _visitDetails.asStateFlow()
     
+    private val _deleteResult = MutableStateFlow<Boolean?>(null)
+    val deleteResult: StateFlow<Boolean?> = _deleteResult.asStateFlow()
+    
     // Get performances for this visit with song details
     val performances = repository.getPerformancesByVisit(visitId).map { performanceList ->
         performanceList.map { performance ->
@@ -96,11 +99,18 @@ class VisitDetailsViewModel(
             _isLoading.value = true
             try {
                 val currentVisit = _visitDetails.value?.visit ?: return@launch
-                repository.deleteVisit(currentVisit)
+                repository.deleteVisitWithStats(currentVisit)
+                _deleteResult.value = true
+            } catch (e: Exception) {
+                _deleteResult.value = false
             } finally {
                 _isLoading.value = false
             }
         }
+    }
+    
+    fun clearDeleteResult() {
+        _deleteResult.value = null
     }
     
     class Factory(

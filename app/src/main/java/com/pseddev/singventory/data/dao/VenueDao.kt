@@ -37,6 +37,9 @@ interface VenueDao {
     @Query("UPDATE venues SET totalVisits = totalVisits + 1, lastVisited = :timestamp WHERE id = :venueId")
     suspend fun incrementVisitCount(venueId: Long, timestamp: Long)
     
+    @Query("UPDATE venues SET totalVisits = CASE WHEN totalVisits > 0 THEN totalVisits - 1 ELSE 0 END WHERE id = :venueId")
+    suspend fun decrementVisitCount(venueId: Long)
+    
     @Query("SELECT COUNT(*) FROM venues")
     suspend fun getVenueCount(): Int
     
