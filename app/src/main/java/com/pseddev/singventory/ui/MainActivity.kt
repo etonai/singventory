@@ -78,22 +78,29 @@ class MainActivity : AppCompatActivity() {
         // Connect ActionBar with NavController
         setupActionBarWithNavController(navController, appBarConfiguration)
         
-        // Connect BottomNavigationView with NavController with custom destination mapping
-        setupBottomNavigationWithCustomMapping(navController)
-    }
-    
-    private fun setupBottomNavigationWithCustomMapping(navController: androidx.navigation.NavController) {
-        // First set up the default behavior
+        // Connect BottomNavigationView with NavController
         binding.bottomNavigation.setupWithNavController(navController)
         
-        // Add custom destination listener to handle subpage highlighting
+        // Add custom listener for subpage highlighting without interfering with navigation
+        setupSubpageHighlighting(navController)
+    }
+    
+    private fun setupSubpageHighlighting(navController: androidx.navigation.NavController) {
+        // Add destination listener that ONLY affects highlighting for subpages
+        // Does not interfere with normal navigation behavior
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            val parentNavigationId = getParentNavigationId(destination.id)
-            if (parentNavigationId != null) {
-                // Only update if the computed parent is different from currently selected
-                if (binding.bottomNavigation.selectedItemId != parentNavigationId) {
-                    binding.bottomNavigation.selectedItemId = parentNavigationId
+            try {
+                if (::binding.isInitialized) {
+                    val parentNavigationId = getParentNavigationId(destination.id)
+                    if (parentNavigationId != null) {
+                        // For subpages, override the bottom navigation selection to show parent
+                        // This runs after navigation is complete, so it won't interfere
+                        binding.bottomNavigation.menu.findItem(parentNavigationId)?.isChecked = true
+                    }
+                    // For main pages, let the default behavior handle it (parentNavigationId will be null)
                 }
+            } catch (e: Exception) {
+                // Silently handle exceptions to prevent crashes
             }
         }
     }
