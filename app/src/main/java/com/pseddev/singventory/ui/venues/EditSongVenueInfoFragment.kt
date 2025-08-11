@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.pseddev.singventory.R
 import com.pseddev.singventory.data.database.SingventoryDatabase
+import com.pseddev.singventory.data.entity.MusicalKey
 import com.pseddev.singventory.data.repository.SingventoryRepository
 import com.pseddev.singventory.databinding.FragmentEditSongVenueInfoBinding
 import kotlinx.coroutines.launch
@@ -23,23 +24,7 @@ class EditSongVenueInfoFragment : Fragment() {
     private var _binding: FragmentEditSongVenueInfoBinding? = null
     private val binding get() = _binding!!
     
-    companion object {
-        private val MUSICAL_KEYS = listOf(
-            "",  // Empty option for no key specified
-            "C",
-            "C#/Db",
-            "D",
-            "D#/Eb", 
-            "E",
-            "F",
-            "F#/Gb",
-            "G",
-            "G#/Ab",
-            "A",
-            "A#/Bb",
-            "B"
-        )
-    }
+    // Key options will be built dynamically to include both major and minor keys
     
     private val viewModel: EditSongVenueInfoViewModel by viewModels {
         val database = SingventoryDatabase.getDatabase(requireContext())
@@ -74,7 +59,15 @@ class EditSongVenueInfoFragment : Fragment() {
     }
     
     private fun setupVenueKeyDropdown() {
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, MUSICAL_KEYS)
+        val keyOptions = buildList {
+            add("")  // Empty option for no key specified
+            // Add all major keys first
+            addAll(MusicalKey.getMajorKeys().map { it.displayName })
+            // Add all minor keys second
+            addAll(MusicalKey.getMinorKeys().map { it.displayName })
+        }
+        
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, keyOptions)
         binding.venueKeyDropdown.setAdapter(adapter)
     }
     

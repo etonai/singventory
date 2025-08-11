@@ -36,22 +36,29 @@ class VenueSongsViewModel(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
     
-    // Get all song-venue associations for this venue with song details
-    private val allSongs = repository.getSongVenueInfoByVenue(venueId).map { songVenueInfoList ->
-        songVenueInfoList.map { songVenueInfo ->
-            val song = repository.getSongById(songVenueInfo.songId)
-            val performanceCount = repository.getPerformanceCountForSongAtVenue(
-                songVenueInfo.songId, 
-                venueId
+    // Get all song-venue associations for this venue with song details using efficient JOIN query
+    private val allSongs = repository.getSongVenueInfoWithSongDetailsByVenue(venueId).map { songVenueInfoWithDetailsList ->
+        songVenueInfoWithDetailsList.map { songVenueInfoWithDetails ->
+            // Convert flattened data back to our ViewModel data class
+            val songVenueInfo = com.pseddev.singventory.data.entity.SongVenueInfo(
+                id = songVenueInfoWithDetails.id,
+                songId = songVenueInfoWithDetails.songId,
+                venueId = songVenueInfoWithDetails.venueId,
+                venuesSongId = songVenueInfoWithDetails.venuesSongId,
+                venueKey = songVenueInfoWithDetails.venueKey,
+                keyAdjustment = songVenueInfoWithDetails.keyAdjustment,
+                lyrics = songVenueInfoWithDetails.lyrics,
+                performanceCount = songVenueInfoWithDetails.performanceCount,
+                lastPerformed = songVenueInfoWithDetails.lastPerformed
             )
             
             SongVenueInfoWithDetails(
                 songVenueInfo = songVenueInfo,
-                songName = song?.name ?: "Unknown Song",
-                artistName = song?.artist ?: "",
-                performanceCount = 0 // We'll update this properly later
+                songName = songVenueInfoWithDetails.songName,
+                artistName = songVenueInfoWithDetails.artistName,
+                performanceCount = songVenueInfoWithDetails.performanceCount // Use the actual performance count from database
             )
-        }.sortedBy { it.songName } // Sort alphabetically by song name
+        } // Already sorted alphabetically by song name in the query
     }
     
     // Filtered songs based on search query

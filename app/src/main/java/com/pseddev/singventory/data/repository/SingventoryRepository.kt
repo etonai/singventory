@@ -141,6 +141,9 @@ class SingventoryRepository(
     fun getSongVenueInfoByVenue(venueId: Long): Flow<List<SongVenueInfo>> =
         songVenueInfoDao.getSongVenueInfoByVenue(venueId)
     
+    fun getSongVenueInfoWithSongDetailsByVenue(venueId: Long) = 
+        songVenueInfoDao.getSongVenueInfoWithSongDetailsByVenue(venueId)
+    
     suspend fun getSongVenueInfo(songId: Long, venueId: Long): SongVenueInfo? =
         songVenueInfoDao.getSongVenueInfo(songId, venueId)
     
