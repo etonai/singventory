@@ -123,6 +123,10 @@ class ImportExportViewModel(
                 _importState.value = ImportExportState.Progress("Validating data...")
                 validateBackupData(backupData)
                 
+                // DESTRUCTIVE: Clear all existing data before importing
+                _importState.value = ImportExportState.Progress("Clearing existing data...")
+                repository.clearAllData()
+                
                 // Import in correct order to maintain referential integrity
                 var importedSongs = 0
                 var importedVenues = 0
@@ -130,55 +134,37 @@ class ImportExportViewModel(
                 var importedPerformances = 0
                 var importedAssociations = 0
                 
-                // Create ID mapping for relationships
+                // Create ID mapping for relationships (no longer need to check for existing data)
                 val songIdMap = mutableMapOf<Long, Long>()
                 val venueIdMap = mutableMapOf<Long, Long>()
                 val visitIdMap = mutableMapOf<Long, Long>()
                 
-                // Import songs first
+                // Import songs first (no need to check for existing since data was cleared)
                 _importState.value = ImportExportState.Progress("Importing songs...")
                 for (song in backupData.songs) {
-                    val existingSong = repository.getSongByNameAndArtist(song.name, song.artist)
-                    if (existingSong == null) {
-                        val newSong = song.copy(id = 0) // Let database assign new ID
-                        val newId = repository.insertSong(newSong)
-                        songIdMap[song.id] = newId
-                        importedSongs++
-                    } else {
-                        songIdMap[song.id] = existingSong.id
-                    }
+                    val newSong = song.copy(id = 0) // Let database assign new ID
+                    val newId = repository.insertSong(newSong)
+                    songIdMap[song.id] = newId
+                    importedSongs++
                 }
                 
-                // Import venues
+                // Import venues (no need to check for existing since data was cleared)
                 _importState.value = ImportExportState.Progress("Importing venues...")
                 for (venue in backupData.venues) {
-                    val existingVenue = repository.getVenueByName(venue.name)
-                    if (existingVenue == null) {
-                        val newVenue = venue.copy(id = 0) // Let database assign new ID
-                        val newId = repository.insertVenue(newVenue)
-                        venueIdMap[venue.id] = newId
-                        importedVenues++
-                    } else {
-                        venueIdMap[venue.id] = existingVenue.id
-                    }
+                    val newVenue = venue.copy(id = 0) // Let database assign new ID
+                    val newId = repository.insertVenue(newVenue)
+                    venueIdMap[venue.id] = newId
+                    importedVenues++
                 }
                 
-                // Import visits
+                // Import visits (no need to check for existing since data was cleared)
                 _importState.value = ImportExportState.Progress("Importing visits...")
                 for (visit in backupData.visits) {
                     val newVenueId = venueIdMap[visit.venueId] ?: continue
-                    
-                    // Check if visit with same venue and timestamp already exists
-                    val existingVisit = repository.getVisitByVenueAndTimestamp(newVenueId, visit.timestamp)
-                    if (existingVisit == null) {
-                        val newVisit = visit.copy(id = 0, venueId = newVenueId)
-                        val newId = repository.insertVisit(newVisit)
-                        visitIdMap[visit.id] = newId
-                        importedVisits++
-                    } else {
-                        // Use existing visit ID for performance mapping
-                        visitIdMap[visit.id] = existingVisit.id
-                    }
+                    val newVisit = visit.copy(id = 0, venueId = newVenueId)
+                    val newId = repository.insertVisit(newVisit)
+                    visitIdMap[visit.id] = newId
+                    importedVisits++
                 }
                 
                 // Import performances
@@ -191,22 +177,17 @@ class ImportExportViewModel(
                     importedPerformances++
                 }
                 
-                // Import song-venue associations
+                // Import song-venue associations (no need to check for existing since data was cleared)
                 _importState.value = ImportExportState.Progress("Importing associations...")
                 for (association in backupData.songVenueInfo) {
                     val newSongId = songIdMap[association.songId] ?: continue
                     val newVenueId = venueIdMap[association.venueId] ?: continue
-                    
-                    // Check if association already exists
-                    val existingAssociation = repository.getSongVenueInfo(newSongId, newVenueId)
-                    if (existingAssociation == null) {
-                        val newAssociation = association.copy(id = 0, songId = newSongId, venueId = newVenueId)
-                        repository.insertSongVenueInfo(newAssociation)
-                        importedAssociations++
-                    }
+                    val newAssociation = association.copy(id = 0, songId = newSongId, venueId = newVenueId)
+                    repository.insertSongVenueInfo(newAssociation)
+                    importedAssociations++
                 }
                 
-                _importState.value = ImportExportState.Success("Imported $importedSongs songs, $importedVenues venues, $importedVisits visits, $importedPerformances performances, $importedAssociations associations")
+                _importState.value = ImportExportState.Success("Successfully replaced all data with $importedSongs songs, $importedVenues venues, $importedVisits visits, $importedPerformances performances, $importedAssociations associations")
                 
             } catch (e: Exception) {
                 _importState.value = ImportExportState.Error(e.message ?: "Unknown import error")

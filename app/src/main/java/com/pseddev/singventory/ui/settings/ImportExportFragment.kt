@@ -20,6 +20,8 @@ import com.pseddev.singventory.databinding.FragmentImportExportBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ImportExportFragment : Fragment() {
     
@@ -127,10 +129,13 @@ class ImportExportFragment : Fragment() {
     }
     
     private fun startExport() {
+        val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+        val datetime = dateFormat.format(Date())
+        
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "application/json"
-            putExtra(Intent.EXTRA_TITLE, "singventory_backup_${System.currentTimeMillis()}.json")
+            putExtra(Intent.EXTRA_TITLE, "singventory_export_${datetime}.json")
         }
         exportLauncher.launch(intent)
     }
@@ -138,7 +143,7 @@ class ImportExportFragment : Fragment() {
     private fun showImportDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Import Data")
-            .setMessage("Select a Singventory backup file to import. This will merge the imported data with your existing data.\\n\\nWARNING: This cannot be undone. Consider exporting your current data first.")
+            .setMessage("⚠️ DESTRUCTIVE OPERATION ⚠️\n\nThis will COMPLETELY REPLACE all your existing data with the contents of the backup file.\n\n• All current songs, venues, visits, and performances will be PERMANENTLY DELETED\n• Only the data from the backup file will remain\n\nSTRONGLY RECOMMENDED: Export your current data first as backup.\n\nThis action cannot be undone!")
             .setPositiveButton("Select File") { _, _ ->
                 startImport()
             }
@@ -156,9 +161,9 @@ class ImportExportFragment : Fragment() {
     
     private fun showImportConfirmation(uri: Uri) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Confirm Import")
-            .setMessage("Are you sure you want to import data from this file? This will add the imported songs, venues, and visits to your existing data.\\n\\nThis action cannot be undone.")
-            .setPositiveButton("Import") { _, _ ->
+            .setTitle("⚠️ FINAL WARNING ⚠️")
+            .setMessage("LAST CHANCE TO CANCEL!\n\nYou are about to PERMANENTLY DELETE all your current data and replace it with the contents of this backup file.\n\n🚨 ALL EXISTING DATA WILL BE LOST 🚨\n\nAre you absolutely certain you want to proceed?")
+            .setPositiveButton("REPLACE ALL DATA") { _, _ ->
                 viewModel.importData(uri)
             }
             .setNegativeButton("Cancel", null)
