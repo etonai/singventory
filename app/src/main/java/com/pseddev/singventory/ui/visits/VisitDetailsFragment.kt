@@ -149,14 +149,7 @@ class VisitDetailsFragment : Fragment() {
         binding.etNotes.setText(visitDetails.visit.notes ?: "")
         binding.etAmountSpent.setText(visitDetails.visit.amountSpent?.toString() ?: "")
         
-        // Show duration if completed
-        if (visitDetails.visit.endTimestamp != null) {
-            val duration = (visitDetails.visit.endTimestamp - visitDetails.visit.timestamp) / (1000 * 60)
-            binding.visitDuration.text = "${duration} minutes"
-            binding.visitDuration.visibility = View.VISIBLE
-        } else {
-            binding.visitDuration.visibility = View.GONE
-        }
+        // Hide duration display - removed as not useful to users
         
         // Show Add Performance button for all visits (both active and completed)
         binding.btnAddPerformance.visibility = View.VISIBLE

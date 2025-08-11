@@ -3,6 +3,7 @@ package com.pseddev.singventory.ui.visits
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.pseddev.singventory.data.dao.PerformanceWithSongInfo
 import com.pseddev.singventory.data.entity.Visit
 import com.pseddev.singventory.data.entity.Venue
 import com.pseddev.singventory.data.repository.SingventoryRepository
@@ -35,14 +36,13 @@ class VisitDetailsViewModel(
     private val _deleteResult = MutableStateFlow<Boolean?>(null)
     val deleteResult: StateFlow<Boolean?> = _deleteResult.asStateFlow()
     
-    // Get performances for this visit with song details
-    val performances = repository.getPerformancesByVisit(visitId).map { performanceList ->
-        performanceList.map { performance ->
-            val song = repository.getSongById(performance.songId)
+    // Get performances for this visit with song details using JOIN query
+    val performances = repository.getPerformancesByVisitWithSongInfo(visitId).map { performanceList ->
+        performanceList.map { performanceWithSongInfo ->
             PerformanceWithSong(
-                performance = performance,
-                songName = song?.name ?: "Unknown Song",
-                artistName = song?.artist ?: ""
+                performance = performanceWithSongInfo.performance,
+                songName = performanceWithSongInfo.songName,
+                artistName = performanceWithSongInfo.artistName
             )
         }.sortedByDescending { it.performance.timestamp } // Most recent first
     }

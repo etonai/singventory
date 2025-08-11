@@ -106,6 +106,9 @@ class SingventoryRepository(
     
     fun getPerformancesByVisit(visitId: Long): Flow<List<Performance>> =
         performanceDao.getPerformancesByVisit(visitId)
+        
+    fun getPerformancesByVisitWithSongInfo(visitId: Long) =
+        performanceDao.getPerformancesByVisitWithSongInfo(visitId)
     
     fun getPerformancesBySong(songId: Long): Flow<List<Performance>> =
         performanceDao.getPerformancesBySong(songId)

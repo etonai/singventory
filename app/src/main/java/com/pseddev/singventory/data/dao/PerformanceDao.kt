@@ -4,6 +4,12 @@ import androidx.room.*
 import com.pseddev.singventory.data.entity.Performance
 import kotlinx.coroutines.flow.Flow
 
+data class PerformanceWithSongInfo(
+    @Embedded val performance: Performance,
+    val songName: String,
+    val artistName: String
+)
+
 @Dao
 interface PerformanceDao {
     
@@ -15,6 +21,15 @@ interface PerformanceDao {
     
     @Query("SELECT * FROM performances WHERE visitId = :visitId ORDER BY timestamp ASC")
     fun getPerformancesByVisit(visitId: Long): Flow<List<Performance>>
+    
+    @Query("""
+        SELECT p.*, s.name as songName, s.artist as artistName
+        FROM performances p 
+        INNER JOIN songs s ON p.songId = s.id 
+        WHERE p.visitId = :visitId 
+        ORDER BY p.timestamp ASC
+    """)
+    fun getPerformancesByVisitWithSongInfo(visitId: Long): Flow<List<PerformanceWithSongInfo>>
     
     @Query("SELECT * FROM performances WHERE songId = :songId ORDER BY timestamp DESC")
     fun getPerformancesBySong(songId: Long): Flow<List<Performance>>
