@@ -223,6 +223,14 @@ class EditSongFragment : Fragment() {
         binding.btnDeleteSong.setOnClickListener {
             showDeleteConfirmationDialog()
         }
+
+        binding.associateVenuesButton.setOnClickListener {
+            val songId = arguments?.getLong("songId") ?: 0L
+            val bundle = Bundle().apply {
+                putLong("songId", songId)
+            }
+            findNavController().navigate(R.id.action_editSong_to_associateVenues, bundle)
+        }
     }
 
     private fun showUnsavedChangesDialog() {

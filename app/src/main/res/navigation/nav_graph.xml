@@ -120,6 +120,9 @@
         <argument
             android:name="songId"
             app:argType="long" />
+        <action
+            android:id="@+id/action_editSong_to_associateVenues"
+            app:destination="@id/associateVenuesWithSongFragment" />
     </fragment>
 
     <fragment
@@ -129,6 +132,9 @@
         <argument
             android:name="venueId"
             app:argType="long" />
+        <action
+            android:id="@+id/action_editVenue_to_venueSongs"
+            app:destination="@id/venueSongsFragment" />
     </fragment>
 
     <fragment

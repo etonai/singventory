@@ -184,8 +184,7 @@
             app:cardCornerRadius="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lyrics_card"
-            app:layout_constraintBottom_toTopOf="@id/button_container">
+            app:layout_constraintTop_toBottomOf="@id/lyrics_card">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -271,6 +270,24 @@
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
+
+        <!-- Associate Venues Navigation Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/associate_venues_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="Associate with Venues"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#673AB7"
+            app:icon="@drawable/ic_link"
+            app:iconTint="@android:color/white"
+            app:iconGravity="start"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/performance_stats_card"
+            app:layout_constraintBottom_toTopOf="@id/button_container" />
 
         <LinearLayout
             android:id="@+id/button_container"

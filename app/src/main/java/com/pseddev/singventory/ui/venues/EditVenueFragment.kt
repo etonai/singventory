@@ -241,6 +241,14 @@ class EditVenueFragment : Fragment() {
         binding.deleteButton.setOnClickListener {
             showDeleteConfirmationDialog()
         }
+
+        binding.viewSongsButton.setOnClickListener {
+            val venueId = arguments?.getLong("venueId") ?: 0L
+            val bundle = Bundle().apply {
+                putLong("venueId", venueId)
+            }
+            findNavController().navigate(R.id.action_editVenue_to_venueSongs, bundle)
+        }
     }
 
     private fun showUnsavedChangesDialog() {

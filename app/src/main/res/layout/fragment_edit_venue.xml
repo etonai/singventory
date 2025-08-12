@@ -106,6 +106,22 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Venue Songs Navigation Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/view_songs_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="View Venue Songs"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#673AB7"
+                app:icon="@drawable/ic_music_note"
+                app:iconTint="@android:color/white"
+                app:iconGravity="start"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/statistics_card" />
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/venue_info_card"
                 android:layout_width="0dp"
@@ -114,7 +130,7 @@
                 app:cardCornerRadius="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/statistics_card">
+                app:layout_constraintTop_toBottomOf="@id/view_songs_button">
 
                 <LinearLayout
                     android:layout_width="match_parent"
