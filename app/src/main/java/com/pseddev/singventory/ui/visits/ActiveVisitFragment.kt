@@ -21,6 +21,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.pseddev.singventory.R
 import com.pseddev.singventory.data.database.SingventoryDatabase
 import com.pseddev.singventory.data.entity.Song
+import com.pseddev.singventory.data.entity.SongVenueInfo
 import com.pseddev.singventory.data.repository.SingventoryRepository
 import com.pseddev.singventory.databinding.FragmentActiveVisitBinding
 import com.pseddev.singventory.ui.settings.ConfigurationFragment
@@ -472,7 +473,7 @@ class ActiveVisitFragment : Fragment() {
                 if (!song.preferredKey.isNullOrBlank()) {
                     append("Preferred Key: ${song.preferredKey}\n")
                 }
-                if (venueKeyAdjustment != null && venueKeyAdjustment != 0) {
+                if (venueKeyAdjustment != null && venueKeyAdjustment != 0 && !SongVenueInfo.isKeyAdjustmentUnknown(venueKeyAdjustment)) {
                     val adjustmentString = if (venueKeyAdjustment > 0) "+$venueKeyAdjustment" else venueKeyAdjustment.toString()
                     append("Venue Adjustment: $adjustmentString steps\n")
                 }

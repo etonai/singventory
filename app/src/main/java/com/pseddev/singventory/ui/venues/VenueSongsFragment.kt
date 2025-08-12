@@ -66,9 +66,6 @@ class VenueSongsFragment : Fragment() {
                     R.id.action_venueSongs_to_editSongVenueInfo,
                     bundleOf("songVenueInfoId" to songVenueInfo.id)
                 )
-            },
-            onDeleteClick = { songVenueInfo ->
-                showDeleteConfirmation(songVenueInfo)
             }
         )
         
@@ -149,17 +146,6 @@ class VenueSongsFragment : Fragment() {
     
     private fun updateSongCount(count: Int) {
         binding.songCount.text = if (count == 1) "1 song" else "$count songs"
-    }
-    
-    private fun showDeleteConfirmation(songVenueInfo: SongVenueInfoWithDetails) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Remove Song Association")
-            .setMessage("Remove \"${songVenueInfo.songName}\" from this venue's catalog? This will not delete the song itself, only its association with this venue.")
-            .setPositiveButton("Remove") { _, _ ->
-                viewModel.deleteSongVenueInfo(songVenueInfo)
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
     }
     
     override fun onDestroyView() {

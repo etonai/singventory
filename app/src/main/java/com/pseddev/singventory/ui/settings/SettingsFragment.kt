@@ -66,6 +66,7 @@ class SettingsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.clearDataEnabled.collect { enabled ->
                     updateClearDataButton(enabled)
+                    updateMigrateKeyAdjustmentsButton(enabled)
                 }
             }
         }
@@ -88,14 +89,19 @@ class SettingsFragment : Fragment() {
             
             // Update app information
             appName.text = "Singventory"
+            appBuildVersion.text = "Version ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) - ${BuildConfig.BUILD_TYPE.uppercase()}"
             appOwner.text = "PseudonymousEd" 
-            appBuildVersion.text = "Version ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+            appCopyright.text = "Copyright 2025 - All rights reserved"
         }
     }
     
     
     private fun updateClearDataButton(enabled: Boolean) {
         binding.btnClearData.visibility = if (enabled) View.VISIBLE else View.GONE
+    }
+    
+    private fun updateMigrateKeyAdjustmentsButton(enabled: Boolean) {
+        binding.btnMigrateKeyAdjustments.visibility = if (enabled) View.VISIBLE else View.GONE
     }
     
     private fun setupButtons() {
@@ -113,6 +119,10 @@ class SettingsFragment : Fragment() {
         
         binding.btnClearData.setOnClickListener {
             showClearDataConfirmation()
+        }
+        
+        binding.btnMigrateKeyAdjustments.setOnClickListener {
+            showMigrateKeyAdjustmentsConfirmation()
         }
     }
     
@@ -140,6 +150,27 @@ class SettingsFragment : Fragment() {
             .show()
     }
     
+    private fun showMigrateKeyAdjustmentsConfirmation() {
+        if (!BuildConfig.DEBUG) return
+        
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Migrate Key Adjustments")
+            .setMessage("This will change all existing key adjustments of 0 to 'Unknown' for testing purposes.\n\nThis helps test the new Unknown vs Zero key adjustment feature.\n\nThis action can be undone by manually setting values back to 0.")
+            .setPositiveButton("Migrate to Unknown") { _, _ ->
+                lifecycleScope.launch {
+                    val migratedCount = viewModel.migrateZeroKeyAdjustmentsToUnknown()
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Migration Complete")
+                        .setMessage("Successfully migrated $migratedCount key adjustment(s) from 0 to Unknown.")
+                        .setPositiveButton("OK", null)
+                        .show()
+                    viewModel.refreshData()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
     override fun onResume() {
         super.onResume()
         // Refresh data when returning to settings screen

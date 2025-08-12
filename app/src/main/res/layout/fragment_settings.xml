@@ -62,6 +62,17 @@
                     android:backgroundTint="?attr/colorError"
                     android:textColor="?attr/colorOnError"
                     android:visibility="gone"
+                    android:layout_marginBottom="8dp"
+                    style="@style/Widget.Material3.Button" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_migrate_key_adjustments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Migrate 0→Unknown Keys (Test)"
+                    android:backgroundTint="?attr/colorTertiary"
+                    android:textColor="?attr/colorOnTertiary"
+                    android:visibility="gone"
                     style="@style/Widget.Material3.Button" />
 
             </LinearLayout>
@@ -159,9 +170,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Singventory"
-                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textAppearance="?attr/textAppearanceHeadlineMedium"
                     android:textAlignment="center"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:id="@+id/app_build_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Version 0.0.1 (1)"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textAlignment="center"
+                    android:layout_marginBottom="16dp" />
 
                 <TextView
                     android:id="@+id/app_owner"
@@ -170,14 +190,14 @@
                     android:text="PseudonymousEd"
                     android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:textAlignment="center"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="4dp" />
 
                 <TextView
-                    android:id="@+id/app_build_version"
+                    android:id="@+id/app_copyright"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Version 0.0.1 (1)"
-                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:text="Copyright 2025 - All rights reserved"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
                     android:textAlignment="center" />
 
             </LinearLayout>

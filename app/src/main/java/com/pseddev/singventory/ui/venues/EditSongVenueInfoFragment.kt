@@ -15,6 +15,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.pseddev.singventory.R
 import com.pseddev.singventory.data.database.SingventoryDatabase
 import com.pseddev.singventory.data.entity.MusicalKey
+import com.pseddev.singventory.data.entity.SongVenueInfo
 import com.pseddev.singventory.data.repository.SingventoryRepository
 import com.pseddev.singventory.databinding.FragmentEditSongVenueInfoBinding
 import kotlinx.coroutines.launch
@@ -115,6 +116,14 @@ class EditSongVenueInfoFragment : Fragment() {
         binding.artistName.text = details.artistName
         binding.venueName.text = details.venueName
         
+        // Display lyrics if available
+        if (!details.lyrics.isNullOrBlank()) {
+            binding.lyricsSection.visibility = View.VISIBLE
+            binding.songLyrics.text = details.lyrics
+        } else {
+            binding.lyricsSection.visibility = View.GONE
+        }
+        
         // Set venue song number
         binding.etVenueSongNumber.setText(details.songVenueInfo.venuesSongId ?: "")
         
@@ -137,6 +146,7 @@ class EditSongVenueInfoFragment : Fragment() {
     
     private fun updateKeyAdjustmentDisplay(keyAdjustment: Int) {
         binding.keyAdjustmentValue.text = when {
+            SongVenueInfo.isKeyAdjustmentUnknown(keyAdjustment) -> "Unknown"
             keyAdjustment > 0 -> "+$keyAdjustment"
             keyAdjustment < 0 -> keyAdjustment.toString()
             else -> "0"
@@ -146,6 +156,11 @@ class EditSongVenueInfoFragment : Fragment() {
     private fun adjustKeyValue(adjustment: Int) {
         val currentText = binding.keyAdjustmentValue.text.toString()
         val currentValue = when (currentText) {
+            "Unknown" -> {
+                // First click on Unknown transitions to 0, subsequent clicks adjust from there
+                updateKeyAdjustmentDisplay(0)
+                return
+            }
             "0" -> 0
             else -> currentText.toIntOrNull() ?: 0
         }
@@ -158,6 +173,7 @@ class EditSongVenueInfoFragment : Fragment() {
         val venueKey = binding.venueKeyDropdown.text.toString().trim().takeIf { it.isNotBlank() }
         val keyAdjustmentText = binding.keyAdjustmentValue.text.toString()
         val keyAdjustment = when (keyAdjustmentText) {
+            "Unknown" -> SongVenueInfo.UNKNOWN_KEY_ADJUSTMENT
             "0" -> 0
             else -> keyAdjustmentText.toIntOrNull() ?: 0
         }

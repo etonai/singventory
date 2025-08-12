@@ -138,13 +138,13 @@ class AssociateVenuesViewModel(
                 // Check if association already exists
                 val existing = repository.getSongVenueInfo(songId, venueId)
                 if (existing == null) {
-                    // Create new association with default values
+                    // Create new association with default values (keyAdjustment = -999 for Unknown)
                     val association = SongVenueInfo(
                         songId = songId,
                         venueId = venueId,
                         venuesSongId = null,
                         venueKey = null,
-                        keyAdjustment = 0,
+                        keyAdjustment = SongVenueInfo.UNKNOWN_KEY_ADJUSTMENT,
                         lyrics = null
                     )
                     repository.insertSongVenueInfo(association)

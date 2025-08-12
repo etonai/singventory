@@ -5,16 +5,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.pseddev.singventory.data.entity.SongVenueInfo
 import com.pseddev.singventory.databinding.ItemVenueSongBinding
 
 class VenueSongsAdapter(
-    private val onSongClick: (SongVenueInfoWithDetails) -> Unit,
-    private val onDeleteClick: (SongVenueInfoWithDetails) -> Unit
+    private val onSongClick: (SongVenueInfoWithDetails) -> Unit
 ) : ListAdapter<SongVenueInfoWithDetails, VenueSongsAdapter.VenueSongViewHolder>(VenueSongDiffCallback()) {
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VenueSongViewHolder {
         val binding = ItemVenueSongBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return VenueSongViewHolder(binding, onSongClick, onDeleteClick)
+        return VenueSongViewHolder(binding, onSongClick)
     }
     
     override fun onBindViewHolder(holder: VenueSongViewHolder, position: Int) {
@@ -23,8 +23,7 @@ class VenueSongsAdapter(
     
     class VenueSongViewHolder(
         private val binding: ItemVenueSongBinding,
-        private val onSongClick: (SongVenueInfoWithDetails) -> Unit,
-        private val onDeleteClick: (SongVenueInfoWithDetails) -> Unit
+        private val onSongClick: (SongVenueInfoWithDetails) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         
         fun bind(songVenueInfoWithDetails: SongVenueInfoWithDetails) {
@@ -44,7 +43,7 @@ class VenueSongsAdapter(
             
             // Display key adjustment if any
             val keyAdjustment = songVenueInfo.keyAdjustment
-            if (keyAdjustment != 0) {
+            if (keyAdjustment != 0 && !SongVenueInfo.isKeyAdjustmentUnknown(keyAdjustment)) {
                 val keyText = if (keyAdjustment > 0) {
                     "Key: +$keyAdjustment"
                 } else {
@@ -76,10 +75,6 @@ class VenueSongsAdapter(
             // Handle clicks
             binding.root.setOnClickListener {
                 onSongClick(songVenueInfoWithDetails)
-            }
-            
-            binding.btnDelete.setOnClickListener {
-                onDeleteClick(songVenueInfoWithDetails)
             }
         }
     }

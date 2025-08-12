@@ -31,10 +31,16 @@ data class SongVenueInfo(
     val venueId: Long,
     val venuesSongId: String? = null,    // The venue's internal song code/ID
     val venueKey: String? = null,        // Key that this song is in at this venue
-    val keyAdjustment: Int = 0,          // Steps up/down from venue key that user prefers
+    val keyAdjustment: Int = -999,       // Steps up/down from venue key that user prefers (-999 = Unknown/unset)
     val lyrics: String? = null,          // Venue-specific lyrics override (defaults to song lyrics)
     
     // Venue-specific performance stats - preserved during purging
     val performanceCount: Int = 0,       // Times performed at this specific venue
     val lastPerformed: Long? = null      // Last performance at this venue - frozen even after purging
-)
+) {
+    companion object {
+        const val UNKNOWN_KEY_ADJUSTMENT = -999
+        
+        fun isKeyAdjustmentUnknown(keyAdjustment: Int): Boolean = keyAdjustment == UNKNOWN_KEY_ADJUSTMENT
+    }
+}

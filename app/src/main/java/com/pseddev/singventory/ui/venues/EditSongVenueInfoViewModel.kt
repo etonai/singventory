@@ -15,7 +15,8 @@ data class EditSongVenueInfoDetails(
     val songName: String,
     val artistName: String,
     val venueName: String,
-    val performanceCount: Int
+    val performanceCount: Int,
+    val lyrics: String?
 )
 
 class EditSongVenueInfoViewModel(
@@ -51,7 +52,8 @@ class EditSongVenueInfoViewModel(
                         songName = song?.name ?: "Unknown Song",
                         artistName = song?.artist ?: "",
                         venueName = venue?.name ?: "Unknown Venue",
-                        performanceCount = performanceCount
+                        performanceCount = performanceCount,
+                        lyrics = song?.lyrics
                     )
                 }
             } finally {

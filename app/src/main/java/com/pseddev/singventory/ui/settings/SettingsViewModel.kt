@@ -109,6 +109,16 @@ class SettingsViewModel(private val repository: SingventoryRepository) : ViewMod
         loadDataStatistics()
     }
     
+    /**
+     * TESTING HELPER: Migrate all existing 0 key adjustments to Unknown (-999)
+     */
+    suspend fun migrateZeroKeyAdjustmentsToUnknown(): Int {
+        return if (BuildConfig.DEBUG) {
+            repository.migrateZeroKeyAdjustmentsToUnknown()
+        } else {
+            0 // Safety check - only allow in debug builds
+        }
+    }
     
     
     class Factory(private val repository: SingventoryRepository) : ViewModelProvider.Factory {

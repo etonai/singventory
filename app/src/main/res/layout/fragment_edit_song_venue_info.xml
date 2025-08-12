@@ -43,10 +43,49 @@
                     android:textColor="?android:attr/textColorSecondary"
                     tools:text="Celine Dion" />
 
+                <!-- Song Lyrics Section (conditional display) -->
+                <LinearLayout
+                    android:id="@+id/lyricsSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Lyrics"
+                        android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+                        android:textColor="?attr/colorPrimary"
+                        android:textStyle="bold" />
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:maxHeight="200dp"
+                        android:scrollbars="vertical">
+
+                        <TextView
+                            android:id="@+id/songLyrics"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                            android:textColor="?android:attr/textColorSecondary"
+                            android:fontFamily="monospace"
+                            android:padding="8dp"
+                            tools:text="Example lyrics would go here..." />
+
+                    </ScrollView>
+
+                </LinearLayout>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="12dp"
                     android:text="at"
                     android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     android:textColor="?android:attr/textColorSecondary" />

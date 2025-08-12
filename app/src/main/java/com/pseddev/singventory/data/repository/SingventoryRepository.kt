@@ -5,6 +5,7 @@ import com.pseddev.singventory.data.dao.VisitWithDetailsEntity
 import com.pseddev.singventory.data.entity.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 class SingventoryRepository(
     private val songDao: SongDao,
     private val venueDao: VenueDao,
@@ -508,5 +509,25 @@ class SingventoryRepository(
         songVenueInfoDao.deleteAllSongVenueInfo()
         songDao.deleteAllSongs()
         venueDao.deleteAllVenues()
+    }
+    
+    /**
+     * TESTING HELPER: Migrate existing 0 key adjustments to Unknown (-999)
+     * This updates all SongVenueInfo records where keyAdjustment = 0 to keyAdjustment = -999
+     * Used for testing the Unknown vs Zero key adjustment feature
+     */
+    suspend fun migrateZeroKeyAdjustmentsToUnknown(): Int {
+        val allSongVenueInfo = songVenueInfoDao.getAllSongVenueInfo().first()
+        var migratedCount = 0
+        
+        allSongVenueInfo.forEach { songVenueInfo ->
+            if (songVenueInfo.keyAdjustment == 0) {
+                val updated = songVenueInfo.copy(keyAdjustment = SongVenueInfo.UNKNOWN_KEY_ADJUSTMENT)
+                songVenueInfoDao.updateSongVenueInfo(updated)
+                migratedCount++
+            }
+        }
+        
+        return migratedCount
     }
 }
