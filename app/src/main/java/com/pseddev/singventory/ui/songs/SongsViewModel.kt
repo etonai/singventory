@@ -19,10 +19,10 @@ class SongsViewModel(private val repository: SingventoryRepository) : ViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     
-    private val _sortOption = MutableStateFlow(SongSortOption.PERFORMANCE_COUNT)
+    private val _sortOption = MutableStateFlow(SongSortOption.TITLE)
     val sortOption: StateFlow<SongSortOption> = _sortOption.asStateFlow()
     
-    private val _sortAscending = MutableStateFlow(false) // Default to descending for performance count
+    private val _sortAscending = MutableStateFlow(true) // Default to ascending for title (A-Z)
     val sortAscending: StateFlow<Boolean> = _sortAscending.asStateFlow()
     
     // Combine all songs with search query and sorting to create filtered and sorted list

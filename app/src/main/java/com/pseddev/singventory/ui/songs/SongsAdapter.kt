@@ -10,8 +10,7 @@ import com.pseddev.singventory.databinding.ItemSongBinding
 
 class SongsAdapter(
     private val onSongClick: (Song) -> Unit,
-    private val onAddVenueClick: (Song) -> Unit,
-    private val onEditSongClick: (Song) -> Unit
+    private val onAddVenueClick: (Song) -> Unit
 ) : ListAdapter<Song, SongsAdapter.SongViewHolder>(SongDiffCallback()) {
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
@@ -20,7 +19,7 @@ class SongsAdapter(
             parent,
             false
         )
-        return SongViewHolder(binding, onSongClick, onAddVenueClick, onEditSongClick)
+        return SongViewHolder(binding, onSongClick, onAddVenueClick)
     }
     
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
@@ -30,8 +29,7 @@ class SongsAdapter(
     class SongViewHolder(
         private val binding: ItemSongBinding,
         private val onSongClick: (Song) -> Unit,
-        private val onAddVenueClick: (Song) -> Unit,
-        private val onEditSongClick: (Song) -> Unit
+        private val onAddVenueClick: (Song) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         
         fun bind(song: Song) {
@@ -65,7 +63,6 @@ class SongsAdapter(
                 // Click listeners
                 root.setOnClickListener { onSongClick(song) }
                 btnAddVenue.setOnClickListener { onAddVenueClick(song) }
-                btnEditSong.setOnClickListener { onEditSongClick(song) }
             }
         }
     }

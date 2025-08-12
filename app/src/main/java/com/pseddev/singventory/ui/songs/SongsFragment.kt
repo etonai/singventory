@@ -71,8 +71,11 @@ class SongsFragment : Fragment() {
     private fun setupRecyclerView() {
         songsAdapter = SongsAdapter(
             onSongClick = { song ->
-                // Navigate to song details/edit screen (to be implemented)
-                // For now, just log
+                // Navigate to edit song screen (full item click)
+                val bundle = Bundle().apply {
+                    putLong("songId", song.id)
+                }
+                findNavController().navigate(R.id.action_songs_to_editSong, bundle)
             },
             onAddVenueClick = { song ->
                 // Navigate to associate venues with song screen
@@ -80,13 +83,6 @@ class SongsFragment : Fragment() {
                     putLong("songId", song.id)
                 }
                 findNavController().navigate(R.id.action_songs_to_associateVenues, bundle)
-            },
-            onEditSongClick = { song ->
-                // Navigate to edit song screen
-                val bundle = Bundle().apply {
-                    putLong("songId", song.id)
-                }
-                findNavController().navigate(R.id.action_songs_to_editSong, bundle)
             }
         )
         

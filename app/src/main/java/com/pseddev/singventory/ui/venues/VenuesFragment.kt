@@ -68,8 +68,11 @@ class VenuesFragment : Fragment() {
     private fun setupRecyclerView() {
         venuesAdapter = VenuesAdapter(
             onVenueClick = { venue ->
-                // Navigate to venue details/edit screen (to be implemented)
-                // For now, just log
+                // Navigate to edit venue screen
+                val bundle = Bundle().apply {
+                    putLong("venueId", venue.id)
+                }
+                findNavController().navigate(R.id.action_venues_to_editVenue, bundle)
             },
             onViewSongsClick = { venue ->
                 // Navigate to venue songs screen
@@ -77,20 +80,6 @@ class VenuesFragment : Fragment() {
                     putLong("venueId", venue.id)
                 }
                 findNavController().navigate(R.id.action_venues_to_venueSongs, bundle)
-            },
-            onAddSongToVenueClick = { venue ->
-                // Navigate to associate songs with venue screen
-                val bundle = Bundle().apply {
-                    putLong("venueId", venue.id)
-                }
-                findNavController().navigate(R.id.action_venues_to_associateSongs, bundle)
-            },
-            onEditVenueClick = { venue ->
-                // Navigate to edit venue screen
-                val bundle = Bundle().apply {
-                    putLong("venueId", venue.id)
-                }
-                findNavController().navigate(R.id.action_venues_to_editVenue, bundle)
             }
         )
         

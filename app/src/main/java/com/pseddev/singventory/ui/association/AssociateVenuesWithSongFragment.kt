@@ -54,18 +54,11 @@ class AssociateVenuesWithSongFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupToolbar()
         setupRecyclerView()
         setupSearch()
         setupFilters()
         setupFab()
         setupObservers()
-    }
-
-    private fun setupToolbar() {
-        binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
     }
 
     private fun setupRecyclerView() {
