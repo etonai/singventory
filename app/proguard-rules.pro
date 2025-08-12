@@ -19,3 +19,13 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Firebase rules
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.firebase.**
+-dontwarn com.google.android.gms.**
+
+# Firebase Analytics specific rules
+-keep class com.google.firebase.analytics.FirebaseAnalytics { *; }
+-keep class com.google.firebase.analytics.connector.AnalyticsConnector { *; }

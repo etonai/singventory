@@ -16,12 +16,15 @@ import com.pseddev.singventory.R
 import com.pseddev.singventory.data.database.SingventoryDatabase
 import com.pseddev.singventory.data.repository.SingventoryRepository
 import com.pseddev.singventory.databinding.FragmentEditVenueBinding
+import com.pseddev.singventory.analytics.AnalyticsManager
 import kotlinx.coroutines.launch
 
 class EditVenueFragment : Fragment() {
 
     private var _binding: FragmentEditVenueBinding? = null
     private val binding get() = _binding!!
+    
+    private lateinit var analyticsManager: AnalyticsManager
 
     private val viewModel: EditVenueViewModel by viewModels {
         val venueId = arguments?.getLong("venueId") ?: 0L
@@ -51,6 +54,9 @@ class EditVenueFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        // Initialize analytics manager
+        analyticsManager = AnalyticsManager(requireContext())
         
         // Set initial title while data loads
         (requireActivity() as? androidx.appcompat.app.AppCompatActivity)?.supportActionBar?.title = "Edit Venue"
@@ -243,6 +249,9 @@ class EditVenueFragment : Fragment() {
         }
 
         binding.viewSongsButton.setOnClickListener {
+            // Track navigation usage (Phase 2 feature)
+            analyticsManager.trackNavigationUsed("edit_venue", "venue_songs")
+            
             val venueId = arguments?.getLong("venueId") ?: 0L
             val bundle = Bundle().apply {
                 putLong("venueId", venueId)

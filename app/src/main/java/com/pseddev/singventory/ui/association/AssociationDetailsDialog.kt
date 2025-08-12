@@ -108,19 +108,19 @@ class AssociationDetailsDialog : DialogFragment() {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, MUSICAL_KEYS)
         binding.venueKeyDropdown.setAdapter(adapter)
         
-        // Smart auto-population: Use song's preferred key information if venue key is not set
+        // Smart auto-population: Use song's reference key information if venue key is not set
         val shouldAutoPopulate = existingVenueKey.isNullOrBlank()
         
         if (shouldAutoPopulate) {
-            // Auto-populate venue key with song's preferred key if available
-            songPreferredKey?.let { preferredKeyStr ->
-                val preferredKey = KeyUtils.parseKey(preferredKeyStr)
-                preferredKey?.let {
+            // Auto-populate venue key with song's reference key if available
+            songReferenceKey?.let { referenceKeyStr ->
+                val referenceKey = KeyUtils.parseKey(referenceKeyStr)
+                referenceKey?.let {
                     binding.venueKeyDropdown.setText(it.displayName, false)
                 }
             }
             
-            // Auto-calculate key adjustment if song has both reference and preferred keys
+            // Auto-calculate key adjustment to reach preferred key from reference key
             if (songReferenceKey != null && songPreferredKey != null) {
                 val referenceKey = KeyUtils.parseKey(songReferenceKey)
                 val preferredKey = KeyUtils.parseKey(songPreferredKey)
