@@ -66,6 +66,21 @@ class VenueSongsFragment : Fragment() {
                     R.id.action_venueSongs_to_editSongVenueInfo,
                     bundleOf("songVenueInfoId" to songVenueInfo.id)
                 )
+            },
+            onAddPerformance = { songVenueInfo ->
+                // Navigate to Add Performance screen with pre-selected song
+                lifecycleScope.launch {
+                    val activeVisit = viewModel.getActiveVisitForVenue()
+                    activeVisit?.let { visit ->
+                        findNavController().navigate(
+                            R.id.action_venueSongs_to_addPerformance,
+                            bundleOf(
+                                "visitId" to visit.id,
+                                "preSelectedSongId" to songVenueInfo.songVenueInfo.songId
+                            )
+                        )
+                    }
+                }
             }
         )
         
@@ -101,6 +116,15 @@ class VenueSongsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isLoading.collect { isLoading ->
                     binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                }
+            }
+        }
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.hasActiveVisit.collect { hasActiveVisit ->
+                    binding.activeVisitTag.visibility = if (hasActiveVisit) View.VISIBLE else View.GONE
+                    venueSongsAdapter.updateActiveVisitStatus(hasActiveVisit)
                 }
             }
         }
@@ -146,6 +170,108 @@ class VenueSongsFragment : Fragment() {
     
     private fun updateSongCount(count: Int) {
         binding.songCount.text = if (count == 1) "1 song" else "$count songs"
+    }
+    
+    private fun showSongInfoDialog(songVenueInfoWithDetails: SongVenueInfoWithDetails) {
+        lifecycleScope.launch {
+            val songVenueInfo = songVenueInfoWithDetails.songVenueInfo
+            val venueInfo = viewModel.getSongVenueInfo(songVenueInfo.songId)
+            
+            // Create comprehensive song information display
+            val songInfo = buildString {
+                append("Song: ${songVenueInfoWithDetails.songName}\n")
+                if (songVenueInfoWithDetails.artistName.isNotBlank()) {
+                    append("Artist: ${songVenueInfoWithDetails.artistName}\n")
+                }
+                
+                // Display venue song number if available
+                if (!songVenueInfo.venuesSongId.isNullOrBlank()) {
+                    append("Venue Song #: ${songVenueInfo.venuesSongId}\n")
+                }
+                append("\n")
+                
+                // Key information
+                append("Key Information:\n")
+                if (!songVenueInfo.venueKey.isNullOrBlank()) {
+                    append("Venue Key: ${songVenueInfo.venueKey}\n")
+                }
+                val keyAdjustment = songVenueInfo.keyAdjustment
+                if (keyAdjustment != 0 && !com.pseddev.singventory.data.entity.SongVenueInfo.isKeyAdjustmentUnknown(keyAdjustment)) {
+                    val adjustmentString = if (keyAdjustment > 0) "+$keyAdjustment" else keyAdjustment.toString()
+                    append("Key Adjustment: $adjustmentString steps\n")
+                }
+                
+                // Performance history
+                append("\nPerformance History:\n")
+                val performanceText = when (songVenueInfoWithDetails.performanceCount) {
+                    0 -> "Never performed at this venue"
+                    1 -> "Performed 1 time at this venue"
+                    else -> "Performed ${songVenueInfoWithDetails.performanceCount} times at this venue"
+                }
+                append(performanceText)
+            }
+            
+            // Show dialog on main thread
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Song Info")
+                .setMessage(songInfo)
+                .setPositiveButton("Just Sang It!") { _, _ ->
+                    lifecycleScope.launch {
+                        val success = viewModel.logPerformance(songVenueInfo.songId)
+                        if (success) {
+                            com.google.android.material.snackbar.Snackbar.make(
+                                binding.root, 
+                                "Performance logged!", 
+                                com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            com.google.android.material.snackbar.Snackbar.make(
+                                binding.root, 
+                                "Error logging performance", 
+                                com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+                .setNeutralButton("With Notes...") { _, _ ->
+                    showDetailedSongInfoDialog(songVenueInfoWithDetails)
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+    }
+    
+    private fun showDetailedSongInfoDialog(songVenueInfoWithDetails: SongVenueInfoWithDetails) {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_log_performance, null)
+        val notesInput = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.performance_notes_input)
+        
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Log Performance with Notes")
+            .setView(dialogView)
+            .setPositiveButton("Log Performance") { _, _ ->
+                val notes = notesInput?.text?.toString()?.trim()
+                lifecycleScope.launch {
+                    val success = viewModel.logPerformance(
+                        songVenueInfoWithDetails.songVenueInfo.songId,
+                        notes = if (notes.isNullOrBlank()) null else notes
+                    )
+                    if (success) {
+                        com.google.android.material.snackbar.Snackbar.make(
+                            binding.root, 
+                            "Performance logged with notes!", 
+                            com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        com.google.android.material.snackbar.Snackbar.make(
+                            binding.root, 
+                            "Error logging performance", 
+                            com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
     
     override fun onDestroyView() {

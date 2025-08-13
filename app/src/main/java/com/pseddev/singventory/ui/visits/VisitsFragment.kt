@@ -73,12 +73,11 @@ class VisitsFragment : Fragment() {
                     bundleOf("visitId" to visitWithDetails.visit.id)
                 )
             },
-            onResumeVisitClick = { visitWithDetails ->
-                // Resume active visit for quick performance logging
-                viewModel.setActiveVisit(visitWithDetails)
+            onSongsClick = { visitWithDetails ->
+                // Navigate to venue songs for active visit
                 findNavController().navigate(
-                    R.id.action_visits_to_activeVisit,
-                    bundleOf("visitId" to visitWithDetails.visit.id)
+                    R.id.action_visits_to_venueSongs,
+                    bundleOf("venueId" to visitWithDetails.visit.venueId)
                 )
             },
             onEndVisitClick = { visitWithDetails ->

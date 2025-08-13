@@ -18,13 +18,13 @@ data class VisitWithDetails(
 
 class VisitsAdapter(
     private val onVisitClick: (VisitWithDetails) -> Unit,
-    private val onResumeVisitClick: (VisitWithDetails) -> Unit,
+    private val onSongsClick: (VisitWithDetails) -> Unit,
     private val onEndVisitClick: (VisitWithDetails) -> Unit
 ) : ListAdapter<VisitWithDetails, VisitsAdapter.VisitViewHolder>(VisitDiffCallback()) {
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VisitViewHolder {
         val binding = ItemVisitBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return VisitViewHolder(binding, onVisitClick, onResumeVisitClick, onEndVisitClick)
+        return VisitViewHolder(binding, onVisitClick, onSongsClick, onEndVisitClick)
     }
     
     override fun onBindViewHolder(holder: VisitViewHolder, position: Int) {
@@ -34,7 +34,7 @@ class VisitsAdapter(
     class VisitViewHolder(
         private val binding: ItemVisitBinding,
         private val onVisitClick: (VisitWithDetails) -> Unit,
-        private val onResumeVisitClick: (VisitWithDetails) -> Unit,
+        private val onSongsClick: (VisitWithDetails) -> Unit,
         private val onEndVisitClick: (VisitWithDetails) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         
@@ -59,17 +59,19 @@ class VisitsAdapter(
             
             // Show visit status (duration display removed as not useful to users)
             if (visit.endTimestamp != null) {
-                binding.visitStatus.text = "Completed"
+                // Hide active visit indicator for completed visits
+                binding.visitStatus.visibility = android.view.View.GONE
                 
                 // Hide action buttons for completed visits - click the visit itself to view/edit
                 binding.btnResumeVisit.visibility = android.view.View.GONE
                 binding.btnEndVisit.visibility = android.view.View.GONE
             } else {
-                binding.visitStatus.text = "Active"
+                // Show active visit indicator for active visits
+                binding.visitStatus.visibility = android.view.View.VISIBLE
                 
                 // Show both action buttons for active visits
                 binding.btnResumeVisit.visibility = android.view.View.VISIBLE
-                binding.btnResumeVisit.text = "Resume"
+                binding.btnResumeVisit.text = "Songs"
                 binding.btnEndVisit.visibility = android.view.View.VISIBLE
             }
             
@@ -79,7 +81,7 @@ class VisitsAdapter(
             }
             
             binding.btnResumeVisit.setOnClickListener {
-                onResumeVisitClick(visitWithDetails)
+                onSongsClick(visitWithDetails)
             }
             
             binding.btnEndVisit.setOnClickListener {

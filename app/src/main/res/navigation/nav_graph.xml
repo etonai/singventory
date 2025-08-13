@@ -55,30 +55,19 @@
             android:id="@+id/action_visits_to_startVisit"
             app:destination="@id/startVisitFragment" />
         <action
-            android:id="@+id/action_visits_to_activeVisit"
-            app:destination="@id/activeVisitFragment" />
-        <action
             android:id="@+id/action_visits_to_visitDetails"
             app:destination="@id/visitDetailsFragment" />
+        <action
+            android:id="@+id/action_visits_to_venueSongs"
+            app:destination="@id/venueSongsFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/startVisitFragment"
         android:name="com.pseddev.singventory.ui.visits.StartVisitFragment"
         android:label="Start Visit" >
-        <action
-            android:id="@+id/action_startVisit_to_activeVisit"
-            app:destination="@id/activeVisitFragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/activeVisitFragment"
-        android:name="com.pseddev.singventory.ui.visits.ActiveVisitFragment"
-        android:label="Active Visit" >
-        <argument
-            android:name="visitId"
-            app:argType="long" />
-    </fragment>
 
     <fragment
         android:id="@+id/navigation_settings"
@@ -163,11 +152,11 @@
             android:id="@+id/action_visitDetails_to_performanceEdit"
             app:destination="@id/performanceEditFragment" />
         <action
-            android:id="@+id/action_visitDetails_to_activeVisit"
-            app:destination="@id/activeVisitFragment" />
-        <action
             android:id="@+id/action_visitDetails_to_addPerformance"
             app:destination="@id/addPerformanceFragment" />
+        <action
+            android:id="@+id/action_visitDetails_to_venueSongs"
+            app:destination="@id/venueSongsFragment" />
     </fragment>
 
     <fragment
@@ -201,6 +190,9 @@
         <action
             android:id="@+id/action_venueSongs_to_associateSongs"
             app:destination="@id/associateSongsWithVenueFragment" />
+        <action
+            android:id="@+id/action_venueSongs_to_addPerformance"
+            app:destination="@id/addPerformanceFragment" />
     </fragment>
 
     <fragment

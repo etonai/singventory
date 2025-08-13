@@ -32,6 +32,9 @@ interface VisitDao {
     @Query("SELECT * FROM visits WHERE isActive = 1")
     suspend fun getActiveVisits(): List<Visit>
     
+    @Query("SELECT * FROM visits WHERE venueId = :venueId AND isActive = 1 LIMIT 1")
+    suspend fun getActiveVisitForVenue(venueId: Long): Visit?
+    
     @Query("SELECT * FROM visits ORDER BY timestamp ASC LIMIT :limit")
     suspend fun getOldestVisits(limit: Int): List<Visit>
     

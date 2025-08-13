@@ -81,6 +81,8 @@ class SingventoryRepository(
     
     suspend fun getActiveVisits(): List<Visit> = visitDao.getActiveVisits()
     
+    suspend fun getActiveVisitForVenue(venueId: Long): Visit? = visitDao.getActiveVisitForVenue(venueId)
+    
     fun getVisitsBetweenDates(startTime: Long, endTime: Long): Flow<List<Visit>> =
         visitDao.getVisitsBetweenDates(startTime, endTime)
     

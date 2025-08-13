@@ -26,13 +26,39 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/venueName"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
-                    android:textStyle="bold"
-                    tools:text="The Karaoke Lounge" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/venueName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+                        android:textStyle="bold"
+                        tools:text="The Karaoke Lounge" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/activeVisitIndicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Active Visit"
+                        android:textColor="@android:color/white"
+                        android:visibility="gone"
+                        app:chipBackgroundColor="@color/active_visit_background"
+                        app:chipCornerRadius="12dp"
+                        app:chipMinHeight="24dp"
+                        app:chipStartPadding="8dp"
+                        app:chipEndPadding="8dp"
+                        app:textStartPadding="0dp"
+                        app:textEndPadding="0dp"
+                        tools:visibility="visible" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/visitDateTime"
@@ -189,14 +215,13 @@
                     tools:listitem="@layout/item_performance" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnAddPerformance"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    android:id="@+id/btnVenueSongs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="16dp"
-                    android:text="Add Performance"
-                    app:icon="@drawable/ic_add" />
+                    android:text="Songs"
+                    app:icon="@drawable/ic_music_note" />
 
             </LinearLayout>
 

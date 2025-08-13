@@ -3,6 +3,7 @@ package com.pseddev.singventory.ui.venues
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.pseddev.singventory.data.entity.Song
 import com.pseddev.singventory.data.entity.SongVenueInfo
 import com.pseddev.singventory.data.entity.Venue
 import com.pseddev.singventory.data.repository.SingventoryRepository
@@ -35,6 +36,12 @@ class VenueSongsViewModel(
     
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+    
+    private val _hasActiveVisit = MutableStateFlow(false)
+    val hasActiveVisit: StateFlow<Boolean> = _hasActiveVisit.asStateFlow()
+    
+    private val _activeVisit = MutableStateFlow<com.pseddev.singventory.data.entity.Visit?>(null)
+    val activeVisit: StateFlow<com.pseddev.singventory.data.entity.Visit?> = _activeVisit.asStateFlow()
     
     // Get all song-venue associations for this venue with song details using efficient JOIN query
     private val allSongs = repository.getSongVenueInfoWithSongDetailsByVenue(venueId).map { songVenueInfoWithDetailsList ->
@@ -76,6 +83,7 @@ class VenueSongsViewModel(
     
     init {
         loadVenueInfo()
+        checkActiveVisitStatus()
     }
     
     private fun loadVenueInfo() {
@@ -94,6 +102,18 @@ class VenueSongsViewModel(
         _searchQuery.value = query
     }
     
+    suspend fun getActiveVisitForVenue(): com.pseddev.singventory.data.entity.Visit? {
+        return _activeVisit.value ?: repository.getActiveVisitForVenue(venueId)
+    }
+    
+    private fun checkActiveVisitStatus() {
+        viewModelScope.launch {
+            val activeVisit = repository.getActiveVisitForVenue(venueId)
+            _activeVisit.value = activeVisit
+            _hasActiveVisit.value = activeVisit != null
+        }
+    }
+    
     fun deleteSongVenueInfo(songVenueInfoWithDetails: SongVenueInfoWithDetails) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -102,6 +122,34 @@ class VenueSongsViewModel(
             } finally {
                 _isLoading.value = false
             }
+        }
+    }
+    
+    suspend fun logPerformance(songId: Long, keyAdjustment: Int = 0, notes: String? = null): Boolean {
+        return try {
+            val activeVisit = _activeVisit.value
+            if (activeVisit != null) {
+                repository.logPerformance(
+                    visitId = activeVisit.id,
+                    songId = songId,
+                    keyAdjustment = keyAdjustment,
+                    notes = notes,
+                    timestamp = System.currentTimeMillis()
+                )
+                true
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+    
+    suspend fun getSongVenueInfo(songId: Long): SongVenueInfo? {
+        return try {
+            repository.getSongVenueInfo(songId, venueId)
+        } catch (e: Exception) {
+            null
         }
     }
     

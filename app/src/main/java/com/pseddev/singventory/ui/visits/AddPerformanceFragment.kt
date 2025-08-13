@@ -34,6 +34,10 @@ class AddPerformanceFragment : Fragment() {
         arguments?.getLong("visitId") ?: -1L
     }
     
+    private val preSelectedSongId: Long by lazy {
+        arguments?.getLong("preSelectedSongId") ?: -1L
+    }
+    
     private val viewModel: AddPerformanceViewModel by viewModels {
         val database = SingventoryDatabase.getDatabase(requireContext())
         AddPerformanceViewModel.Factory(
@@ -77,6 +81,9 @@ class AddPerformanceFragment : Fragment() {
     }
     
     private fun setupSongSelection() {
+        // Check if we have a pre-selected song
+        val hasPreSelectedSong = preSelectedSongId != -1L
+        
         // Determine which mode to use based on configuration
         isDropdownMode = ConfigurationFragment.ConfigurationManager.shouldUseSongSelectionDropdown(requireContext())
         
@@ -84,6 +91,31 @@ class AddPerformanceFragment : Fragment() {
             setupDropdownMode()
         } else {
             setupSearchMode()
+        }
+        
+        // If we have a pre-selected song, disable selection and pre-populate
+        if (hasPreSelectedSong) {
+            setupPreSelectedSong()
+        }
+    }
+    
+    private fun setupPreSelectedSong() {
+        // Disable the song selection inputs
+        binding.songSearchInput.isEnabled = false
+        binding.songDropdownInput.isEnabled = false
+        
+        // Load the pre-selected song and populate the field
+        lifecycleScope.launch {
+            viewModel.getSongById(preSelectedSongId)?.let { song ->
+                selectedSong = song
+                val songDisplay = formatSongDisplay(song)
+                
+                if (isDropdownMode) {
+                    binding.songDropdownInput.setText(songDisplay, false)
+                } else {
+                    binding.songSearchInput.setText(songDisplay)
+                }
+            }
         }
     }
     

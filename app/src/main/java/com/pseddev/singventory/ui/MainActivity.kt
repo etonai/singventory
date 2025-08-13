@@ -121,7 +121,6 @@ class MainActivity : AppCompatActivity() {
             
             // Visits subpages
             R.id.startVisitFragment,
-            R.id.activeVisitFragment,
             R.id.visitDetailsFragment,
             R.id.addPerformanceFragment,
             R.id.performanceEditFragment -> R.id.navigation_visits

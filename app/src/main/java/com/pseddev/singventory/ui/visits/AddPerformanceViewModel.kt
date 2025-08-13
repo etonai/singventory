@@ -143,6 +143,14 @@ class AddPerformanceViewModel(
         _saveResult.value = null
     }
     
+    suspend fun getSongById(songId: Long): Song? {
+        return try {
+            repository.getSongById(songId)
+        } catch (e: Exception) {
+            null
+        }
+    }
+    
     class Factory(
         private val repository: SingventoryRepository,
         private val visitId: Long

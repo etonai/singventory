@@ -9,24 +9,33 @@ import com.pseddev.singventory.data.entity.SongVenueInfo
 import com.pseddev.singventory.databinding.ItemVenueSongBinding
 
 class VenueSongsAdapter(
-    private val onSongClick: (SongVenueInfoWithDetails) -> Unit
+    private val onSongClick: (SongVenueInfoWithDetails) -> Unit,
+    private val onAddPerformance: ((SongVenueInfoWithDetails) -> Unit)? = null
 ) : ListAdapter<SongVenueInfoWithDetails, VenueSongsAdapter.VenueSongViewHolder>(VenueSongDiffCallback()) {
+    
+    private var hasActiveVisit: Boolean = false
+    
+    fun updateActiveVisitStatus(hasActiveVisit: Boolean) {
+        this.hasActiveVisit = hasActiveVisit
+        notifyDataSetChanged() // Update button visibility for all items
+    }
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VenueSongViewHolder {
         val binding = ItemVenueSongBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return VenueSongViewHolder(binding, onSongClick)
+        return VenueSongViewHolder(binding, onSongClick, onAddPerformance)
     }
     
     override fun onBindViewHolder(holder: VenueSongViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), hasActiveVisit)
     }
     
     class VenueSongViewHolder(
         private val binding: ItemVenueSongBinding,
-        private val onSongClick: (SongVenueInfoWithDetails) -> Unit
+        private val onSongClick: (SongVenueInfoWithDetails) -> Unit,
+        private val onAddPerformance: ((SongVenueInfoWithDetails) -> Unit)? = null
     ) : RecyclerView.ViewHolder(binding.root) {
         
-        fun bind(songVenueInfoWithDetails: SongVenueInfoWithDetails) {
+        fun bind(songVenueInfoWithDetails: SongVenueInfoWithDetails, hasActiveVisit: Boolean) {
             val songVenueInfo = songVenueInfoWithDetails.songVenueInfo
             
             binding.songTitle.text = songVenueInfoWithDetails.songName
@@ -72,7 +81,18 @@ class VenueSongsAdapter(
                 binding.venueKey.visibility = android.view.View.GONE
             }
             
-            // Handle clicks
+            // Handle performance button visibility and clicks
+            if (hasActiveVisit && onAddPerformance != null) {
+                binding.addPerformanceButton.visibility = android.view.View.VISIBLE
+                binding.addPerformanceButton.setOnClickListener {
+                    onAddPerformance.invoke(songVenueInfoWithDetails)
+                }
+            } else {
+                binding.addPerformanceButton.visibility = android.view.View.GONE
+                binding.addPerformanceButton.setOnClickListener(null)
+            }
+            
+            // Handle song item clicks
             binding.root.setOnClickListener {
                 onSongClick(songVenueInfoWithDetails)
             }

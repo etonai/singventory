@@ -126,13 +126,17 @@ class VisitDetailsFragment : Fragment() {
             saveVisitChanges()
         }
         
-        binding.btnAddPerformance.setOnClickListener {
-            // Navigate to AddPerformanceFragment for comprehensive performance management
-            val visitId = arguments?.getLong("visitId") ?: -1L
-            findNavController().navigate(
-                R.id.action_visitDetails_to_addPerformance,
-                bundleOf("visitId" to visitId)
-            )
+        binding.btnVenueSongs.setOnClickListener {
+            // Navigate to Venue Songs page with proper venue context
+            viewLifecycleOwner.lifecycleScope.launch {
+                val visitDetails = viewModel.visitDetails.value
+                visitDetails?.let { details ->
+                    findNavController().navigate(
+                        R.id.action_visitDetails_to_venueSongs,
+                        bundleOf("venueId" to details.visit.venueId)
+                    )
+                }
+            }
         }
         
         binding.btnDeleteVisit.setOnClickListener {
@@ -145,14 +149,18 @@ class VisitDetailsFragment : Fragment() {
         binding.visitDateTime.text = visitDetails.formattedDateTime
         binding.visitStatus.text = if (visitDetails.visit.endTimestamp != null) "Completed" else "Active"
         
+        // Show active visit indicator if visit is active
+        if (visitDetails.visit.endTimestamp == null) {
+            binding.activeVisitIndicator.visibility = View.VISIBLE
+        } else {
+            binding.activeVisitIndicator.visibility = View.GONE
+        }
+        
         // Populate editable fields
         binding.etNotes.setText(visitDetails.visit.notes ?: "")
         binding.etAmountSpent.setText(visitDetails.visit.amountSpent?.toString() ?: "")
         
         // Hide duration display - removed as not useful to users
-        
-        // Show Add Performance button for all visits (both active and completed)
-        binding.btnAddPerformance.visibility = View.VISIBLE
     }
     
     private fun updatePerformanceCount(count: Int) {
