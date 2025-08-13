@@ -25,7 +25,8 @@ data class SongVenueInfoWithDetails(
 
 class VenueSongsViewModel(
     private val repository: SingventoryRepository,
-    private val venueId: Long
+    private val venueId: Long,
+    private val contextVisitId: Long? = null
 ) : ViewModel() {
     
     private val _isLoading = MutableStateFlow(false)
@@ -39,6 +40,9 @@ class VenueSongsViewModel(
     
     private val _hasActiveVisit = MutableStateFlow(false)
     val hasActiveVisit: StateFlow<Boolean> = _hasActiveVisit.asStateFlow()
+    
+    private val _hasVisitContext = MutableStateFlow(false)
+    val hasVisitContext: StateFlow<Boolean> = _hasVisitContext.asStateFlow()
     
     private val _activeVisit = MutableStateFlow<com.pseddev.singventory.data.entity.Visit?>(null)
     val activeVisit: StateFlow<com.pseddev.singventory.data.entity.Visit?> = _activeVisit.asStateFlow()
@@ -103,14 +107,33 @@ class VenueSongsViewModel(
     }
     
     suspend fun getActiveVisitForVenue(): com.pseddev.singventory.data.entity.Visit? {
-        return _activeVisit.value ?: repository.getActiveVisitForVenue(venueId)
+        return if (contextVisitId != null) {
+            // Return the specific visit context provided
+            _activeVisit.value
+        } else {
+            // Fall back to auto-detecting active visit
+            _activeVisit.value ?: repository.getActiveVisitForVenue(venueId)
+        }
     }
     
     private fun checkActiveVisitStatus() {
         viewModelScope.launch {
-            val activeVisit = repository.getActiveVisitForVenue(venueId)
-            _activeVisit.value = activeVisit
-            _hasActiveVisit.value = activeVisit != null
+            if (contextVisitId != null) {
+                // Use specific visit context
+                val visit = repository.getVisitById(contextVisitId)
+                _activeVisit.value = visit
+                // Show active visit indicator only if this specific visit is actually active
+                _hasActiveVisit.value = visit?.endTimestamp == null
+                // Show visit context (for + icons) whenever we have any visit context
+                _hasVisitContext.value = visit != null
+            } else {
+                // Fall back to detecting active visit for venue
+                val activeVisit = repository.getActiveVisitForVenue(venueId)
+                _activeVisit.value = activeVisit
+                _hasActiveVisit.value = activeVisit != null
+                // Only show visit context when there's an active visit
+                _hasVisitContext.value = activeVisit != null
+            }
         }
     }
     
@@ -127,10 +150,10 @@ class VenueSongsViewModel(
     
     suspend fun logPerformance(songId: Long, keyAdjustment: Int = 0, notes: String? = null): Boolean {
         return try {
-            val activeVisit = _activeVisit.value
-            if (activeVisit != null) {
+            val visitForLogging = _activeVisit.value
+            if (visitForLogging != null) {
                 repository.logPerformance(
-                    visitId = activeVisit.id,
+                    visitId = visitForLogging.id,
                     songId = songId,
                     keyAdjustment = keyAdjustment,
                     notes = notes,
@@ -155,12 +178,13 @@ class VenueSongsViewModel(
     
     class Factory(
         private val repository: SingventoryRepository,
-        private val venueId: Long
+        private val venueId: Long,
+        private val contextVisitId: Long? = null
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(VenueSongsViewModel::class.java)) {
-                return VenueSongsViewModel(repository, venueId) as T
+                return VenueSongsViewModel(repository, venueId, contextVisitId) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

@@ -74,10 +74,13 @@ class VisitsFragment : Fragment() {
                 )
             },
             onSongsClick = { visitWithDetails ->
-                // Navigate to venue songs for active visit
+                // Navigate to venue songs with specific visit context
                 findNavController().navigate(
                     R.id.action_visits_to_venueSongs,
-                    bundleOf("venueId" to visitWithDetails.visit.venueId)
+                    bundleOf(
+                        "venueId" to visitWithDetails.visit.venueId,
+                        "visitId" to visitWithDetails.visit.id
+                    )
                 )
             },
             onEndVisitClick = { visitWithDetails ->

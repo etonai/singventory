@@ -28,6 +28,7 @@ class VenueSongsFragment : Fragment() {
     private val viewModel: VenueSongsViewModel by viewModels {
         val database = SingventoryDatabase.getDatabase(requireContext())
         val venueId = arguments?.getLong("venueId") ?: -1L
+        val visitId = arguments?.getLong("visitId") ?: -1L
         VenueSongsViewModel.Factory(
             SingventoryRepository(
                 database.songDao(),
@@ -36,7 +37,8 @@ class VenueSongsFragment : Fragment() {
                 database.performanceDao(),
                 database.songVenueInfoDao()
             ),
-            venueId
+            venueId,
+            if (visitId != -1L) visitId else null
         )
     }
     
@@ -124,7 +126,14 @@ class VenueSongsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.hasActiveVisit.collect { hasActiveVisit ->
                     binding.activeVisitTag.visibility = if (hasActiveVisit) View.VISIBLE else View.GONE
-                    venueSongsAdapter.updateActiveVisitStatus(hasActiveVisit)
+                }
+            }
+        }
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.hasVisitContext.collect { hasVisitContext ->
+                    venueSongsAdapter.updateActiveVisitStatus(hasVisitContext)
                 }
             }
         }

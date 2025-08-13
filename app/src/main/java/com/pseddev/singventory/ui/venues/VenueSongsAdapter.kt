@@ -13,10 +13,10 @@ class VenueSongsAdapter(
     private val onAddPerformance: ((SongVenueInfoWithDetails) -> Unit)? = null
 ) : ListAdapter<SongVenueInfoWithDetails, VenueSongsAdapter.VenueSongViewHolder>(VenueSongDiffCallback()) {
     
-    private var hasActiveVisit: Boolean = false
+    private var hasVisitContext: Boolean = false
     
-    fun updateActiveVisitStatus(hasActiveVisit: Boolean) {
-        this.hasActiveVisit = hasActiveVisit
+    fun updateActiveVisitStatus(hasVisitContext: Boolean) {
+        this.hasVisitContext = hasVisitContext
         notifyDataSetChanged() // Update button visibility for all items
     }
     
@@ -26,7 +26,7 @@ class VenueSongsAdapter(
     }
     
     override fun onBindViewHolder(holder: VenueSongViewHolder, position: Int) {
-        holder.bind(getItem(position), hasActiveVisit)
+        holder.bind(getItem(position), hasVisitContext)
     }
     
     class VenueSongViewHolder(
@@ -35,7 +35,7 @@ class VenueSongsAdapter(
         private val onAddPerformance: ((SongVenueInfoWithDetails) -> Unit)? = null
     ) : RecyclerView.ViewHolder(binding.root) {
         
-        fun bind(songVenueInfoWithDetails: SongVenueInfoWithDetails, hasActiveVisit: Boolean) {
+        fun bind(songVenueInfoWithDetails: SongVenueInfoWithDetails, hasVisitContext: Boolean) {
             val songVenueInfo = songVenueInfoWithDetails.songVenueInfo
             
             binding.songTitle.text = songVenueInfoWithDetails.songName
@@ -82,7 +82,7 @@ class VenueSongsAdapter(
             }
             
             // Handle performance button visibility and clicks
-            if (hasActiveVisit && onAddPerformance != null) {
+            if (hasVisitContext && onAddPerformance != null) {
                 binding.addPerformanceButton.visibility = android.view.View.VISIBLE
                 binding.addPerformanceButton.setOnClickListener {
                     onAddPerformance.invoke(songVenueInfoWithDetails)

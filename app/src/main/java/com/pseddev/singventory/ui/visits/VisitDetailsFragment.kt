@@ -127,13 +127,16 @@ class VisitDetailsFragment : Fragment() {
         }
         
         binding.btnVenueSongs.setOnClickListener {
-            // Navigate to Venue Songs page with proper venue context
+            // Navigate to Venue Songs page with specific visit context
             viewLifecycleOwner.lifecycleScope.launch {
                 val visitDetails = viewModel.visitDetails.value
                 visitDetails?.let { details ->
                     findNavController().navigate(
                         R.id.action_visitDetails_to_venueSongs,
-                        bundleOf("venueId" to details.visit.venueId)
+                        bundleOf(
+                            "venueId" to details.visit.venueId,
+                            "visitId" to details.visit.id
+                        )
                     )
                 }
             }

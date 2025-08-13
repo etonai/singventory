@@ -184,6 +184,10 @@
         <argument
             android:name="venueId"
             app:argType="long" />
+        <argument
+            android:name="visitId"
+            app:argType="long"
+            android:defaultValue="-1L" />
         <action
             android:id="@+id/action_venueSongs_to_editSongVenueInfo"
             app:destination="@id/editSongVenueInfoFragment" />
