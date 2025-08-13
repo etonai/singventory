@@ -247,21 +247,24 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDeleteAssociation"
-                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:text="Delete"
-                android:textColor="?attr/colorError"
+                android:textColor="@android:color/white"
+                app:backgroundTint="?attr/colorError"
                 app:icon="@drawable/ic_delete"
-                app:iconTint="?attr/colorError" />
+                app:iconTint="@android:color/white" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveChanges"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Save Changes"
-                app:icon="@drawable/ic_save" />
+                android:textColor="@android:color/white"
+                app:backgroundTint="@color/primary_button_background"
+                app:icon="@drawable/ic_save"
+                app:iconTint="@android:color/white" />
 
         </LinearLayout>
 

@@ -42,7 +42,7 @@
     <!-- Active Visit Indicator Color -->
     <color name="active_visit_background">@color/musical_gold</color>
     
-    <!-- Primary Button Color -->
+    <!-- Primary Button Color - Back to original custom purple -->
     <color name="primary_button_background">#6B3BA0</color>
     
     <!-- Warning/Alert Colors -->

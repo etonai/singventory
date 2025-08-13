@@ -44,7 +44,8 @@
                     android:text="Export Backup File"
                     android:drawableStart="@drawable/ic_download"
                     android:drawablePadding="8dp"
-                    style="@style/Widget.Material3.Button" />
+                    android:textColor="@android:color/white"
+                    app:backgroundTint="@color/primary_button_background" />
 
                 <TextView
                     android:id="@+id/export_result"
@@ -103,7 +104,8 @@
                     android:text="Import Backup File"
                     android:drawableStart="@drawable/ic_upload"
                     android:drawablePadding="8dp"
-                    style="@style/Widget.Material3.Button.OutlinedButton" />
+                    android:textColor="@android:color/white"
+                    app:backgroundTint="@color/primary_button_background" />
 
                 <TextView
                     android:id="@+id/import_result"

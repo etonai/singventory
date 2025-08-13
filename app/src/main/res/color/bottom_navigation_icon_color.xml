@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Selected state: use theme-aware color that provides good contrast -->
-    <item android:color="?attr/colorOnSurface" android:state_checked="true" />
+    <!-- Selected state: white icons on purple background -->
+    <item android:color="@android:color/white" android:state_checked="true" />
     <!-- Unselected state: use muted theme-aware color -->
     <item android:color="?attr/colorOnSurfaceVariant" android:state_checked="false" />
 </selector>

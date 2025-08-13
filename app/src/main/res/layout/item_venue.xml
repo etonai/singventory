@@ -56,11 +56,16 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_view_songs"
-            style="@style/Widget.Material3.Button.IconButton.Filled"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
             android:contentDescription="View venue songs"
+            android:text="Songs"
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+            app:backgroundTint="@color/primary_button_background"
             app:icon="@drawable/ic_music_note"
+            app:iconSize="16dp"
+            app:iconTint="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

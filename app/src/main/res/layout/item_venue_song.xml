@@ -121,9 +121,11 @@
             android:text="Add"
             android:textSize="12sp"
             android:visibility="gone"
+            android:textColor="@android:color/white"
             app:backgroundTint="@color/primary_button_background"
             app:icon="@drawable/ic_add"
             app:iconSize="16dp"
+            app:iconTint="@android:color/white"
             tools:visibility="visible" />
 
     </LinearLayout>

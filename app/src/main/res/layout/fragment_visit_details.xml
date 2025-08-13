@@ -164,8 +164,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:text="Save Changes"
+                    android:textColor="@android:color/white"
                     app:backgroundTint="@color/primary_button_background"
-                    app:icon="@drawable/ic_save" />
+                    app:icon="@drawable/ic_save"
+                    app:iconTint="@android:color/white" />
 
             </LinearLayout>
 
@@ -222,8 +224,10 @@
                     android:layout_gravity="center"
                     android:layout_margin="16dp"
                     android:text="Songs"
+                    android:textColor="@android:color/white"
                     app:backgroundTint="@color/primary_button_background"
-                    app:icon="@drawable/ic_music_note" />
+                    app:icon="@drawable/ic_music_note"
+                    app:iconTint="@android:color/white" />
 
             </LinearLayout>
 

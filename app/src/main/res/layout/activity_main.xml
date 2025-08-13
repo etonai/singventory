@@ -22,7 +22,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:itemActiveIndicatorStyle="@style/BottomNavigationActiveIndicator"
-        app:itemIconTint="@color/bottom_navigation_color"
+        app:itemIconTint="@color/bottom_navigation_icon_color"
         app:itemTextColor="@color/bottom_navigation_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -43,4 +43,12 @@
     <style name="BottomNavigationActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="android:color">@color/primary_button_background</item>
     </style>
+    
+    <!-- Primary Purple Button with proper contrast -->
+    <style name="PurpleButton" parent="Widget.Material3.Button">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="iconTint">@android:color/white</item>
+        <item name="backgroundTint">@color/primary_button_background</item>
+    </style>
+    
 </resources>

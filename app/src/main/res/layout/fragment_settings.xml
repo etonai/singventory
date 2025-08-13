@@ -36,6 +36,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/import_export"
                     android:layout_marginBottom="8dp"
+                    android:textColor="@android:color/white"
                     app:backgroundTint="@color/primary_button_background" />
 
                 <com.google.android.material.button.MaterialButton
@@ -44,6 +45,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/purge_data"
                     android:layout_marginBottom="8dp"
+                    android:textColor="@android:color/white"
                     app:backgroundTint="@color/primary_button_background" />
 
                 <com.google.android.material.button.MaterialButton
@@ -52,6 +54,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/configuration"
                     android:layout_marginBottom="8dp"
+                    android:textColor="@android:color/white"
                     app:backgroundTint="@color/primary_button_background" />
 
                 <com.google.android.material.button.MaterialButton

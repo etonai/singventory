@@ -279,9 +279,11 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:text="Associate with Venues"
+            android:textColor="@android:color/white"
             app:backgroundTint="@color/primary_button_background"
             app:icon="@drawable/ic_link"
             app:iconGravity="start"
+            app:iconTint="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/performance_stats_card"
@@ -314,9 +316,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/save_changes"
+                android:textColor="@android:color/white"
                 app:backgroundTint="@color/primary_button_background"
                 app:icon="@drawable/ic_save"
-                app:iconGravity="start" />
+                app:iconGravity="start"
+                app:iconTint="@android:color/white" />
 
         </LinearLayout>
 
