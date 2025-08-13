@@ -164,6 +164,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:text="Save Changes"
+                    app:backgroundTint="@color/primary_button_background"
                     app:icon="@drawable/ic_save" />
 
             </LinearLayout>
@@ -221,6 +222,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="16dp"
                     android:text="Songs"
+                    app:backgroundTint="@color/primary_button_background"
                     app:icon="@drawable/ic_music_note" />
 
             </LinearLayout>
@@ -236,13 +238,13 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDeleteVisit"
-                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Delete Visit"
-                android:textColor="?attr/colorError"
+                android:textColor="@android:color/white"
+                app:backgroundTint="?attr/colorError"
                 app:icon="@drawable/ic_delete"
-                app:iconTint="?attr/colorError" />
+                app:iconTint="@android:color/white" />
 
         </LinearLayout>
 

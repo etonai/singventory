@@ -82,11 +82,14 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add_venue"
-            style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
             android:contentDescription="@string/add_venue_to_song"
+            android:text="Link"
+            android:textSize="12sp"
+            app:backgroundTint="@color/primary_button_background"
             app:icon="@drawable/ic_link"
+            app:iconSize="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

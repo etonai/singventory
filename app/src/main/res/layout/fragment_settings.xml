@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/import_export"
                     android:layout_marginBottom="8dp"
-                    style="@style/Widget.Material3.Button.OutlinedButton" />
+                    app:backgroundTint="@color/primary_button_background" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_purge_data"
@@ -44,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/purge_data"
                     android:layout_marginBottom="8dp"
-                    style="@style/Widget.Material3.Button.OutlinedButton" />
+                    app:backgroundTint="@color/primary_button_background" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_configuration"
@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/configuration"
                     android:layout_marginBottom="8dp"
-                    style="@style/Widget.Material3.Button.OutlinedButton" />
+                    app:backgroundTint="@color/primary_button_background" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_clear_data"

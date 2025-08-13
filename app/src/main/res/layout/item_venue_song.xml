@@ -113,15 +113,17 @@
         <!-- Add Performance Button (visible only during active visits) -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/addPerformanceButton"
-            style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="8dp"
             android:contentDescription="Add Performance"
+            android:text="Add"
+            android:textSize="12sp"
             android:visibility="gone"
+            app:backgroundTint="@color/primary_button_background"
             app:icon="@drawable/ic_add"
-            app:iconTint="?attr/colorPrimary"
+            app:iconSize="16dp"
             tools:visibility="visible" />
 
     </LinearLayout>

@@ -40,7 +40,10 @@
     <color name="stage_light_yellow">#FFC107</color>
     
     <!-- Active Visit Indicator Color -->
-    <color name="active_visit_background">#4CAF50</color>
+    <color name="active_visit_background">@color/musical_gold</color>
+    
+    <!-- Primary Button Color -->
+    <color name="primary_button_background">#6B3BA0</color>
     
     <!-- Warning/Alert Colors -->
     <color name="warning_background">#FFF8E1</color>

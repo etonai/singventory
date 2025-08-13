@@ -108,11 +108,12 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_associate_single"
-            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
             android:layout_marginStart="8dp"
             android:text="Associate"
+            android:textSize="12sp"
+            app:backgroundTint="@color/primary_button_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

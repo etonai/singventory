@@ -279,10 +279,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:text="Associate with Venues"
-            android:textColor="@android:color/white"
-            android:backgroundTint="#673AB7"
+            app:backgroundTint="@color/primary_button_background"
             app:icon="@drawable/ic_link"
-            app:iconTint="@android:color/white"
             app:iconGravity="start"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -302,21 +300,23 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_delete_song"
-                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:text="@string/delete_song"
-                android:textColor="?attr/colorError"
+                android:textColor="@android:color/white"
+                app:backgroundTint="?attr/colorError"
                 app:icon="@drawable/ic_delete"
-                app:iconTint="?attr/colorError" />
+                app:iconTint="@android:color/white" />
 
-            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/fab_save_song"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/save_changes"
-                app:icon="@drawable/ic_save" />
+                app:backgroundTint="@color/primary_button_background"
+                app:icon="@drawable/ic_save"
+                app:iconGravity="start" />
 
         </LinearLayout>
 

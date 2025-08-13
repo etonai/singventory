@@ -78,11 +78,39 @@ class MainActivity : AppCompatActivity() {
         // Connect ActionBar with NavController
         setupActionBarWithNavController(navController, appBarConfiguration)
         
-        // Connect BottomNavigationView with NavController
-        binding.bottomNavigation.setupWithNavController(navController)
+        // Connect BottomNavigationView with NavController using custom handling
+        setupBottomNavigationWithPopToRoot(navController)
         
         // Add custom listener for subpage highlighting without interfering with navigation
         setupSubpageHighlighting(navController)
+    }
+    
+    private fun setupBottomNavigationWithPopToRoot(navController: androidx.navigation.NavController) {
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            val currentDestination = navController.currentDestination?.id
+            
+            // If we're already on the selected destination, don't do anything
+            if (currentDestination == item.itemId) {
+                return@setOnItemSelectedListener true
+            }
+            
+            // Navigate to the root destination, popping the back stack to ensure we go to main page
+            try {
+                val didPop = navController.popBackStack(item.itemId, false)
+                if (!didPop) {
+                    navController.navigate(item.itemId)
+                }
+                true
+            } catch (e: Exception) {
+                // Fallback to regular navigation if popBackStack fails
+                try {
+                    navController.navigate(item.itemId)
+                    true
+                } catch (ex: Exception) {
+                    false
+                }
+            }
+        }
     }
     
     private fun setupSubpageHighlighting(navController: androidx.navigation.NavController) {

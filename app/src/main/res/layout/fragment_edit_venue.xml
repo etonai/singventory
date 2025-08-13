@@ -113,10 +113,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:text="View Venue Songs"
-                android:textColor="@android:color/white"
-                android:backgroundTint="#673AB7"
+                app:backgroundTint="@color/primary_button_background"
                 app:icon="@drawable/ic_music_note"
-                app:iconTint="@android:color/white"
                 app:iconGravity="start"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -318,14 +316,15 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/delete_button"
-                    style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
                     android:text="@string/delete_venue"
+                    android:textColor="@android:color/white"
+                    app:backgroundTint="?attr/colorError"
                     app:icon="@drawable/ic_delete"
-                    app:iconTint="?attr/colorError" />
+                    app:iconTint="@android:color/white" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/save_button"
@@ -334,6 +333,7 @@
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:text="@string/save_changes"
+                    app:backgroundTint="@color/primary_button_background"
                     app:icon="@drawable/ic_save" />
 
             </LinearLayout>
