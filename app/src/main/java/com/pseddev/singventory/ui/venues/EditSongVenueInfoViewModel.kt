@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.pseddev.singventory.data.entity.SongVenueInfo
+import com.pseddev.singventory.data.entity.Visit
+import com.pseddev.singventory.data.entity.Performance
 import com.pseddev.singventory.data.repository.SingventoryRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +31,9 @@ class EditSongVenueInfoViewModel(
     
     private val _songVenueInfoDetails = MutableStateFlow<EditSongVenueInfoDetails?>(null)
     val songVenueInfoDetails: StateFlow<EditSongVenueInfoDetails?> = _songVenueInfoDetails.asStateFlow()
+    
+    private val _performanceResult = MutableStateFlow<Boolean?>(null)
+    val performanceResult: StateFlow<Boolean?> = _performanceResult.asStateFlow()
     
     init {
         loadSongVenueInfoDetails()
@@ -93,6 +98,58 @@ class EditSongVenueInfoViewModel(
                 _isLoading.value = false
             }
         }
+    }
+    
+    fun performSong(keyAdjustment: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val currentDetails = _songVenueInfoDetails.value ?: return@launch
+                val venueId = currentDetails.songVenueInfo.venueId
+                val songId = currentDetails.songVenueInfo.songId
+                
+                // Check for active visit
+                var activeVisit = repository.getActiveVisitForVenue(venueId)
+                
+                // Create new visit if none exists
+                if (activeVisit == null) {
+                    val newVisit = Visit(
+                        venueId = venueId,
+                        timestamp = System.currentTimeMillis(),
+                        endTimestamp = null,
+                        notes = null,
+                        amountSpent = null,
+                        isActive = true
+                    )
+                    val visitId = repository.insertVisit(newVisit)
+                    activeVisit = newVisit.copy(id = visitId)
+                }
+                
+                // Create performance record
+                val performance = Performance(
+                    visitId = activeVisit.id,
+                    songId = songId,
+                    keyAdjustment = keyAdjustment,
+                    notes = null,
+                    timestamp = System.currentTimeMillis()
+                )
+                
+                repository.insertPerformance(performance)
+                _performanceResult.value = true
+                
+                // Reload data to update performance count
+                loadSongVenueInfoDetails()
+                
+            } catch (e: Exception) {
+                _performanceResult.value = false
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+    
+    fun clearPerformanceResult() {
+        _performanceResult.value = null
     }
     
     class Factory(

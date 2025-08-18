@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -87,6 +88,24 @@ class EditSongVenueInfoFragment : Fragment() {
                     binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
                     binding.btnSaveChanges.isEnabled = !isLoading
                     binding.btnDeleteAssociation.isEnabled = !isLoading
+                    binding.btnPerformSong.isEnabled = !isLoading
+                }
+            }
+        }
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.performanceResult.collect { result ->
+                    result?.let {
+                        if (it) {
+                            Toast.makeText(requireContext(), "Performance recorded successfully!", Toast.LENGTH_SHORT).show()
+                            // Optional: Navigate back to venue songs
+                            // findNavController().navigateUp()
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to record performance", Toast.LENGTH_SHORT).show()
+                        }
+                        viewModel.clearPerformanceResult()
+                    }
                 }
             }
         }
@@ -99,6 +118,10 @@ class EditSongVenueInfoFragment : Fragment() {
         
         binding.btnDeleteAssociation.setOnClickListener {
             showDeleteConfirmation()
+        }
+        
+        binding.btnPerformSong.setOnClickListener {
+            performSong()
         }
         
         // Key adjustment controls
@@ -181,6 +204,17 @@ class EditSongVenueInfoFragment : Fragment() {
         
         // Navigate back
         findNavController().navigateUp()
+    }
+    
+    private fun performSong() {
+        val keyAdjustmentText = binding.keyAdjustmentValue.text.toString()
+        val keyAdjustment = when (keyAdjustmentText) {
+            "Unknown" -> 0  // Default to 0 if unknown
+            "0" -> 0
+            else -> keyAdjustmentText.toIntOrNull() ?: 0
+        }
+        
+        viewModel.performSong(keyAdjustment)
     }
     
     private fun showDeleteConfirmation() {
