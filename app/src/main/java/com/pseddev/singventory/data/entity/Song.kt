@@ -13,6 +13,7 @@ data class Song(
     val referenceKey: String?,
     val preferredKey: String?,
     val lyrics: String?,
+    val isFavorite: Boolean = false,
     
     // Calculated fields - preserved during purging
     val totalPerformances: Int = 0,

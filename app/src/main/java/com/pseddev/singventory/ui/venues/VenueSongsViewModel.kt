@@ -18,7 +18,8 @@ data class SongVenueInfoWithDetails(
     val songVenueInfo: SongVenueInfo,
     val songName: String,
     val artistName: String,
-    val performanceCount: Int
+    val performanceCount: Int,
+    val isFavorite: Boolean
 ) {
     val id: Long get() = songVenueInfo.id
 }
@@ -67,7 +68,8 @@ class VenueSongsViewModel(
                 songVenueInfo = songVenueInfo,
                 songName = songVenueInfoWithDetails.songName,
                 artistName = songVenueInfoWithDetails.artistName,
-                performanceCount = songVenueInfoWithDetails.performanceCount // Use the actual performance count from database
+                performanceCount = songVenueInfoWithDetails.performanceCount, // Use the actual performance count from database
+                isFavorite = songVenueInfoWithDetails.isFavorite
             )
         } // Already sorted alphabetically by song name in the query
     }
@@ -144,6 +146,16 @@ class VenueSongsViewModel(
                 repository.deleteSongVenueInfo(songVenueInfoWithDetails.songVenueInfo)
             } finally {
                 _isLoading.value = false
+            }
+        }
+    }
+    
+    fun toggleFavoriteStatus(songVenueInfoWithDetails: SongVenueInfoWithDetails) {
+        viewModelScope.launch {
+            try {
+                repository.updateSongFavoriteStatus(songVenueInfoWithDetails.songVenueInfo.songId, !songVenueInfoWithDetails.isFavorite)
+            } catch (e: Exception) {
+                // Handle error if needed
             }
         }
     }

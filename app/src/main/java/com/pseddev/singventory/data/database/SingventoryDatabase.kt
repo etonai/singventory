@@ -15,7 +15,7 @@ import com.pseddev.singventory.data.entity.*
         Performance::class,
         SongVenueInfo::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 abstract class SingventoryDatabase : RoomDatabase() {

@@ -16,7 +16,8 @@ data class SongVenueInfoWithSongDetails(
     val performanceCount: Int,
     val lastPerformed: Long?,
     val songName: String,
-    val artistName: String
+    val artistName: String,
+    val isFavorite: Boolean
 )
 
 @Dao
@@ -38,11 +39,12 @@ interface SongVenueInfoDao {
         SELECT 
             svi.*,
             s.name as songName,
-            s.artist as artistName
+            s.artist as artistName,
+            s.isFavorite as isFavorite
         FROM song_venue_info svi
         INNER JOIN songs s ON svi.songId = s.id
         WHERE svi.venueId = :venueId
-        ORDER BY s.name ASC
+        ORDER BY s.isFavorite DESC, LOWER(s.name) ASC
     """)
     fun getSongVenueInfoWithSongDetailsByVenue(venueId: Long): Flow<List<SongVenueInfoWithSongDetails>>
     

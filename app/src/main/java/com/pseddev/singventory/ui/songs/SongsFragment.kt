@@ -83,6 +83,10 @@ class SongsFragment : Fragment() {
                     putLong("songId", song.id)
                 }
                 findNavController().navigate(R.id.action_songs_to_associateVenues, bundle)
+            },
+            onFavoriteToggle = { song ->
+                // Toggle favorite status
+                viewModel.toggleFavoriteStatus(song)
             }
         )
         
@@ -138,6 +142,7 @@ class SongsFragment : Fragment() {
             // Set checked state for current sort option
             when (viewModel.sortOption.value) {
                 SongSortOption.TITLE -> menu.findItem(R.id.sort_by_title)?.isChecked = true
+                SongSortOption.FAVORITES_AND_TITLE -> menu.findItem(R.id.sort_by_favorites_and_title)?.isChecked = true
                 SongSortOption.ARTIST -> menu.findItem(R.id.sort_by_artist)?.isChecked = true
                 SongSortOption.PERFORMANCE_COUNT -> menu.findItem(R.id.sort_by_performance_count)?.isChecked = true
                 SongSortOption.LAST_PERFORMANCE -> menu.findItem(R.id.sort_by_last_performance)?.isChecked = true
@@ -147,6 +152,10 @@ class SongsFragment : Fragment() {
                 val handled = when (item.itemId) {
                     R.id.sort_by_title -> {
                         viewModel.updateSortOption(SongSortOption.TITLE)
+                        true
+                    }
+                    R.id.sort_by_favorites_and_title -> {
+                        viewModel.updateSortOption(SongSortOption.FAVORITES_AND_TITLE)
                         true
                     }
                     R.id.sort_by_artist -> {

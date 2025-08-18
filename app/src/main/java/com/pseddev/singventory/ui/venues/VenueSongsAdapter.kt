@@ -10,7 +10,8 @@ import com.pseddev.singventory.databinding.ItemVenueSongBinding
 
 class VenueSongsAdapter(
     private val onSongClick: (SongVenueInfoWithDetails) -> Unit,
-    private val onAddPerformance: ((SongVenueInfoWithDetails) -> Unit)? = null
+    private val onAddPerformance: ((SongVenueInfoWithDetails) -> Unit)? = null,
+    private val onFavoriteToggle: ((SongVenueInfoWithDetails) -> Unit)? = null
 ) : ListAdapter<SongVenueInfoWithDetails, VenueSongsAdapter.VenueSongViewHolder>(VenueSongDiffCallback()) {
     
     private var hasVisitContext: Boolean = false
@@ -22,7 +23,7 @@ class VenueSongsAdapter(
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VenueSongViewHolder {
         val binding = ItemVenueSongBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return VenueSongViewHolder(binding, onSongClick, onAddPerformance)
+        return VenueSongViewHolder(binding, onSongClick, onAddPerformance, onFavoriteToggle)
     }
     
     override fun onBindViewHolder(holder: VenueSongViewHolder, position: Int) {
@@ -32,7 +33,8 @@ class VenueSongsAdapter(
     class VenueSongViewHolder(
         private val binding: ItemVenueSongBinding,
         private val onSongClick: (SongVenueInfoWithDetails) -> Unit,
-        private val onAddPerformance: ((SongVenueInfoWithDetails) -> Unit)? = null
+        private val onAddPerformance: ((SongVenueInfoWithDetails) -> Unit)? = null,
+        private val onFavoriteToggle: ((SongVenueInfoWithDetails) -> Unit)? = null
     ) : RecyclerView.ViewHolder(binding.root) {
         
         fun bind(songVenueInfoWithDetails: SongVenueInfoWithDetails, hasVisitContext: Boolean) {
@@ -79,6 +81,17 @@ class VenueSongsAdapter(
                 binding.venueKey.visibility = android.view.View.VISIBLE
             } else {
                 binding.venueKey.visibility = android.view.View.GONE
+            }
+            
+            // Set favorite star icon
+            binding.btnFavorite.setImageResource(
+                if (songVenueInfoWithDetails.isFavorite) com.pseddev.singventory.R.drawable.ic_star_filled
+                else com.pseddev.singventory.R.drawable.ic_star_outline
+            )
+            
+            // Handle favorite toggle clicks
+            binding.btnFavorite.setOnClickListener {
+                onFavoriteToggle?.invoke(songVenueInfoWithDetails)
             }
             
             // Handle performance button visibility and clicks

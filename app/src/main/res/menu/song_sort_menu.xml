@@ -6,6 +6,10 @@
             android:title="Title"
             android:checkable="true" />
         <item
+            android:id="@+id/sort_by_favorites_and_title"
+            android:title="Favorites &amp; Title"
+            android:checkable="true" />
+        <item
             android:id="@+id/sort_by_artist"
             android:title="Artist"
             android:checkable="true" />

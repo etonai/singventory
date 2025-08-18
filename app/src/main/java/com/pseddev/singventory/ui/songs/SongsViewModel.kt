@@ -19,7 +19,7 @@ class SongsViewModel(private val repository: SingventoryRepository) : ViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     
-    private val _sortOption = MutableStateFlow(SongSortOption.TITLE)
+    private val _sortOption = MutableStateFlow(SongSortOption.FAVORITES_AND_TITLE)
     val sortOption: StateFlow<SongSortOption> = _sortOption.asStateFlow()
     
     private val _sortAscending = MutableStateFlow(true) // Default to ascending for title (A-Z)
@@ -47,6 +47,20 @@ class SongsViewModel(private val repository: SingventoryRepository) : ViewModel(
                 if (sortAscending) filteredSongs.sortedBy { it.name.lowercase() }
                 else filteredSongs.sortedByDescending { it.name.lowercase() }
             }
+            SongSortOption.FAVORITES_AND_TITLE -> {
+                // Favorites first, then alphabetical within each group
+                if (sortAscending) {
+                    filteredSongs.sortedWith(
+                        compareByDescending<Song> { it.isFavorite }
+                            .thenBy { it.name.lowercase() }
+                    )
+                } else {
+                    filteredSongs.sortedWith(
+                        compareByDescending<Song> { it.isFavorite }
+                            .thenByDescending { it.name.lowercase() }
+                    )
+                }
+            }
             SongSortOption.ARTIST -> {
                 if (sortAscending) filteredSongs.sortedBy { it.artist.lowercase() }
                 else filteredSongs.sortedByDescending { it.artist.lowercase() }
@@ -72,7 +86,7 @@ class SongsViewModel(private val repository: SingventoryRepository) : ViewModel(
         _sortOption.value = sortOption
         // Auto-adjust default sort order based on option
         _sortAscending.value = when (sortOption) {
-            SongSortOption.TITLE, SongSortOption.ARTIST -> true // A-Z by default
+            SongSortOption.TITLE, SongSortOption.FAVORITES_AND_TITLE, SongSortOption.ARTIST -> true // A-Z by default
             SongSortOption.PERFORMANCE_COUNT, SongSortOption.LAST_PERFORMANCE -> false // Most/Recent first by default
         }
     }
@@ -90,6 +104,16 @@ class SongsViewModel(private val repository: SingventoryRepository) : ViewModel(
                 repository.deleteSong(song)
             } finally {
                 _isLoading.value = false
+            }
+        }
+    }
+    
+    fun toggleFavoriteStatus(song: Song) {
+        viewModelScope.launch {
+            try {
+                repository.updateSongFavoriteStatus(song.id, !song.isFavorite)
+            } catch (e: Exception) {
+                // Handle error if needed - could add a toast or error state
             }
         }
     }

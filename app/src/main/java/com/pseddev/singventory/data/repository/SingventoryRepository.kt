@@ -18,6 +18,8 @@ class SingventoryRepository(
     
     fun getAllSongs(): Flow<List<Song>> = songDao.getAllSongs()
     
+    fun getAllSongsWithFavoritesFirst(): Flow<List<Song>> = songDao.getAllSongsWithFavoritesFirst()
+    
     suspend fun getSongById(id: Long): Song? = songDao.getSongById(id)
     
     suspend fun getSongByNameAndArtist(name: String, artist: String): Song? =
@@ -32,6 +34,9 @@ class SingventoryRepository(
     suspend fun insertSong(song: Song): Long = songDao.insertSong(song)
     
     suspend fun updateSong(song: Song) = songDao.updateSong(song)
+    
+    suspend fun updateSongFavoriteStatus(songId: Long, isFavorite: Boolean) = 
+        songDao.updateFavoriteStatus(songId, isFavorite)
     
     suspend fun deleteSong(song: Song) {
         // First delete all associated song-venue info records

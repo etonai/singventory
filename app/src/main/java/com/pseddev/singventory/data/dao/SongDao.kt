@@ -10,6 +10,9 @@ interface SongDao {
     @Query("SELECT * FROM songs ORDER BY name ASC")
     fun getAllSongs(): Flow<List<Song>>
     
+    @Query("SELECT * FROM songs ORDER BY isFavorite DESC, LOWER(name) ASC")
+    fun getAllSongsWithFavoritesFirst(): Flow<List<Song>>
+    
     @Query("SELECT * FROM songs WHERE id = :id")
     suspend fun getSongById(id: Long): Song?
     
@@ -45,6 +48,9 @@ interface SongDao {
     
     @Query("UPDATE songs SET totalPerformances = 0, lastPerformed = NULL WHERE id = :songId")
     suspend fun resetPerformanceStats(songId: Long)
+    
+    @Query("UPDATE songs SET isFavorite = :isFavorite WHERE id = :songId")
+    suspend fun updateFavoriteStatus(songId: Long, isFavorite: Boolean)
     
     @Query("SELECT COUNT(*) FROM songs")
     suspend fun getSongCount(): Int

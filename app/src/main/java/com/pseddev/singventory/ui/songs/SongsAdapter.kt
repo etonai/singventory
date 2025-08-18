@@ -10,7 +10,8 @@ import com.pseddev.singventory.databinding.ItemSongBinding
 
 class SongsAdapter(
     private val onSongClick: (Song) -> Unit,
-    private val onAddVenueClick: (Song) -> Unit
+    private val onAddVenueClick: (Song) -> Unit,
+    private val onFavoriteToggle: (Song) -> Unit
 ) : ListAdapter<Song, SongsAdapter.SongViewHolder>(SongDiffCallback()) {
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
@@ -19,7 +20,7 @@ class SongsAdapter(
             parent,
             false
         )
-        return SongViewHolder(binding, onSongClick, onAddVenueClick)
+        return SongViewHolder(binding, onSongClick, onAddVenueClick, onFavoriteToggle)
     }
     
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
@@ -29,7 +30,8 @@ class SongsAdapter(
     class SongViewHolder(
         private val binding: ItemSongBinding,
         private val onSongClick: (Song) -> Unit,
-        private val onAddVenueClick: (Song) -> Unit
+        private val onAddVenueClick: (Song) -> Unit,
+        private val onFavoriteToggle: (Song) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         
         fun bind(song: Song) {
@@ -60,9 +62,16 @@ class SongsAdapter(
                     "Last: ${android.text.format.DateFormat.getDateFormat(root.context).format(timestamp)}"
                 } ?: ""
                 
+                // Set favorite star icon
+                btnFavorite.setImageResource(
+                    if (song.isFavorite) com.pseddev.singventory.R.drawable.ic_star_filled
+                    else com.pseddev.singventory.R.drawable.ic_star_outline
+                )
+                
                 // Click listeners
                 root.setOnClickListener { onSongClick(song) }
                 btnAddVenue.setOnClickListener { onAddVenueClick(song) }
+                btnFavorite.setOnClickListener { onFavoriteToggle(song) }
             }
         }
     }

@@ -83,6 +83,10 @@ class VenueSongsFragment : Fragment() {
                         )
                     }
                 }
+            },
+            onFavoriteToggle = { songVenueInfo ->
+                // Toggle favorite status
+                viewModel.toggleFavoriteStatus(songVenueInfo)
             }
         )
         
