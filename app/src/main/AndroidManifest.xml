@@ -2,6 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Network permission for Firebase Analytics (automatic) -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <!-- Wake lock for Firebase Analytics (automatic) -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    
+    <!-- Explicitly declare we DON'T need these common permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" tools:node="remove" />
+    <uses-permission android:name="android.permission.CAMERA" tools:node="remove" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="remove" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove" />
+
     <application
         android:name=".SingventoryApplication"
         android:allowBackup="true"
@@ -12,6 +27,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Singventory">
+        
+        <!-- Firebase Analytics Configuration -->
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="true" />
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
+        
+        <!-- Google Play Data Safety Declarations -->
+        <meta-data
+            android:name="data_safety_analytics_enabled"
+            android:value="true" />
+        <meta-data
+            android:name="data_safety_user_data_shared"
+            android:value="false" />
+        <meta-data
+            android:name="data_safety_data_stored_locally"
+            android:value="true" />
         
         <activity
             android:name=".ui.MainActivity"

@@ -16,3 +16,8 @@ local.properties
 
 # Firebase configuration
 app/google-services.json
+
+# Signing keystore - NEVER commit to version control
+keystore/
+*.keystore
+*.jks
