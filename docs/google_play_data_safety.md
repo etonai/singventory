@@ -117,8 +117,8 @@ This document provides the data safety information required for Google Play Cons
 ## Contact Information
 
 For data safety inquiries:
-- **Email:** privacy@pseddev.com
-- **Developer:** PSED Development
+- **Email:** PseudonymousEd@gmail.com
+- **Developer:** PseudonymousEd
 - **Privacy Policy:** Available in app and at [URL when available]
 
 ## Last Updated

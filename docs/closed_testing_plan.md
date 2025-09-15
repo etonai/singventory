@@ -118,7 +118,7 @@ Singventory is your personal karaoke companion that helps you:
 1. Click this link to opt-in: [GOOGLE_PLAY_OPT_IN_URL]
 2. Download Singventory from the Google Play Store
 3. Start using the app and explore all features
-4. Send us your feedback at beta@pseddev.com
+4. Send us your feedback at PseudonymousEd@gmail.com
 
 ⏰ Testing Period: 2-4 weeks
 🎯 Time Commitment: 15-30 minutes exploring the app
@@ -135,9 +135,9 @@ Thanks for helping make Singventory amazing!
 
 Best regards,
 The Singventory Team
-PSED Development
+PseudonymousEd
 
-Questions? Reply to this email or contact us at beta@pseddev.com
+Questions? Reply to this email or contact us at PseudonymousEd@gmail.com
 ```
 
 ### Step 3: Social Media Posts
@@ -184,7 +184,7 @@ Thanks!
 
 ### Primary Feedback Channels
 
-#### 1. Email Feedback (beta@pseddev.com)
+#### 1. Email Feedback (PseudonymousEd@gmail.com)
 **Advantages:** Detailed, personal feedback
 **Format:** Open-ended responses
 **Response Template:** Structured questions + open feedback
