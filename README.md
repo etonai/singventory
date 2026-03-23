@@ -2,7 +2,20 @@
 
 **A Karaoke Performance Tracking App for Android**
 
-Singventory is an Android application designed to help karaoke enthusiasts track their song performances across different venues. Keep detailed records of your favorite songs and optimize your karaoke experience with personalized key adjustments that you'll never forget.
+Singventory is an Android app that helps karaoke enthusiasts track their song performances, venues, and key adjustments across multiple locations. It maintains a personal song library with venue-specific details — such as song codes, key offsets, and performance history — so you always know exactly how to set up each song before you step up to the mic.
+
+## Tech Stack
+
+| Category | Technology |
+|---|---|
+| Language | Kotlin (100%) |
+| Platform | Android (API 36+) |
+| Architecture | MVVM + Repository pattern |
+| Database | Room (SQLite) |
+| Async | Kotlin Coroutines + LiveData |
+| UI | Material Design 3, Navigation Component |
+| Build | Gradle with Kotlin DSL |
+| Data backup | JSON import/export |
 
 > **Development Note**: This app was developed using [Claude Code](https://claude.ai/code) by an experience software developer with no Android development experience prior to July 2025. Claude Code's AI-assisted development capabilities made it possible to create a fully functional Android app.
 
@@ -205,6 +218,8 @@ For detailed development progress, see the `docs/DevCycle_*` files in the reposi
 - **Multi-Venue Singers**: Build knowledge about song availability across different locations
 - **Consistent Performers**: Never forget your optimal key adjustments across venues
 - **Musicians**: Manage key transpositions and maintain performance records
+
+---
 
 ---
 
