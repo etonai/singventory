@@ -8,7 +8,7 @@ Singventory is an Android app that helps karaoke enthusiasts track their song pe
 
 <p align="center">
   <img src="images/SingventorySongs.png" width="23%" />
-  <img src="images/SingventoryVenues.jpg" width="23%" />
+  <img src="images/SingventoryVenues.png" width="23%" />
   <img src="images/SingventoryVenue.jpg" width="23%" />
   <img src="images/SingventoryVisits.png" width="23%" />
 </p>
