@@ -6,10 +6,12 @@
 
 Singventory is an Android app that helps karaoke enthusiasts track their song performances, venues, and key adjustments across multiple locations. It maintains a personal song library with venue-specific details — such as song codes, key offsets, and performance history — so you always know exactly how to set up each song before you step up to the mic.
 
-<img src="images/SingventorySongs.png" width="400"/>
-<img src="images/SingventoryVenues.jpg" width="400"/>
-<img src="images/SingventoryVenue.jpg" width="400"/>
-<img src="images/SingventoryVisits.png" width="400"/>
+<p align="center">
+  <img src="images/SingventorySongs.png" width="23%" />
+  <img src="images/SingventoryVenues.jpg" width="23%" />
+  <img src="images/SingventoryVenue.jpg" width="23%" />
+  <img src="images/SingventoryVisits.png" width="23%" />
+</p>
 
 ## Tech Stack
 
